@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const isProduction = false;
+const isProduction = true;
 
 export default axios.create({
   baseURL: isProduction
-    ? "https://api.coindraw.io/api"
+    ? "https://new-coindraw-api.onrender.com/api"
     : "http://localhost:8080/api",
   headers: {
     "Content-type": "application/json",
