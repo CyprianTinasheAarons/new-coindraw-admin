@@ -17,6 +17,7 @@ import contractAbi from "../abi/giveaway.json";
 import { airdropAddress } from "../common/addresses";
 import { useDispatch } from "react-redux";
 import { createGiveaway } from "../slices/giveaway";
+import Nfts from "../components/nfts";
 
 const Giveaway = () => {
   const toast = useToast();
@@ -242,6 +243,11 @@ const Giveaway = () => {
                 }
                 className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
+              <div>
+                {airdrop.giveawayAddress && (
+                  <Nfts contractAddress={airdrop.giveawayAddress} />
+                )}
+              </div>
             </div>
             <div className="flex flex-col my-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -358,6 +364,12 @@ const Giveaway = () => {
                 }
                 className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
+
+              <div>
+                {airdropMultiple.giveawayAddress && (
+                  <Nfts contractAddress={airdropMultiple.giveawayAddress} />
+                )}
+              </div>
             </div>
             <div className="flex flex-col my-2">
               <label className="block text-sm font-medium text-gray-700">
