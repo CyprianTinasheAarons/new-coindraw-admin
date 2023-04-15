@@ -95,7 +95,7 @@ export default function DistributionTable() {
                     <tr key={tnx.hash}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         <a
-                          href={`https://polygonscan.com/tx/${tnx.hash}`}
+                          href={`https://polygonscan.com/tx/${tnx.txHash}`}
                           target="_blank"
                           rel="noreferrer"
                           className="font-semibold underline text-green"
