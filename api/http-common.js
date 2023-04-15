@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const isProduction = false;
+const isProduction = true;
 
 export default axios.create({
   baseURL: isProduction
