@@ -13,7 +13,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Web3Button } from "@thirdweb-dev/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import contractAbi from "../abi/distribution.json";
 import { distributeAddress } from "../common/addresses";
 import { ethers } from "ethers";
@@ -64,6 +64,10 @@ const Distribution = () => {
     onClose: onChangeOwnerClose,
   } = useDisclosure();
 
+  const getData = async () => {
+    await dispatch(getDistributionHistory());
+  };
+
   const onSubmitDistribute = () =>
     toast({
       title: "Distribute submitted.",
@@ -82,7 +86,6 @@ const Distribution = () => {
       isClosable: true,
     });
     onDistributeClose();
-    dispatch(getDistributionHistory());
   };
 
   const onErrorDistribute = () =>
@@ -111,8 +114,8 @@ const Distribution = () => {
       duration: 9000,
       isClosable: true,
     });
+    getData();
     onSetTotalClose();
-    dispatch(getDistributionHistory());
   };
 
   const onErrorSetTotal = () =>
@@ -182,6 +185,10 @@ const Distribution = () => {
       isClosable: true,
     });
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <Layout title="Distribution">
       <div className="py-8 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
@@ -230,7 +237,7 @@ const Distribution = () => {
           </button>
         </div>
       </div>
-      <DistributionTable />
+      <DistributionTable reloadGetDistributionHistory={reloadData} />
       <Modal isOpen={isDistributeOpen} onClose={onDistributeClose}>
         <ModalOverlay />
         <ModalContent>

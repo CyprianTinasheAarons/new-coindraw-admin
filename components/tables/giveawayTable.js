@@ -1,30 +1,15 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getGiveawayHistory } from "../../slices/giveaway";
+import { useSelector } from "react-redux";
 import { Spinner, Tooltip } from "@chakra-ui/react";
 
 export default function GiveAwayTable() {
-  const dispatch = useDispatch();
   const giveawayHistory = useSelector(
     (state) => state.giveaway.giveawayHistory
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = useSelector((state) => state.giveaway.isLoading);
 
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
-  useEffect(() => {
-    console.log("giveawayHistory", giveawayHistory);
-    dispatch(getGiveawayHistory()).then(() => {
-      setIsLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (giveawayHistory) {
-      setIsLoading(false);
-    }
-  }, []);
 
   return (
     <div className="mt-4">

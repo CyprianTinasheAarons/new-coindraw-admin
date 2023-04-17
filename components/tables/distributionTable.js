@@ -1,31 +1,15 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getDistributionHistory } from "../../slices/distribution";
+import { useSelector } from "react-redux";
 import { Spinner, Tooltip } from "@chakra-ui/react";
 
-export default function DistributionTable() {
-  const dispatch = useDispatch();
+export default function DistributionTable({ reloadGetDistributionHistory }) {
   const distributionHistory = useSelector(
     (state) => state.distribution.distributionHistory
   );
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = useSelector((state) => state.distribution.isLoading);
 
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
-
-  useEffect(() => {
-    console.log("distributionHistory", distributionHistory);
-    dispatch(getDistributionHistory()).then(() => {
-      setIsLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (distributionHistory) {
-      setIsLoading(false);
-    }
-  }, []);
 
   return (
     <div className="mt-4">

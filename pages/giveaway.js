@@ -12,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Web3Button } from "@thirdweb-dev/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import contractAbi from "../abi/giveaway.json";
 import classicAbi from "../abi/classic.json";
 import { airdropAddress } from "../common/addresses";
@@ -25,6 +25,14 @@ const Giveaway = () => {
   const dispatch = useDispatch();
   const contractAddress = airdropAddress;
   const [approvalAddress, setApprovalAddress] = useState("");
+
+  const getData = async () => {
+    dispatch(getGiveawayHistory());
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const [airdrop, setAirdrop] = useState({
     winners: [],
@@ -85,8 +93,8 @@ const Giveaway = () => {
       duration: 9000,
       isClosable: true,
     });
+    getData();
     onAirdropClose();
-    dispatch(getGiveawayHistory());
   };
 
   const onErrorAirDrop = () =>
@@ -115,9 +123,8 @@ const Giveaway = () => {
       duration: 9000,
       isClosable: true,
     });
-
+    getData();
     onAirdropMultipleClose();
-    dispatch(getGiveawayHistory());
   };
 
   const onErrorAirDropMultiple = () =>
@@ -147,7 +154,6 @@ const Giveaway = () => {
       isClosable: true,
     });
     onApprovalClose();
-    location.reload();
   };
 
   const onErrorApproval = () =>
