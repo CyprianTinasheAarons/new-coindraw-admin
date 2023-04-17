@@ -1,10 +1,13 @@
 import { Network, Alchemy } from "alchemy-sdk";
 import { useState, useEffect } from "react";
 import { useAddress } from "@thirdweb-dev/react";
+import { Spinner } from "@chakra-ui/react";
 
 const Nfts = ({ contractAddress }) => {
   const address = useAddress();
   const [tokens, setTokens] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const settings = {
     apiKey: "n7m6r-iPJHAUCQUuKsV8zdr4jzW9ASnG", // Replace with your Alchemy API Key.
     network: Network.MATIC_MAINNET, // Replace with your network.
@@ -23,6 +26,7 @@ const Nfts = ({ contractAddress }) => {
       }
     });
     setTokens(tokenIds);
+    setLoading(false);
     console.log(tokenIds);
   };
 
@@ -33,14 +37,19 @@ const Nfts = ({ contractAddress }) => {
   return (
     <div className="p-1 my-1 border rounded-md bg-gray-50 border-green">
       <h1 className="text-xs text-green">Available NFTs</h1>
-
-      <div className="flex">
-        {tokens.map((token) => (
-          <p key={token} className="text-xs font-semibold text-gray-500">
-            {token}/
-          </p>
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center text-green">
+          <Spinner size={"sm"} />
+        </div>
+      ) : (
+        <div className="flex">
+          {tokens.map((token) => (
+            <p key={token} className="text-xs font-semibold text-gray-500">
+              {token}/
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

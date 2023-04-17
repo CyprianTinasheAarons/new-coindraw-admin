@@ -14,15 +14,17 @@ import {
 import { Web3Button } from "@thirdweb-dev/react";
 import { useState } from "react";
 import contractAbi from "../abi/giveaway.json";
+import classicAbi from "../abi/classic.json";
 import { airdropAddress } from "../common/addresses";
 import { useDispatch } from "react-redux";
-import { createGiveaway } from "../slices/giveaway";
+import { createGiveaway, getGiveawayHistory } from "../slices/giveaway";
 import Nfts from "../components/nfts";
 
 const Giveaway = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const contractAddress = airdropAddress;
+  const [approvalAddress, setApprovalAddress] = useState("");
 
   const [airdrop, setAirdrop] = useState({
     winners: [],
@@ -49,15 +51,21 @@ const Giveaway = () => {
   } = useDisclosure();
 
   const {
-    isOpen: isChangeOwnerOpen,
-    onOpen: onChangeOwnerOpen,
-    onClose: onChangeOwnerClose,
-  } = useDisclosure();
-
-  const {
     isOpen: isAirdropMultipleOpen,
     onOpen: onAirdropMultipleOpen,
     onClose: onAirdropMultipleClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isApprovalOpen,
+    onOpen: onApprovalOpen,
+    onClose: onApprovalClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isChangeOwnerOpen,
+    onOpen: onChangeOwnerOpen,
+    onClose: onChangeOwnerClose,
   } = useDisclosure();
 
   const onSubmitAirdrop = () =>
@@ -121,6 +129,36 @@ const Giveaway = () => {
       isClosable: true,
     });
 
+  const onSubmitApproval = () =>
+    toast({
+      title: "Approval submitted.",
+      description: "We've submitted your approval request.",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
+
+  const onSuccessApproval = () => {
+    toast({
+      title: "Approval successful.",
+      description: "We've successfully approved the tokens.",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+    onApprovalClose();
+    location.reload();
+  };
+
+  const onErrorApproval = () =>
+    toast({
+      title: "Approval failed.",
+      description: "We've failed to approve the tokens.",
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+
   const onSubmitChangeOwner = () =>
     toast({
       title: "Change owner submitted.",
@@ -174,7 +212,13 @@ const Giveaway = () => {
           >
             Airdrop (Multiple)
           </button>
-
+          <button
+            type="button"
+            onClick={() => onApprovalOpen()}
+            className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
+            Airdrop Approval
+          </button>
           <button
             type="button"
             onClick={() => onChangeOwnerOpen()}
@@ -421,6 +465,47 @@ const Giveaway = () => {
               onSubmit={onSubmitAirdropMultiple}
             >
               Airdrop (Multiple)
+            </Web3Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isApprovalOpen} onClose={onApprovalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Approve</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-700">
+                Classic/Exclusive Address
+              </label>
+              <input
+                type="text"
+                name="giveawayAddress"
+                id="giveawayAddress"
+                required={true}
+                placeholder="0x123"
+                value={approvalAddress}
+                onChange={(e) => setApprovalAddress(e.target.value)}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Web3Button
+              contractAddress={approvalAddress}
+              contractAbi={classicAbi}
+              action={async (contract) => {
+                await contract.call("setApprovalForAll", [
+                  contractAddress,
+                  true,
+                ]);
+              }}
+              onSuccess={onSuccessApproval}
+              onError={onErrorApproval}
+              onSubmit={onSubmitApproval}
+            >
+              Approve Contract
             </Web3Button>
           </ModalFooter>
         </ModalContent>

@@ -18,7 +18,10 @@ import contractAbi from "../abi/distribution.json";
 import { distributeAddress } from "../common/addresses";
 import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
-import { createDistribution } from "../slices/distribution";
+import {
+  createDistribution,
+  getDistributionHistory,
+} from "../slices/distribution";
 
 const Distribution = () => {
   const toast = useToast();
@@ -109,6 +112,7 @@ const Distribution = () => {
       isClosable: true,
     });
     onSetTotalClose();
+    dispatch(getDistributionHistory());
   };
 
   const onErrorSetTotal = () =>
