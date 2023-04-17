@@ -28,7 +28,7 @@ const Giveaway = () => {
   const [giveawayHistory, setGiveawayHistory] = useState([]);
 
   const getData = async () => {
-    dispatch(getGiveawayHistory())
+    await dispatch(getGiveawayHistory())
       .unwrap()
       .then((res) => {
         setGiveawayHistory(res);
@@ -90,7 +90,7 @@ const Giveaway = () => {
       isClosable: true,
     });
 
-  const onSuccessAirDrop = () => {
+  const onSuccessAirDrop = async () => {
     toast({
       title: "Airdrop successful.",
       description: "We've successfully airdropped the tokens.",
@@ -98,7 +98,7 @@ const Giveaway = () => {
       duration: 9000,
       isClosable: true,
     });
-    getData();
+    await getData();
     onAirdropClose();
   };
 
@@ -120,7 +120,7 @@ const Giveaway = () => {
       isClosable: true,
     });
 
-  const onSuccessAirDropMultiple = () => {
+  const onSuccessAirDropMultiple = async () => {
     toast({
       title: "Airdrop multiple successful.",
       description: "We've successfully airdropped the tokens.",
@@ -128,7 +128,7 @@ const Giveaway = () => {
       duration: 9000,
       isClosable: true,
     });
-    getData();
+    await getData();
     onAirdropMultipleClose();
   };
 

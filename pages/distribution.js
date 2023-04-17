@@ -66,7 +66,7 @@ const Distribution = () => {
   } = useDisclosure();
 
   const getData = async () => {
-    dispatch(getDistributionHistory())
+    await dispatch(getDistributionHistory())
       .unwrap()
       .then((res) => {
         setDistributionHistory(res);
@@ -82,7 +82,7 @@ const Distribution = () => {
       isClosable: true,
     });
 
-  const onSuccessDistribute = () => {
+  const onSuccessDistribute = async () => {
     toast({
       title: "Distribute successful.",
       description: "We've successfully distributed the tokens.",
@@ -91,6 +91,7 @@ const Distribution = () => {
       isClosable: true,
     });
     onDistributeClose();
+    await getData();
   };
 
   const onErrorDistribute = () =>
