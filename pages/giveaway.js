@@ -258,7 +258,12 @@ const Giveaway = () => {
                 placeholder="0x123,0x456,0x789"
                 value={airdrop.winners}
                 onChange={(e) =>
-                  setAirdrop({ ...airdrop, winners: e.target.value.split(",") })
+                  setAirdrop({
+                    ...airdrop,
+                    winners: e.target.value
+                      .split(",")
+                      .map((address) => address.trim()),
+                  })
                 }
                 className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
@@ -328,6 +333,7 @@ const Giveaway = () => {
               contractAddress={contractAddress}
               contractAbi={contractAbi}
               action={async (contract) => {
+                console.log(airdrop);
                 await contract
                   .call("airdrop", [
                     airdrop.winners,
