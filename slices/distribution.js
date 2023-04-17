@@ -12,7 +12,9 @@ export const getDistributionHistory = createAsyncThunk(
   async () => {
     try {
       const response = await distributeService.getAll();
-      return response.data;
+      return response.data.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
     } catch (err) {
       console.log(err);
       throw err;

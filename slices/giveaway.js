@@ -12,7 +12,11 @@ export const getGiveawayHistory = createAsyncThunk(
   async () => {
     try {
       const response = await airdropService.getAll();
-      return response.data;
+
+      // Sort by createdAt date
+      return response.data.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
     } catch (e) {
       console.log(e);
       throw e;
