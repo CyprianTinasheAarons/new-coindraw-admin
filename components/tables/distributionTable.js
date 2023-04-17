@@ -1,10 +1,6 @@
-import { useSelector } from "react-redux";
 import { Spinner, Tooltip } from "@chakra-ui/react";
-
-export default function DistributionTable({ reloadGetDistributionHistory }) {
-  const distributionHistory = useSelector(
-    (state) => state.distribution.distributionHistory
-  );
+import { useSelector } from "react-redux";
+export default function DistributionTable({ data }) {
   const isLoading = useSelector((state) => state.distribution.isLoading);
 
   const truncate = (str, n) => {
@@ -74,7 +70,7 @@ export default function DistributionTable({ reloadGetDistributionHistory }) {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {distributionHistory?.map((tnx) => (
+                  {data?.map((tnx) => (
                     <tr key={tnx.hash}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         <a

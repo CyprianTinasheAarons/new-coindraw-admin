@@ -32,6 +32,7 @@ const Distribution = () => {
   const [elite, setElite] = useState("");
   const [total, setTotal] = useState("");
   const [percentage, setPercentage] = useState("");
+  const [distributionHistory, setDistributionHistory] = useState([]);
   const [address, setAddress] = useState("");
 
   const {
@@ -65,7 +66,11 @@ const Distribution = () => {
   } = useDisclosure();
 
   const getData = async () => {
-    await dispatch(getDistributionHistory());
+    dispatch(getDistributionHistory())
+      .unwrap()
+      .then((res) => {
+        setDistributionHistory(res);
+      });
   };
 
   const onSubmitDistribute = () =>
@@ -237,7 +242,7 @@ const Distribution = () => {
           </button>
         </div>
       </div>
-      <DistributionTable reloadGetDistributionHistory={reloadData} />
+      <DistributionTable data={distributionHistory} />
       <Modal isOpen={isDistributeOpen} onClose={onDistributeClose}>
         <ModalOverlay />
         <ModalContent>

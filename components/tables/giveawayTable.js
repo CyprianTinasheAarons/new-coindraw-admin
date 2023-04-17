@@ -1,10 +1,7 @@
 import { useSelector } from "react-redux";
 import { Spinner, Tooltip } from "@chakra-ui/react";
 
-export default function GiveAwayTable() {
-  const giveawayHistory = useSelector(
-    (state) => state.giveaway.giveawayHistory
-  );
+export default function GiveAwayTable({ data }) {
   const isLoading = useSelector((state) => state.giveaway.isLoading);
 
   const truncate = (str, n) => {
@@ -74,7 +71,7 @@ export default function GiveAwayTable() {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {giveawayHistory?.map((tnx) => (
+                  {data?.map((tnx) => (
                     <tr key={tnx.hash}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         <a

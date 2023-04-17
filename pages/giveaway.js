@@ -25,9 +25,14 @@ const Giveaway = () => {
   const dispatch = useDispatch();
   const contractAddress = airdropAddress;
   const [approvalAddress, setApprovalAddress] = useState("");
+  const [giveawayHistory, setGiveawayHistory] = useState([]);
 
   const getData = async () => {
-    dispatch(getGiveawayHistory());
+    dispatch(getGiveawayHistory())
+      .unwrap()
+      .then((res) => {
+        setGiveawayHistory(res);
+      });
   };
 
   useEffect(() => {
@@ -234,7 +239,7 @@ const Giveaway = () => {
           </button>
         </div>
       </div>
-      <GiveawayTable />
+      <GiveawayTable data={giveawayHistory} />
       <Modal isOpen={isAirdropOpen} onClose={onAirdropClose}>
         <ModalOverlay />
         <ModalContent>
