@@ -34,6 +34,7 @@
     "react": "18.2.0",
     "react-auth-code-input": "^3.2.1",
     "react-beautiful-dnd": "^13.1.1",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-csv-downloader": "^2.9.0",
     "react-datepicker": "^4.10.0",
     "react-dnd": "^16.0.1",

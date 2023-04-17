@@ -1,5 +1,6 @@
 import Layout from "../components/Layout";
 import DistributionTable from "../components/tables/distributionTable";
+import Elites from "../components/elites";
 import {
   Modal,
   ModalOverlay,
@@ -25,6 +26,7 @@ const Distribution = () => {
   const contractAddress = distributeAddress;
   const [recipients, setRecipients] = useState([]);
   const [note, setNote] = useState("");
+  const [elite, setElite] = useState("");
   const [total, setTotal] = useState("");
   const [percentage, setPercentage] = useState("");
   const [address, setAddress] = useState("");
@@ -34,16 +36,25 @@ const Distribution = () => {
     onOpen: onDistributeOpen,
     onClose: onDistributeClose,
   } = useDisclosure();
+
+  const {
+    isOpen: isEliteOpen,
+    onOpen: onEliteOpen,
+    onClose: onEliteClose,
+  } = useDisclosure();
+
   const {
     isOpen: isSetTotalOpen,
     onOpen: onSetTotalOpen,
     onClose: onSetTotalClose,
   } = useDisclosure();
+
   const {
     isOpen: isSetPercentageOpen,
     onOpen: onSetPercentageOpen,
     onClose: onSetPercentageClose,
   } = useDisclosure();
+
   const {
     isOpen: isChangeOwnerOpen,
     onOpen: onChangeOwnerOpen,
@@ -186,6 +197,14 @@ const Distribution = () => {
           </button>
           <button
             type="button"
+            onClick={() => onEliteOpen()}
+            className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
+            Get Elite
+          </button>
+
+          <button
+            type="button"
             onClick={() => onSetTotalOpen()}
             className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
@@ -274,6 +293,31 @@ const Distribution = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <Modal isOpen={isEliteOpen} onClose={onEliteClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Get Elite Addresses</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-700">
+                Elite Address
+              </label>
+              <input
+                type="text"
+                name="elite"
+                id="elite"
+                value={elite}
+                onChange={(e) => setElite(e.target.value)}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-green focus:border-green sm:text-sm"
+              />
+              <Elites eliteAddress={elite} />
+            </div>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
       <Modal isOpen={isSetTotalOpen} onClose={onSetTotalClose}>
         <ModalOverlay />
         <ModalContent>

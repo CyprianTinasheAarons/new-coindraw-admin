@@ -23,6 +23,7 @@ const Giveaway = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const contractAddress = airdropAddress;
+
   const [airdrop, setAirdrop] = useState({
     winners: [],
     tokenIds: [],
