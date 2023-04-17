@@ -82,7 +82,7 @@ const Distribution = () => {
       isClosable: true,
     });
     onDistributeClose();
-    location.reload();
+    dispatch(getDistributionHistory());
   };
 
   const onErrorDistribute = () =>

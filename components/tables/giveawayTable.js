@@ -14,18 +14,17 @@ export default function GiveAwayTable() {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
   useEffect(() => {
-    if (!giveawayHistory) {
-      dispatch(getGiveawayHistory()).then(() => {
-        setIsLoading(false);
-      });
-    }
-  }, [giveawayHistory]);
+    console.log("giveawayHistory", giveawayHistory);
+    dispatch(getGiveawayHistory()).then(() => {
+      setIsLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
     if (giveawayHistory) {
       setIsLoading(false);
     }
-  }, [giveawayHistory]);
+  }, []);
 
   return (
     <div className="mt-4">

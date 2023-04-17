@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import airdropService from "../api/airdrop.service";
 
 const initialState = {
-  giveawayHistory: null,
+  giveawayHistory: [],
   errorMessage: null,
   isLoading: false,
 };
@@ -10,8 +10,13 @@ const initialState = {
 export const getGiveawayHistory = createAsyncThunk(
   "giveaway/getGiveawayHistory",
   async () => {
-    const response = await airdropService.getAll();
-    return response.data;
+    try {
+      const response = await airdropService.getAll();
+      return response.data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 );
 
@@ -19,7 +24,7 @@ export const createGiveaway = createAsyncThunk(
   "giveaway/createGiveaway",
   async (data) => {
     const response = await airdropService.create(data);
-    return response.data;
+    return response?.data;
   }
 );
 
@@ -33,6 +38,7 @@ export const giveawaySlice = createSlice({
     },
     [getGiveawayHistory.fulfilled]: (state, action) => {
       state.isLoading = false;
+      state.giveawayHistory = [];
       state.giveawayHistory = action.payload;
     },
     [getGiveawayHistory.rejected]: (state, action) => {

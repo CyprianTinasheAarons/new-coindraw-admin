@@ -86,7 +86,7 @@ const Giveaway = () => {
       isClosable: true,
     });
     onAirdropClose();
-    location.reload();
+    dispatch(getGiveawayHistory());
   };
 
   const onErrorAirDrop = () =>
@@ -117,7 +117,7 @@ const Giveaway = () => {
     });
 
     onAirdropMultipleClose();
-    location.reload();
+    dispatch(getGiveawayHistory());
   };
 
   const onErrorAirDropMultiple = () =>

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import distributeService from "../api/distribute.service";
 
 const initialState = {
-  distributionHistory: null,
+  distributionHistory: [],
   errorMessage: null,
   isLoading: false,
 };
@@ -10,8 +10,13 @@ const initialState = {
 export const getDistributionHistory = createAsyncThunk(
   "distribution/getDistributionHistory",
   async () => {
-    const response = await distributeService.getAll();
-    return response.data;
+    try {
+      const response = await distributeService.getAll();
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   }
 );
 
@@ -19,7 +24,7 @@ export const createDistribution = createAsyncThunk(
   "distribution/createDistribution",
   async (data) => {
     const response = await distributeService.create(data);
-    return response.data;
+    return response?.data;
   }
 );
 
@@ -33,6 +38,7 @@ export const distributionSlice = createSlice({
     },
     [getDistributionHistory.fulfilled]: (state, action) => {
       state.isLoading = false;
+      state.distributionHistory = [];
       state.distributionHistory = action.payload;
     },
     [getDistributionHistory.rejected]: (state, action) => {

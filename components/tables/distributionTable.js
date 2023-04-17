@@ -15,18 +15,17 @@ export default function DistributionTable() {
   };
 
   useEffect(() => {
-    if (!distributionHistory) {
-      dispatch(getDistributionHistory()).then(() => {
-        setIsLoading(false);
-      });
-    }
-  }, [distributionHistory]);
+    console.log("distributionHistory", distributionHistory);
+    dispatch(getDistributionHistory()).then(() => {
+      setIsLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
     if (distributionHistory) {
       setIsLoading(false);
     }
-  }, [distributionHistory]);
+  }, []);
 
   return (
     <div className="mt-4">
