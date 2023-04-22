@@ -37,7 +37,7 @@ const Giveaway = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [dispatch]);
 
   const [airdrop, setAirdrop] = useState({
     winners: [],

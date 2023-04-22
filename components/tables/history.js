@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import CsvDownloader from "react-csv-downloader";
+import { useSelector } from "react-redux";
+import { Spinner, Tooltip } from "@chakra-ui/react";
 
-export default function HistoryTable({ transactions }) {
+export default function HistoryTable({ data }) {
   const [search, setSearch] = useState("");
   const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const isLoading = useSelector((state) => state.transactions.isLoading);
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
 
   useEffect(() => {
     setFilteredTransactions(
-      transactions
+      data
         .filter((t) => {
           return (
             t?.walletAddress?.toLowerCase().includes(search.toLowerCase()) ||
@@ -20,13 +27,13 @@ export default function HistoryTable({ transactions }) {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
     );
-  }, [search, transactions]);
+  }, [search, data]);
 
   return (
     <>
       <div className="my-2 ">
         <CsvDownloader
-          datas={transactions}
+          datas={filteredTransactions}
           filename="history"
           extension=".csv"
           separator=";"
@@ -74,64 +81,134 @@ export default function HistoryTable({ transactions }) {
           </div>
         </div>
       </div>
-      <div className="px-6 lg:px-8">
+      <div className="mt-4">
+        <div className="sm:flex sm:items-center">
+          <div className="sm:flex-auto">
+            <h1 className="text-base font-semibold leading-6 text-gray-900">
+              Transactions
+            </h1>
+            <p className="mt-2 text-sm text-gray-700">
+              This is a list of all transactions that have been made to the
+              giveaway address.
+            </p>
+          </div>
+        </div>
         <div className="flow-root mt-8">
-          <div className="-mx-6 -my-2 overflow-x-auto lg:-mx-8">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead>
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-                    >
-                      Wallet Address
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Contract Address
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Transaction Hash
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="relative py-3.5 pl-3 pr-6 sm:pr-0"
-                    >
-                      <span className="sr-only">Edit</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredTransactions.map((trans) => (
-                    <tr key={trans.email}>
-                      <td className="py-4 pl-6 pr-3 text-xs font-medium text-gray-900 whitespace-nowrap sm:pl-0">
-                        {trans.walletAddress}
-                      </td>
-                      <td className="px-3 py-4 text-xs text-gray-500 whitespace-nowrap">
-                        {trans.contractAddress}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {trans.transactionHash?.substring(0, 12)}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {new Date(trans.createdAt).toLocaleDateString()}
-                      </td>
+              {isLoading ? (
+                <div className="flex justify-center">
+                  <Spinner />
+                </div>
+              ) : (
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead>
+                    <tr>
+                      <th
+                        scope="col"
+                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                      >
+                        Contract Address
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        User Address
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Transaction Hash
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Email
+                      </th>
+
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Date
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Stripe Details
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Stripe Status
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white">
+                    {filteredTransactions?.map((tnx) => (
+                      <tr key={tnx?.transactionHash}>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          <Tooltip label={tnx.contractAddress}>
+                            {truncate(tnx?.contractAddress, 12)}
+                          </Tooltip>
+                        </td>
+                        <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
+                          <a
+                            href={`https://polygonscan.com/tx/${tnx?.transactionHash}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-semibold underline text-green"
+                          >
+                            {truncate(tnx?.transactionHash, 16)}
+                          </a>
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          <Tooltip label={tnx?.walletAddress}>
+                            {truncate(tnx?.walletAddress, 12)}
+                          </Tooltip>
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          {tnx?.email}
+                        </td>
+
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          {new Date(tnx?.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          {tnx?.stripePayment ? (
+                            <a
+                              href={`https://dashboard.stripe.com/payments/${tnx?.stripePaymentId}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-semibold underline text-green"
+                            >
+                              View
+                            </a>
+                          ) : (
+                            "N/A"
+                          )}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          {tnx?.stripePayment ? (
+                            <p>
+                              {tnx?.stripePaymentStatus === "succeeded"
+                                ? "Success"
+                                : "Failed"}
+                            </p>
+                          ) : (
+                            "Success"
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
