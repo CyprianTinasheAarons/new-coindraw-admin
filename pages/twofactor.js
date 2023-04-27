@@ -1,11 +1,12 @@
 import { useState } from "react";
 import AuthService from "../api/auth.service";
-import { toast } from "react-toastify";
+import { useToast } from "@chakra-ui/react";
 
 function TwoFactor() {
   const [Data, setData] = useState({
     token: "",
   });
+  const toast = useToast();
 
   const handleChange = (e) => {
     setData({ ...Data, [e.target.name]: e.target.value });
@@ -18,18 +19,36 @@ function TwoFactor() {
         email: localStorage.getItem("admin-email"),
       })
         .then((res) => {
-          console.log(res);
+          toast({
+            title: "Success",
+            description: "Logged in successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+
           localStorage.setItem("admin-token", res.data.accessToken);
           location.href = "/";
         })
         .catch((error) => {
           console.log(error);
-          toast(error.response.data.message, {
-            type: "error",
+          toast({
+            title: "Error",
+            description: error.response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
           });
         });
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Error",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 

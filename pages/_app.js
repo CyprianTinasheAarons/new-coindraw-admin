@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <ThirdwebProvider activeChain="polygon">
+    <ThirdwebProvider activeChain="mumbai">
       <ChakraProvider>
         <Provider store={store}>
           <Component {...pageProps} />{" "}

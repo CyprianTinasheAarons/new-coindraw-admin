@@ -527,7 +527,6 @@ const Giveaway = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       <Modal isOpen={isChangeOwnerOpen} onClose={onChangeOwnerClose}>
         <ModalOverlay />
         <ModalContent>

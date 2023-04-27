@@ -27,7 +27,7 @@ const Distribution = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const contractAddress = distributeAddress;
-  const [recipients, setRecipients] = useState([]);
+  const [recipients, setRecipients] = useState("");
   const [note, setNote] = useState("");
   const [elite, setElite] = useState("");
   const [total, setTotal] = useState("");
@@ -253,10 +253,6 @@ const Distribution = () => {
             <div className="flex flex-col">
               <label className="block text-sm font-medium text-gray-700">
                 Recipients
-                <span className="text-xs italic text-red-500">
-                  {" "}
-                  (comma separated addresses)
-                </span>
               </label>
               <textarea
                 cols={100}
@@ -264,7 +260,7 @@ const Distribution = () => {
                 name="recipients"
                 id="recipients"
                 value={recipients}
-                onChange={(e) => setRecipients(e.target.value.split(","))}
+                onChange={(e) => setRecipients(e.target.value)}
                 className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-green focus:border-green sm:text-sm"
               />
             </div>
@@ -289,7 +285,11 @@ const Distribution = () => {
               contractAbi={contractAbi}
               action={async (contract) => {
                 await contract
-                  .call("distributeRewards", [recipients])
+                  .call("distributeRewardsRecurring", [
+                    JSON.parse(recipients).addresses,
+                    JSON.parse(recipients).balances,
+                    JSON.parse(recipients).total,
+                  ])
                   .then((result) => {
                     const data = {
                       txHash: result?.receipt.transactionHash,
@@ -311,24 +311,28 @@ const Distribution = () => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={isEliteOpen} onClose={onEliteClose}>
+      <Modal isOpen={isEliteOpen} onClose={onEliteClose} size={"full"}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Get Elite Addresses</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="flex flex-col">
-              <label className="block text-sm font-medium text-gray-700">
-                Elite Address
-              </label>
-              <input
-                type="text"
-                name="elite"
-                id="elite"
-                value={elite}
-                onChange={(e) => setElite(e.target.value)}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-green focus:border-green sm:text-sm"
-              />
+              <div className="flex justify-center">
+                <div className="w-1/3">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Elite Address
+                  </label>
+                  <input
+                    type="text"
+                    name="elite"
+                    id="elite"
+                    value={elite}
+                    onChange={(e) => setElite(e.target.value)}
+                    className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-green focus:border-green sm:text-sm"
+                  />
+                </div>
+              </div>
               <Elites eliteAddress={elite} />
             </div>
           </ModalBody>

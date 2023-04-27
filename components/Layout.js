@@ -13,6 +13,7 @@ import {
   CurrencyPoundIcon,
   ChartPieIcon,
   UserCircleIcon,
+  ChatBubbleBottomCenterIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
@@ -31,6 +32,12 @@ const navigation = [
     current: false,
   },
   { name: "Giveaway", href: "/giveaway", icon: ChartPieIcon, current: false },
+  {
+    name: "Referrals",
+    href: "/referrals",
+    icon: ChatBubbleBottomCenterIcon,
+    current: false,
+  },
 ];
 
 function classNames(...classes) {

@@ -20,10 +20,6 @@ class UserService {
   deleteAll() {
     return http.delete(`/users`);
   }
-
-  findByTitle(title) {
-    return http.get(`/users?title=${title}`);
-  }
 }
 
 export default new UserService();

@@ -1,13 +1,17 @@
 import { Network, Alchemy } from "alchemy-sdk";
 import { useState, useEffect } from "react";
-import { Spinner } from "@chakra-ui/react";
+import { Spinner, useToast } from "@chakra-ui/react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { useContract } from "@thirdweb-dev/react";
+import eliteAbi from "../abi/elite.json";
 
 const Elites = ({ eliteAddress }) => {
   const [loading, isLoading] = useState(false);
   const [total, setTotal] = useState(0);
+  const [balances, setBalances] = useState([]); // [address, balance]
   const [addresses, setAddresses] = useState([]);
-  const [copied, setCopied] = useState(false);
+  const [eliteData, setEliteData] = useState({});
+  const toast = useToast();
 
   const settings = {
     apiKey: "n7m6r-iPJHAUCQUuKsV8zdr4jzW9ASnG", // Replace with your Alchemy API Key.
@@ -15,23 +19,41 @@ const Elites = ({ eliteAddress }) => {
   };
 
   const alchemy = new Alchemy(settings);
+  const { contract } = useContract(eliteAddress, eliteAbi);
 
   const getElites = async () => {
     isLoading(true);
 
-    await alchemy.nft
-      .getOwnersForContract(eliteAddress)
-      .then((elites) => {
-        console.log(elites);
-        setTotal(elites?.owners?.length);
-        setAddresses(elites?.owners.map((owner) => `${owner}`));
+    await alchemy.nft.getOwnersForContract(eliteAddress).then((elites) => {
+      setAddresses(elites?.owners.map((owner) => `${owner}`));
 
-        isLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        isLoading(false);
-      });
+      let balancesArray = [];
+
+      const getBalances = async () => {
+        for (let i = 0; i < elites?.owners.length; i++) {
+          await contract
+            .call("balanceOf", [elites?.owners[i]])
+            .then((balance) => {
+              let balanceOf = parseInt(balance);
+              balancesArray.push(balanceOf);
+            });
+        }
+
+        setBalances(balancesArray);
+        console.log("balancesArray", balancesArray);
+        let totalData = 0;
+
+        for (let i = 0; i < balancesArray.length; i++) {
+          totalData += balancesArray[i];
+        }
+
+        setTotal(totalData);
+      };
+
+      getBalances();
+
+      isLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -40,18 +62,42 @@ const Elites = ({ eliteAddress }) => {
     }
   }, []);
 
+  useEffect(() => {
+    setEliteData({
+      addresses: addresses,
+      balances: balances,
+      total: total,
+    });
+  }, [addresses, balances, total]);
+
   return (
     <div className="py-2">
-      <div>
+      <div className="flex justify-center pb-4">
         <button
           onClick={() => getElites()}
-          className="flex flex-col items-center justify-center w-full p-2 space-y-2 text-center text-white ounded-md bg-green"
+          className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
         >
           {loading ? (
             <Spinner size={"sm"} />
           ) : (
             <p className="text-xs font-semibold ">Get Elite Addresses</p>
           )}
+        </button>
+        <button className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+          <CopyToClipboard
+            text={JSON.stringify(eliteData, null, 2)}
+            onCopy={() => {
+              toast({
+                title: "Copied!",
+                description: "Elite addresses copied to clipboard.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              });
+            }}
+          >
+            <p className="text-xs font-semibold ">Copy Elite Addresses</p>
+          </CopyToClipboard>
         </button>
       </div>
       {loading ? (
@@ -60,28 +106,38 @@ const Elites = ({ eliteAddress }) => {
         </div>
       ) : (
         <div>
-          {copied ? (
-            <p className="py-2 text-xs text-center text-black">Copied!</p>
-          ) : (
-            <p className="text-xs text-center text-green ">Click to copy</p>
-          )}
-          <CopyToClipboard text={addresses} onCopy={() => setCopied(true)}>
-            <div className="flex flex-col items-center justify-center p-2 space-y-2 text-center border rounded-md bg-gray-50 border-green">
-              <p className="text-xs font-semibold text-green">
-                {total} Elite Addresses
-              </p>
-              <div className="flex flex-col justify-start">
-                {addresses?.map((address, index) => (
-                  <p
-                    key={address}
-                    className="text-xs font-semibold text-left text-gray-500"
-                  >
-                    {index} . {address}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </CopyToClipboard>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+                >
+                  Address
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase"
+                >
+                  Ownership % (Total: {total})
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {addresses?.map((address, index) => (
+                <tr key={address}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{address}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
+                      {((balances[index] / total) * 100).toFixed(1)}%
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
@@ -89,11 +145,3 @@ const Elites = ({ eliteAddress }) => {
 };
 
 export default Elites;
-
-0x04a9c727b7decbba3802142fd2c4042174caa83f,
-  0x423a46dbc1965f2a86c6e424356b5a18ef742955,
-  0x5fc5ae53dc9201c67d1d7bdf12dd10e1ea422e24,
-  0xa2df8e2292edc4360440786d656c99d15c3f1807,
-  0xbb83c814579a82a985a32707019f8e65e004a8ce,
-  0xca30e7716a5eca7572e64ba6aece61a6d0aaf073,
-  0xf21ebb2bdd0fc5b57d48fcf194ad4f940d150555;

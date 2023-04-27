@@ -109,6 +109,12 @@ export default function UsersTable(data) {
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
                     >
+                      Experience
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                    >
                       Created On
                     </th>
                     <th
@@ -132,6 +138,9 @@ export default function UsersTable(data) {
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {person.walletAddress}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {person.experience}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(person.updatedAt).toLocaleDateString()}
