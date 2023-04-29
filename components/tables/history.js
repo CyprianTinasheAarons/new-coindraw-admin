@@ -139,13 +139,13 @@ export default function HistoryTable({ data }) {
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Stripe Details
+                        Paypal Details
                       </th>
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Stripe Status
+                        Paypal Status
                       </th>
                     </tr>
                   </thead>
@@ -180,9 +180,9 @@ export default function HistoryTable({ data }) {
                           {new Date(tnx?.createdAt).toLocaleDateString()}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {tnx?.stripePayment ? (
+                          {tnx?.PaypalPayment ? (
                             <a
-                              href={`https://dashboard.stripe.com/payments/${tnx?.stripePaymentId}`}
+                              href={`https://dashboard.Paypal.com/payments/${tnx?.PaypalPaymentId}`}
                               target="_blank"
                               rel="noreferrer"
                               className="font-semibold underline text-green"
@@ -194,9 +194,9 @@ export default function HistoryTable({ data }) {
                           )}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {tnx?.stripePayment ? (
+                          {tnx?.PaypalPayment ? (
                             <p>
-                              {tnx?.stripePaymentStatus === "succeeded"
+                              {tnx?.PaypalPaymentStatus === "succeeded"
                                 ? "Success"
                                 : "Failed"}
                             </p>
