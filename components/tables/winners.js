@@ -151,10 +151,6 @@ export default function WinnersTable({ data }) {
                         {winner.email}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {winner.price}
-                      </td>
-
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {winner.draw}
                       </td>
 
