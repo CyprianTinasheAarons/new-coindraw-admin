@@ -4,6 +4,7 @@ import giveawayReducer from "./slices/giveaway";
 import transactionReducer from "./slices/transactions";
 import referralReducer from "./slices/referral";
 import userReducer from "./slices/users";
+import discountReducer from "./slices/discount";
 
 const reducer = {
   distribution: distributionReducer,
@@ -11,6 +12,7 @@ const reducer = {
   transactions: transactionReducer,
   referral: referralReducer,
   users: userReducer,
+  discount: discountReducer
 };
 
 const store = configureStore({

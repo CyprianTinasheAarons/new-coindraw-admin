@@ -23,8 +23,6 @@ export default function DrawCreate() {
       live: false,
       contractAddress: "",
       abi: "",
-      discountCode: "",
-      discountPercentage: "",
       mintPrice: "",
       question: "",
       answerA: "",
@@ -35,11 +33,11 @@ export default function DrawCreate() {
   ]);
 
   const types = [
-    { value: "daily", label: "Daily" },
-    { value: "weekly", label: "Weekly" },
-    { value: "monthly", label: "Monthly" },
-    { value: "quarterly", label: "Quarterly" },
-    { value: "yearly", label: "Yearly" },
+    { label: "Classic", value: "Classic" },
+    { label: "Exclusive", value: "Exclusive" },
+    { label: "Elite", value: "Elite" },
+    { label: "Quarterly", value: "Quarterly" },
+    { label: "Yearly", value: "Yearly" },
   ];
 
   const toast = useToast();
@@ -67,21 +65,6 @@ export default function DrawCreate() {
           isClosable: true,
         });
       });
-  };
-
-  const generateDiscountCode = () => {
-    const length = 8; // Choose the length of the discount code.
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-      );
-    }
-
-    setDraw({ ...draw, discountCode: result });
   };
 
   return (
@@ -252,55 +235,6 @@ export default function DrawCreate() {
                         setDraw({ ...draw, maxodds: e.target.value })
                       }
                       autoComplete="maxodds"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="maxodds"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Discount Code
-                  </label>
-                  <div className="flex mt-2">
-                    <input
-                      type="text"
-                      name="discountCode"
-                      id="discountCode"
-                      value={draw?.discountCode}
-                      onChange={(e) =>
-                        setDraw({ ...draw, discountCode: e.target.value })
-                      }
-                      autoComplete="discountCode"
-                      className="block w-full mr-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                    <button
-                      onClick={generateDiscountCode}
-                      className="bg-indigo-600 text-white py-1.5 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                    >
-                      Generate
-                    </button>
-                  </div>
-                </div>
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="maxodds"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Discount Percentage
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="discountPercentage"
-                      id="discountPercentage"
-                      value={draw?.discountPercentage}
-                      onChange={(e) =>
-                        setDraw({ ...draw, discountPercentage: e.target.value })
-                      }
-                      autoComplete="discountPercentage"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>

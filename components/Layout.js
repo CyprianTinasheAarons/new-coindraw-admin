@@ -38,6 +38,12 @@ const navigation = [
     icon: ChatBubbleBottomCenterIcon,
     current: false,
   },
+  {
+    name: "Discounts",
+    href: "/discounts",
+    icon: ChatBubbleBottomCenterIcon,
+    current: false,
+  }
 ];
 
 function classNames(...classes) {
