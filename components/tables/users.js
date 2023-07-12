@@ -109,8 +109,9 @@ export default function UsersTable(data) {
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
                     >
-                      Experience
+                      Phone
                     </th>
+
                     <th
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
@@ -131,7 +132,7 @@ export default function UsersTable(data) {
                   {filteredData.map((person) => (
                     <tr key={person.email}>
                       <td className="py-4 pl-6 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0">
-                        {person.username}
+                        {person?.username}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {person.email}
@@ -140,7 +141,7 @@ export default function UsersTable(data) {
                         {person.walletAddress}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person.experience}
+                        {person?.countryCode} {person?.phone}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(person.updatedAt).toLocaleDateString()}

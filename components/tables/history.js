@@ -147,6 +147,10 @@ export default function HistoryTable({ data }) {
                       >
                         Paypal Status
                       </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      ></th>
                     </tr>
                   </thead>
                   <tbody className="bg-white">
@@ -154,35 +158,59 @@ export default function HistoryTable({ data }) {
                       <tr key={tnx?.transactionHash}>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           <Tooltip label={tnx.contractAddress}>
-                            {truncate(tnx?.contractAddress, 12)}
+                            <a
+                              href={`https://polygonscan.com/address/${tnx?.contractAddress}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-semibold underline text-green"
+                            >
+                              {truncate(tnx?.contractAddress, 12)}
+                            </a>
                           </Tooltip>
-                        </td>
-                        <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                          <a
-                            href={`https://polygonscan.com/tx/${tnx?.transactionHash}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-semibold underline text-green"
-                          >
-                            {truncate(tnx?.transactionHash, 16)}
-                          </a>
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           <Tooltip label={tnx?.walletAddress}>
-                            {truncate(tnx?.walletAddress, 12)}
+                            <a
+                              href={`https://polygonscan.com/address/${tnx?.walletAddress}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-semibold underline text-green"
+                            >
+                              {truncate(tnx?.walletAddress, 12)}
+                            </a>
                           </Tooltip>
+                        </td>
+                        <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
+                          {tnx?.transactionHash ? (
+                            <a
+                              href={`https://polygonscan.com/tx/${tnx?.transactionHash}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-semibold underline text-green"
+                            >
+                              {truncate(tnx?.transactionHash, 16)}
+                            </a>
+                          ) : (
+                            <a
+                              href={`https://polygonscan.com/tx/${tnx?.transactionHash}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-semibold text-red-500"
+                            >
+                              Transaction Failed
+                            </a>
+                          )}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {tnx?.email}
                         </td>
-
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {new Date(tnx?.createdAt).toLocaleDateString()}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {tnx?.PaypalPayment ? (
                             <a
-                              href={`https://dashboard.Paypal.com/payments/${tnx?.PaypalPaymentId}`}
+                              href={`https://www.paypal.com/activity/payment/${tnx?.PaypalPaymentId}`}
                               target="_blank"
                               rel="noreferrer"
                               className="font-semibold underline text-green"
@@ -203,6 +231,11 @@ export default function HistoryTable({ data }) {
                           ) : (
                             "Success"
                           )}
+                        </td>
+                        <td>
+                          <button className="p-1 text-white bg-blue-500">
+                            Remint
+                          </button>
                         </td>
                       </tr>
                     ))}

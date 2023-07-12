@@ -22,7 +22,7 @@ import AuthService from "../api/auth.service";
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
   { name: "Users", href: "/users", icon: UsersIcon, current: false },
-  { name: "History", href: "/history", icon: ClockIcon, current: false },
+  { name: "Transactions", href: "/history", icon: ClockIcon, current: false },
   { name: "Winners", href: "/winners", icon: HandThumbUpIcon, current: false },
   { name: "Draws", href: "/draws", icon: ChartBarIcon, current: false },
   {
@@ -43,7 +43,7 @@ const navigation = [
     href: "/discounts",
     icon: ChatBubbleBottomCenterIcon,
     current: false,
-  }
+  },
 ];
 
 function classNames(...classes) {
