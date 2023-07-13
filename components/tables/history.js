@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import CsvDownloader from "react-csv-downloader";
 import { useSelector } from "react-redux";
 import { Spinner, Tooltip } from "@chakra-ui/react";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+
+const sdk = ThirdwebSDK.fromPrivateKey(
+  process.env.NEXT_PUBLIC_PRIVATE_KEY,
+  "polygon"
+);
 
 export default function HistoryTable({ data }) {
   const [search, setSearch] = useState("");
@@ -28,6 +34,70 @@ export default function HistoryTable({ data }) {
         )
     );
   }, [search, data]);
+
+  const remint = async (txn) => {
+    // mint NFT on success
+
+    const nftCollection = await sdk.getContract(draw.contractAddress, draw.abi);
+
+    await nftCollection
+      .call("mintForAddressDynamic", [quantity, supply, address, URLs], {
+        gasPrice: 500000000000, // override default gas price
+      })
+      .then((response) => {
+        console.log(details);
+        toast({
+          title: "Minting successful",
+          description: "Your NFTs have been minted",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+
+        transactionService.update(txn.id, {
+          transactionHash: response?.receipt?.transactionHash,
+          walletAddress: txn.walletAddress,
+          contractAddress: txn.contractAddress,
+          success: true,
+          PaypalPayment: true,
+          PaypalPaymentId: txn.PaypalPaymentId,
+          PaypalPaymentStatus: txn.PaypalPaymentStatus,
+          PaypalPaymentAmount: txn.PaypalPaymentAmount,
+          PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
+          email: txn.email,
+          quantity: txn.quantity,
+          supply: txn.supply,
+          URLs: txn.URLs,
+        });
+
+        location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast({
+          title: "Minting failed",
+          description: "Your NFTs could not be minted",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        transactionService.update(txn.id, {
+          transactionHash: "N/A",
+          walletAddress: txn.walletAddress,
+          contractAddress: txn.contractAddress,
+          success: false,
+          PaypalPayment: true,
+          PaypalPaymentId: txn.PaypalPaymentId,
+          PaypalPaymentStatus: txn.PaypalPaymentStatus,
+          PaypalPaymentAmount: txn.PaypalPaymentAmount,
+          PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
+          email: txn.email,
+          quantity: txn.quantity,
+          supply: txn.supply,
+          URLs: txn.URLs,
+        });
+      });
+  };
 
   return (
     <>
@@ -233,7 +303,10 @@ export default function HistoryTable({ data }) {
                           )}
                         </td>
                         <td>
-                          <button className="p-1 text-white bg-blue-500">
+                          <button
+                            onClick={() => remint(tnx)}
+                            className="p-1 text-white bg-blue-500"
+                          >
                             Remint
                           </button>
                         </td>
