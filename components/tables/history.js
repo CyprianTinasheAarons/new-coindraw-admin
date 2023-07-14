@@ -3,6 +3,8 @@ import CsvDownloader from "react-csv-downloader";
 import { useSelector } from "react-redux";
 import { Spinner, Tooltip } from "@chakra-ui/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { useToast } from "@chakra-ui/react";
+import transactionService from "../../api/transaction.service";
 
 const sdk = ThirdwebSDK.fromPrivateKey(
   process.env.NEXT_PUBLIC_PRIVATE_KEY,
@@ -10,6 +12,7 @@ const sdk = ThirdwebSDK.fromPrivateKey(
 );
 
 export default function HistoryTable({ data }) {
+  const toast = useToast();
   const [search, setSearch] = useState("");
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const isLoading = useSelector((state) => state.transactions.isLoading);
@@ -38,12 +41,16 @@ export default function HistoryTable({ data }) {
   const remint = async (txn) => {
     // mint NFT on success
 
-    const nftCollection = await sdk.getContract(draw.contractAddress, draw.abi);
+    const nftCollection = await sdk.getContract(txn.contractAddress, txn.abi);
 
     await nftCollection
-      .call("mintForAddressDynamic", [quantity, supply, address, URLs], {
-        gasPrice: 500000000000, // override default gas price
-      })
+      .call(
+        "mintForAddressDynamic",
+        [txn.quantity, txn.supply, txn.walletAddress, txn.URLs],
+        {
+          gasPrice: 500000000000, // override default gas price
+        }
+      )
       .then((response) => {
         console.log(details);
         toast({
