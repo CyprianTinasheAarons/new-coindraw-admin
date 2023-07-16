@@ -14,6 +14,7 @@ const sdk = ThirdwebSDK.fromPrivateKey(
 export default function HistoryTable({ data }) {
   const toast = useToast();
   const [search, setSearch] = useState("");
+  const [reminting, setReminting] = useState(false);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const isLoading = useSelector((state) => state.transactions.isLoading);
 
@@ -39,6 +40,7 @@ export default function HistoryTable({ data }) {
   }, [search, data]);
 
   const remint = async (txn) => {
+    setReminting(true);
     // mint NFT on success
 
     const nftCollection = await sdk.getContract(txn.contractAddress, txn.abi);
@@ -52,7 +54,7 @@ export default function HistoryTable({ data }) {
         }
       )
       .then((response) => {
-        console.log(details);
+        setReminting(false);
         toast({
           title: "Minting successful",
           description: "Your NFTs have been minted",
@@ -80,7 +82,7 @@ export default function HistoryTable({ data }) {
         location.reload();
       })
       .catch((error) => {
-        console.log(error);
+        setReminting(false);
         toast({
           title: "Minting failed",
           description: "Your NFTs could not be minted",
@@ -314,7 +316,7 @@ export default function HistoryTable({ data }) {
                             onClick={() => remint(tnx)}
                             className="p-1 text-white bg-blue-500"
                           >
-                            Remint
+                            {reminting ? "Reminting..." : "Remint"}
                           </button>
                         </td>
                       </tr>

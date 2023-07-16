@@ -18,10 +18,10 @@ export default function EditImage({ url }) {
     setIsLoading(true);
     const data = new FormData();
     data.append("file", bannerImage);
-    data.append("upload_preset", "coindraw");
-    data.append("cloud_name", "dqzpz4w3l");
+    data.append("upload_preset", "strgdopr");
+    data.append("cloud_name", "coindraw");
 
-    await fetch("https://api.cloudinary.com/v1_1/dqzpz4w3l/image/upload", {
+    await fetch("https://api.cloudinary.com/v1_1/coindraw/image/upload", {
       method: "post",
       body: data,
     })
