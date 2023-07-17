@@ -83,7 +83,6 @@ export default function DrawViewer() {
       });
   };
 
-
   useEffect(() => {
     if (id) {
       drawService.get(id).then((res) => {
@@ -263,9 +262,6 @@ export default function DrawViewer() {
                   </div>
                 </div>
 
-      
-               
-
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="closeDate"
@@ -366,12 +362,13 @@ export default function DrawViewer() {
                     />
                   </div>
                 </div>
+
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="mintPrice"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
-                    Mint Price
+                    Matic Price
                   </label>
                   <div className="mt-2">
                     <input
@@ -385,6 +382,71 @@ export default function DrawViewer() {
                       autoComplete="mintPrice"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 sm:col-span-3">
+                  <div>
+                    <label
+                      htmlFor="mintPrice"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      USD Price
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="usdPrice"
+                        id="usdPrice"
+                        value={draw?.usdPrice}
+                        onChange={(e) =>
+                          setDraw({ ...draw, usdPrice: e.target.value })
+                        }
+                        autoComplete="usdPrice"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+                  <div className="mx-1">
+                    <label
+                      htmlFor="eurPrice"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      EUR Price
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="eurPrice"
+                        id="eurPrice"
+                        value={draw?.eurPrice}
+                        onChange={(e) =>
+                          setDraw({ ...draw, eurPrice: e.target.value })
+                        }
+                        autoComplete="eurPrice"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="gbpPrice"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      GBP Price
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="gbpPrice"
+                        id="gbpPrice"
+                        value={draw?.gbpPrice}
+                        onChange={(e) =>
+                          setDraw({ ...draw, gbpPrice: e.target.value })
+                        }
+                        autoComplete="gbpPrice"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
                   </div>
                 </div>
 

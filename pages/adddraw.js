@@ -24,6 +24,9 @@ export default function DrawCreate() {
       contractAddress: "",
       abi: "",
       mintPrice: "",
+      usdPrice: "",
+      eurPrice: "",
+      gbpPrice: "",
       question: "",
       answerA: "",
       answerB: "",
@@ -345,7 +348,7 @@ export default function DrawCreate() {
                     htmlFor="mintPrice"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
-                    Mint Price
+                    Matic Price
                   </label>
                   <div className="mt-2">
                     <input
@@ -359,6 +362,71 @@ export default function DrawCreate() {
                       autoComplete="mintPrice"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 sm:col-span-3">
+                  <div>
+                    <label
+                      htmlFor="mintPrice"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      USD Price
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="mintPrice"
+                        id="mintPrice"
+                        value={draw?.usdPrice}
+                        onChange={(e) =>
+                          setDraw({ ...draw, usdPrice: e.target.value })
+                        }
+                        autoComplete="mintPrice"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+                  <div className="mx-1">
+                    <label
+                      htmlFor="mintPrice"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      EUR Price
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="mintPrice"
+                        id="mintPrice"
+                        value={draw?.eurPrice}
+                        onChange={(e) =>
+                          setDraw({ ...draw, eurPrice: e.target.value })
+                        }
+                        autoComplete="mintPrice"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
+                  </div>
+                  <div className="mx-1">
+                    <label
+                      htmlFor="mintPrice"
+                      className="block text-sm font-medium leading-6 text-gray-900"
+                    >
+                      GBP Price
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        name="mintPrice"
+                        id="mintPrice"
+                        value={draw?.gbpPrice}
+                        onChange={(e) =>
+                          setDraw({ ...draw, gbpPrice: e.target.value })
+                        }
+                        autoComplete="mintPrice"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      />
+                    </div>
                   </div>
                 </div>
 
