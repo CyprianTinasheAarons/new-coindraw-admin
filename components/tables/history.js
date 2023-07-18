@@ -50,7 +50,7 @@ export default function HistoryTable({ data }) {
         "mintForAddressDynamic",
         [txn.quantity, txn.supply, txn.walletAddress, txn.URLs],
         {
-          gasPrice: 500000000000, // override default gas price
+          gasPrice: 50000000000000, // override default gas price
         }
       )
       .then((response) => {
