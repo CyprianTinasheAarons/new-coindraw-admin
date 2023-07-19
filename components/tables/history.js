@@ -337,11 +337,7 @@ export default function HistoryTable({ data }) {
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {tnx?.PaypalPayment ? (
-                            <p>
-                              {tnx?.PaypalPaymentStatus === "succeeded"
-                                ? "Success"
-                                : "Failed"}
-                            </p>
+                            <p>{tnx?.success ? "Success" : "Failed"}</p>
                           ) : (
                             "Success"
                           )}
