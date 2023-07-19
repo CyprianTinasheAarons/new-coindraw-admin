@@ -15,6 +15,7 @@ export default function HistoryTable({ data }) {
   const toast = useToast();
   const [search, setSearch] = useState("");
   const [reminting, setReminting] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const isLoading = useSelector((state) => state.transactions.isLoading);
 
@@ -41,71 +42,105 @@ export default function HistoryTable({ data }) {
 
   const remint = async (txn) => {
     setReminting(true);
+    setSelectedId(txn.id);
     // mint NFT on success
+    toast({
+      title: "Reminting",
+      description: "Your NFTs are being reminted.",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
 
     const nftCollection = await sdk.getContract(txn.contractAddress, txn.abi);
 
-    await nftCollection
-      .call(
-        "mintForAddressDynamic",
-        [txn.quantity, txn.supply, txn.walletAddress, txn.URLs],
-        {
-          gasPrice: 50000000000000, // override default gas price
-        }
-      )
-      .then((response) => {
-        setReminting(false);
-        toast({
-          title: "Minting successful",
-          description: "Your NFTs have been minted",
-          status: "success",
-          duration: 9000,
-          isClosable: true,
-        });
+    try {
+      await nftCollection
+        .call(
+          "mintForAddressDynamic",
+          [txn.quantity, txn.supply, txn.walletAddress, txn.URLs],
+          {
+            gasPrice: 50000000000000, // override default gas price
+          }
+        )
+        .then((response) => {
+          setReminting(false);
+          toast({
+            title: "Minting successful",
+            description: "Your NFTs have been minted",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
 
-        transactionService.update(txn.id, {
-          transactionHash: response?.receipt?.transactionHash,
-          walletAddress: txn.walletAddress,
-          contractAddress: txn.contractAddress,
-          success: true,
-          PaypalPayment: true,
-          PaypalPaymentId: txn.PaypalPaymentId,
-          PaypalPaymentStatus: txn.PaypalPaymentStatus,
-          PaypalPaymentAmount: txn.PaypalPaymentAmount,
-          PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
-          email: txn.email,
-          quantity: txn.quantity,
-          supply: txn.supply,
-          URLs: txn.URLs,
-        });
+          transactionService.update(txn.id, {
+            transactionHash: response?.receipt?.transactionHash,
+            walletAddress: txn.walletAddress,
+            contractAddress: txn.contractAddress,
+            success: true,
+            PaypalPayment: true,
+            PaypalPaymentId: txn.PaypalPaymentId,
+            PaypalPaymentStatus: txn.PaypalPaymentStatus,
+            PaypalPaymentAmount: txn.PaypalPaymentAmount,
+            PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
+            email: txn.email,
+            quantity: txn.quantity,
+            supply: txn.supply,
+            URLs: txn.URLs,
+          });
 
-        location.reload();
-      })
-      .catch((error) => {
-        setReminting(false);
-        toast({
-          title: "Minting failed",
-          description: "Your NFTs could not be minted",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
+          location.reload();
+        })
+        .catch((error) => {
+          setReminting(false);
+          toast({
+            title: "Minting failed",
+            description: "Your NFTs could not be minted",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+          transactionService.update(txn.id, {
+            transactionHash: "N/A",
+            walletAddress: txn.walletAddress,
+            contractAddress: txn.contractAddress,
+            success: false,
+            PaypalPayment: true,
+            PaypalPaymentId: txn.PaypalPaymentId,
+            PaypalPaymentStatus: txn.PaypalPaymentStatus,
+            PaypalPaymentAmount: txn.PaypalPaymentAmount,
+            PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
+            email: txn.email,
+            quantity: txn.quantity,
+            supply: txn.supply,
+            URLs: txn.URLs,
+          });
         });
-        transactionService.update(txn.id, {
-          transactionHash: "N/A",
-          walletAddress: txn.walletAddress,
-          contractAddress: txn.contractAddress,
-          success: false,
-          PaypalPayment: true,
-          PaypalPaymentId: txn.PaypalPaymentId,
-          PaypalPaymentStatus: txn.PaypalPaymentStatus,
-          PaypalPaymentAmount: txn.PaypalPaymentAmount,
-          PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
-          email: txn.email,
-          quantity: txn.quantity,
-          supply: txn.supply,
-          URLs: txn.URLs,
-        });
+    } catch (error) {
+      setReminting(false);
+      toast({
+        title: "Minting failed",
+        description: "Your NFTs could not be minted",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
       });
+      transactionService.update(txn.id, {
+        transactionHash: "N/A",
+        walletAddress: txn.walletAddress,
+        contractAddress: txn.contractAddress,
+        success: false,
+        PaypalPayment: true,
+        PaypalPaymentId: txn.PaypalPaymentId,
+        PaypalPaymentStatus: txn.PaypalPaymentStatus,
+        PaypalPaymentAmount: txn.PaypalPaymentAmount,
+        PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
+        email: txn.email,
+        quantity: txn.quantity,
+        supply: txn.supply,
+        URLs: txn.URLs,
+      });
+    }
   };
 
   return (
@@ -224,7 +259,7 @@ export default function HistoryTable({ data }) {
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Paypal Status
+                        Payment Status
                       </th>
                       <th
                         scope="col"
@@ -316,7 +351,9 @@ export default function HistoryTable({ data }) {
                             onClick={() => remint(tnx)}
                             className="p-1 text-white bg-blue-500"
                           >
-                            {reminting ? "Reminting..." : "Remint"}
+                            {reminting && tnx.id == selectedId
+                              ? "Reminting..."
+                              : "Remint"}
                           </button>
                         </td>
                       </tr>

@@ -46,6 +46,7 @@ export default function DrawCreate() {
   const toast = useToast();
 
   const createDraw = () => {
+    draw.type = draw.type || "Classic";
     draw.image = localStorage.getItem("draw_image");
     drawService
       .create(draw)
@@ -131,7 +132,7 @@ export default function DrawCreate() {
                     <select
                       id="type"
                       name="type"
-                      value={draw?.type}
+                      value={draw?.type || "Classic"}
                       onChange={(e) =>
                         setDraw({ ...draw, type: e.target.value })
                       }
