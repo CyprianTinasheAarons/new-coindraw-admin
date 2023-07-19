@@ -5,6 +5,24 @@ import { Spinner, Tooltip } from "@chakra-ui/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { useToast } from "@chakra-ui/react";
 import transactionService from "../../api/transaction.service";
+import { create as ipfsHttpClient } from "ipfs-http-client";
+
+// Get project credentials from environment variables
+const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
+const projectSecret = process.env.NEXT_PUBLIC_API_KEY_SECRET;
+const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString(
+  "base64"
+)}`;
+
+// Initialize the IPFS client
+const client = ipfsHttpClient({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization: auth,
+  },
+});
 
 const sdk = ThirdwebSDK.fromPrivateKey(
   process.env.NEXT_PUBLIC_PRIVATE_KEY,
@@ -54,13 +72,48 @@ export default function HistoryTable({ data }) {
 
     const nftCollection = await sdk.getContract(txn.contractAddress, txn.abi);
 
+    const supply = await nftCollection.call("totalSupply");
+
+    let URLs = [];
+
+    let tokenId =
+      parseInt(supply) === 0 ? parseInt(supply) + 1 : parseInt(supply) + 1;
+
+    for (let i = 0; i < txn.quantity; i++) {
+      const metadata = {
+        description: "The Luck of the Draw",
+        animation_url: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
+          tokenId + i
+        }.gif`,
+        image: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
+          tokenId + i
+        }.gif`,
+        name: "Will it be you?",
+        attributes: [
+          {
+            trait_type: "Answer",
+            value: txn.answer,
+          },
+        ],
+        compiler: "Coindraw Draw Engine",
+      };
+      const metadataString = JSON.stringify(metadata, null, 2);
+      const metadataBuffer = new Buffer.from(metadataString);
+      const subdomain = "https://coindraw.infura-ipfs.io";
+      const added = await client.add({ content: metadataBuffer });
+      const URL = `${subdomain}/ipfs/${added.path}`;
+      URLs.push(URL);
+    }
+
+    console.log([txn.quantity, parseInt(supply), txn.walletAddress, URLs]);
+
     try {
       await nftCollection
         .call(
           "mintForAddressDynamic",
-          [txn.quantity, txn.supply, txn.walletAddress, txn.URLs],
+          [txn.quantity, parseInt(supply), txn.walletAddress, URLs],
           {
-            gasPrice: 50000000000000, // override default gas price
+            gasPrice: 500000000000, // override default gas price
           }
         )
         .then((response) => {
