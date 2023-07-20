@@ -58,11 +58,13 @@ export default function HistoryTable({ data }) {
     );
   }, [search, data]);
 
+  const IPFS_SUBDOMAIN = "https://coindraw.infura-ipfs.io";
+
   const remint = async (txn) => {
     setReminting(true);
     setSelectedId(txn.id);
     console.log(txn.answer);
-    // mint NFT on success
+
     toast({
       title: "Reminting",
       description: "Your NFTs are being reminted.",
@@ -72,55 +74,67 @@ export default function HistoryTable({ data }) {
     });
 
     const nftCollection = await sdk.getContract(txn.contractAddress, txn.abi);
-
     const supply = await nftCollection.call("totalSupply");
-
     let URLs = [];
 
-    let tokenId =
-      parseInt(supply) === 0 ? parseInt(supply) + 1 : parseInt(supply) + 1;
+    let tokenId = parseInt(supply) + 1;
 
-    for (let i = 0; i <= txn.quantity; i++) {
-      const metadata = {
-        description: "The Luck of the Draw",
-        animation_url: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
-          tokenId + i
-        }.gif`,
-        image: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
-          tokenId + i
-        }.gif`,
-        name: "Will it be you?",
-        attributes: [
-          {
-            trait_type: "Answer",
-            value: txn.answer,
-          },
-        ],
-        compiler: "Coindraw Draw Engine",
-      };
-      const metadataString = JSON.stringify(metadata, null, 2);
-      const metadataBuffer = new Buffer.from(metadataString);
-      const subdomain = "https://coindraw.infura-ipfs.io";
-      const added = await client.add({ content: metadataBuffer });
-      const URL = `${subdomain}/ipfs/${added.path}`;
-      URLs.push(URL);
-    }
+    const metadataPromises = Array.from(
+      { length: txn.quantity },
+      async (_, i) => {
+        const metadata = {
+          description: "The Luck of the Draw",
+          animation_url: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
+            tokenId + i
+          }.gif`,
+          image: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
+            tokenId + i
+          }.gif`,
+          name: "Will it be you?",
+          attributes: [
+            {
+              trait_type: "Answer",
+              value: txn.answer,
+            },
+          ],
+          compiler: "Coindraw Draw Engine",
+        };
+        const metadataString = JSON.stringify(metadata, null, 2);
+        const metadataBuffer = new Buffer.from(metadataString);
+        const added = await client.add({ content: metadataBuffer });
+        return `${IPFS_SUBDOMAIN}/ipfs/${added.path}`;
+      }
+    );
 
-    const updateTransaction = (txn, success, transactionHash = "N/A") => {
-      transactionService.update(txn.id, {
+    URLs = await Promise.all(metadataPromises);
+
+    const {
+      id,
+      walletAddress,
+      contractAddress,
+      PaypalPaymentId,
+      PaypalPaymentStatus,
+      PaypalPaymentAmount,
+      PaypalPaymentCurrency,
+      email,
+      quantity,
+    } = txn;
+
+    const updateTransaction = async (success, transactionHash = "N/A") => {
+      transactionService.update(id, {
         transactionHash,
-        walletAddress: txn.walletAddress,
-        contractAddress: txn.contractAddress,
+        walletAddress,
+        contractAddress,
         success,
         PaypalPayment: true,
-        PaypalPaymentId: txn.PaypalPaymentId,
-        PaypalPaymentStatus: txn.PaypalPaymentStatus,
-        PaypalPaymentAmount: txn.PaypalPaymentAmount,
-        PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
-        email: txn.email,
-        quantity: txn.quantity,
-        supply: txn.supply,
-        URLs: txn.URLs,
+        PaypalPaymentId,
+        PaypalPaymentStatus,
+        PaypalPaymentAmount,
+        PaypalPaymentCurrency,
+        email,
+        quantity,
+        supply,
+        URLs,
       });
     };
 
@@ -134,10 +148,12 @@ export default function HistoryTable({ data }) {
       });
     };
 
+    console.log([quantity, parseInt(supply), walletAddress, URLs]);
+
     try {
       const response = await nftCollection.call(
         "mintForAddressDynamic",
-        [txn.quantity, parseInt(supply), txn.walletAddress, URLs],
+        [quantity, tokenId, walletAddress, URLs],
         { gasPrice: 500000000000 }
       );
 
@@ -147,12 +163,13 @@ export default function HistoryTable({ data }) {
         "Your NFTs have been minted",
         "success"
       );
-      updateTransaction(txn, true, response?.receipt?.transactionHash);
-      location.reload();
+      updateTransaction(true, response?.receipt?.transactionHash);
+      // location.reload();
     } catch (error) {
+      console.error(error);
       setReminting(false);
       handleToast("Minting failed", "Your NFTs could not be minted", "error");
-      updateTransaction(txn, false);
+      updateTransaction(false);
     }
   };
 
