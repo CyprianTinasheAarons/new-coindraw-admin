@@ -63,7 +63,6 @@ export default function HistoryTable({ data }) {
   const remint = async (txn) => {
     setReminting(true);
     setSelectedId(txn.id);
-    console.log(txn.answer);
 
     toast({
       title: "Reminting",
@@ -118,25 +117,9 @@ export default function HistoryTable({ data }) {
       PaypalPaymentCurrency,
       email,
       quantity,
+      draw,
+      answer,
     } = txn;
-
-    const updateTransaction = async (success, transactionHash = "N/A") => {
-      transactionService.update(id, {
-        transactionHash,
-        walletAddress,
-        contractAddress,
-        success,
-        PaypalPayment: true,
-        PaypalPaymentId,
-        PaypalPaymentStatus,
-        PaypalPaymentAmount,
-        PaypalPaymentCurrency,
-        email,
-        quantity,
-        supply,
-        URLs,
-      });
-    };
 
     const handleToast = (title, description, status) => {
       toast({
@@ -147,8 +130,6 @@ export default function HistoryTable({ data }) {
         isClosable: true,
       });
     };
-
-    console.log([quantity, parseInt(supply), walletAddress, URLs]);
 
     try {
       const response = await nftCollection.call(
@@ -163,13 +144,26 @@ export default function HistoryTable({ data }) {
         "Your NFTs have been minted",
         "success"
       );
-      updateTransaction(true, response?.receipt?.transactionHash);
-      // location.reload();
+
+      await transactionService.update(id, {
+        transactionHash: response?.receipt?.transactionHash,
+        contractAddress: contractAddress,
+        success: true,
+        walletAddress: walletAddress,
+        PaypalPaymentId: PaypalPaymentId,
+        PaypalPaymentStatus: PaypalPaymentStatus,
+        PaypalPaymentAmount: PaypalPaymentAmount,
+        PaypalPaymentCurrency: PaypalPaymentCurrency,
+        email: email,
+        quantity: quantity,
+        abi: draw?.abi,
+        answer: answer,
+      });
+      location.reload();
     } catch (error) {
       console.error(error);
       setReminting(false);
       handleToast("Minting failed", "Your NFTs could not be minted", "error");
-      updateTransaction(false);
     }
   };
 
@@ -299,7 +293,7 @@ export default function HistoryTable({ data }) {
                   </thead>
                   <tbody className="bg-white">
                     {filteredTransactions?.map((tnx) => (
-                      <tr key={tnx?.transactionHash}>
+                      <tr key={tnx?.id}>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           <Tooltip label={tnx.contractAddress}>
                             <a
