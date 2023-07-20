@@ -61,6 +61,7 @@ export default function HistoryTable({ data }) {
   const remint = async (txn) => {
     setReminting(true);
     setSelectedId(txn.id);
+    console.log(txn.answer);
     // mint NFT on success
     toast({
       title: "Reminting",
@@ -79,7 +80,7 @@ export default function HistoryTable({ data }) {
     let tokenId =
       parseInt(supply) === 0 ? parseInt(supply) + 1 : parseInt(supply) + 1;
 
-    for (let i = 0; i < txn.quantity; i++) {
+    for (let i = 0; i <= txn.quantity; i++) {
       const metadata = {
         description: "The Luck of the Draw",
         animation_url: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
@@ -105,84 +106,12 @@ export default function HistoryTable({ data }) {
       URLs.push(URL);
     }
 
-    console.log([txn.quantity, parseInt(supply), txn.walletAddress, URLs]);
-
-    try {
-      await nftCollection
-        .call(
-          "mintForAddressDynamic",
-          [txn.quantity, parseInt(supply), txn.walletAddress, URLs],
-          {
-            gasPrice: 500000000000, // override default gas price
-          }
-        )
-        .then((response) => {
-          setReminting(false);
-          toast({
-            title: "Minting successful",
-            description: "Your NFTs have been minted",
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          });
-
-          transactionService.update(txn.id, {
-            transactionHash: response?.receipt?.transactionHash,
-            walletAddress: txn.walletAddress,
-            contractAddress: txn.contractAddress,
-            success: true,
-            PaypalPayment: true,
-            PaypalPaymentId: txn.PaypalPaymentId,
-            PaypalPaymentStatus: txn.PaypalPaymentStatus,
-            PaypalPaymentAmount: txn.PaypalPaymentAmount,
-            PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
-            email: txn.email,
-            quantity: txn.quantity,
-            supply: txn.supply,
-            URLs: txn.URLs,
-          });
-
-          location.reload();
-        })
-        .catch((error) => {
-          setReminting(false);
-          toast({
-            title: "Minting failed",
-            description: "Your NFTs could not be minted",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-          });
-          transactionService.update(txn.id, {
-            transactionHash: "N/A",
-            walletAddress: txn.walletAddress,
-            contractAddress: txn.contractAddress,
-            success: false,
-            PaypalPayment: true,
-            PaypalPaymentId: txn.PaypalPaymentId,
-            PaypalPaymentStatus: txn.PaypalPaymentStatus,
-            PaypalPaymentAmount: txn.PaypalPaymentAmount,
-            PaypalPaymentCurrency: txn.PaypalPaymentCurrency,
-            email: txn.email,
-            quantity: txn.quantity,
-            supply: txn.supply,
-            URLs: txn.URLs,
-          });
-        });
-    } catch (error) {
-      setReminting(false);
-      toast({
-        title: "Minting failed",
-        description: "Your NFTs could not be minted",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
+    const updateTransaction = (txn, success, transactionHash = "N/A") => {
       transactionService.update(txn.id, {
-        transactionHash: "N/A",
+        transactionHash,
         walletAddress: txn.walletAddress,
         contractAddress: txn.contractAddress,
-        success: false,
+        success,
         PaypalPayment: true,
         PaypalPaymentId: txn.PaypalPaymentId,
         PaypalPaymentStatus: txn.PaypalPaymentStatus,
@@ -193,6 +122,37 @@ export default function HistoryTable({ data }) {
         supply: txn.supply,
         URLs: txn.URLs,
       });
+    };
+
+    const handleToast = (title, description, status) => {
+      toast({
+        title,
+        description,
+        status,
+        duration: 9000,
+        isClosable: true,
+      });
+    };
+
+    try {
+      const response = await nftCollection.call(
+        "mintForAddressDynamic",
+        [txn.quantity, parseInt(supply), txn.walletAddress, URLs],
+        { gasPrice: 500000000000 }
+      );
+
+      setReminting(false);
+      handleToast(
+        "Minting successful",
+        "Your NFTs have been minted",
+        "success"
+      );
+      updateTransaction(txn, true, response?.receipt?.transactionHash);
+      location.reload();
+    } catch (error) {
+      setReminting(false);
+      handleToast("Minting failed", "Your NFTs could not be minted", "error");
+      updateTransaction(txn, false);
     }
   };
 
@@ -396,14 +356,18 @@ export default function HistoryTable({ data }) {
                           )}
                         </td>
                         <td>
-                          <button
-                            onClick={() => remint(tnx)}
-                            className="p-1 text-white bg-blue-500"
-                          >
-                            {reminting && tnx.id == selectedId
-                              ? "Reminting..."
-                              : "Remint"}
-                          </button>
+                          {!tnx.success ? (
+                            <>
+                              <button
+                                onClick={() => remint(tnx)}
+                                className="p-1 px-2 text-white bg-blue-500 rounded-md"
+                              >
+                                {reminting && tnx.id == selectedId
+                                  ? "Reminting..."
+                                  : `Remint (${tnx?.quantity})`}
+                              </button>
+                            </>
+                          ) : null}
                         </td>
                       </tr>
                     ))}
