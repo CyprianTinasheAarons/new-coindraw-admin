@@ -181,6 +181,12 @@ export default function DrawsTable() {
                       scope="col"
                       className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
                     >
+                      ID
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                    >
                       Title
                     </th>
                     <th
@@ -260,6 +266,9 @@ export default function DrawsTable() {
                                       d="M9 5l7 7-7 7"
                                     />
                                   </svg>
+                                </td>
+                                <td className="py-4 pl-6 pr-3 text-sm font-medium text-green whitespace-nowrap sm:pl-0">
+                                  {draw.id}
                                 </td>
                                 <td className="py-4 pl-6 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0">
                                   {draw.title}
