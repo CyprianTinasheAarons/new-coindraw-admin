@@ -87,7 +87,7 @@ export default function DrawsTable() {
           separator=";"
           wrapColumnChar="'"
         >
-          <button className="flex items-center px-4 py-2 text-white align-middle bg-blue-500 rounded-md">
+          <button className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             Download Report{" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -151,16 +151,26 @@ export default function DrawsTable() {
           </div>
         </form>
       </div>
+      <div className="my-2 sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-base font-semibold leading-6 text-gray-900">
+            Draws
+          </h1>
+          <p className="mt-2 text-sm text-gray-700">
+            This is a comprehensive list of all draws.
+          </p>
+        </div>
+      </div>
       <div className="px-6 lg:px-8">
         <div className="flow-root mt-8">
           <div className="-mx-6 -my-2 overflow-x-auto lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div className="inline-block min-w-full py-2 align-middle ">
               <table className="min-w-full divide-y divide-gray-300">
-                <thead>
+                <thead className="bg-gray-50">
                   <tr>
                     <th
                       scope="col"
-                      className="py-3.5 pl-6 pr-3 text-left text-sm font-bold text-gray-900 sm:pl-0"
+                      className="py-3.5 pl-6 pr-3 text-left text-sm font-bold text-gray-900 sm:pl-3"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

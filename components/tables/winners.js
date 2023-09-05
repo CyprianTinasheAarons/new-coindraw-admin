@@ -56,7 +56,7 @@ export default function WinnersTable({ data }) {
           separator=";"
           wrapColumnChar="'"
         >
-          <button className="flex items-center px-4 py-2 text-white align-middle bg-blue-500 rounded-md">
+          <button className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             Download Report{" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -98,16 +98,16 @@ export default function WinnersTable({ data }) {
           </div>
         </div>
       </div>
-      <div className="px-6 lg:px-8">
+      <div>
         <div className="flow-root mt-8">
           <div className="-mx-6 -my-2 overflow-x-auto lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <table className="min-w-full divide-y divide-gray-300">
-                <thead>
+                <thead className="bg-gray-50">
                   <tr>
                     <th
                       scope="col"
-                      className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
                     >
                       Username
                     </th>
@@ -141,7 +141,7 @@ export default function WinnersTable({ data }) {
                 <tbody className="divide-y divide-gray-200">
                   {filteredData.map((winner) => (
                     <tr key={winner.email}>
-                      <td className="py-4 pl-6 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0">
+                      <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         {winner.name}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">

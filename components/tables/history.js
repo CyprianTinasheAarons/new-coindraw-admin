@@ -177,7 +177,7 @@ export default function HistoryTable({ data }) {
           separator=";"
           wrapColumnChar="'"
         >
-          <button className="flex items-center px-4 py-2 text-white align-middle bg-blue-500 rounded-md">
+          <button className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             Download Report{" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -240,7 +240,7 @@ export default function HistoryTable({ data }) {
                 </div>
               ) : (
                 <table className="min-w-full divide-y divide-gray-300">
-                  <thead>
+                  <thead className="bg-gray-50">
                     <tr>
                       <th
                         scope="col"

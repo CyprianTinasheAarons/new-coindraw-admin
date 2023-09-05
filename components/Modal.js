@@ -14,9 +14,12 @@ function ModalComponent(props) {
 
   return (
     <>
-      <Button type="primary" className="mb-5 bg-green" onClick={showModal}>
+      <button
+        className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+        onClick={showModal}
+      >
         {props.btnTitle}
-      </Button>
+      </button>
       <Modal
         title={props.modalTitle}
         open={isModalOpen}

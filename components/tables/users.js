@@ -37,7 +37,7 @@ export default function UsersTable(data) {
           separator=";"
           wrapColumnChar="'"
         >
-          <button className="flex items-center px-4 py-2 text-white align-middle bg-blue-500 rounded-md">
+          <button className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             Download Report{" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -56,6 +56,7 @@ export default function UsersTable(data) {
           </button>
         </CsvDownloader>
       </div>
+
       <div>
         <label
           htmlFor="search"
@@ -79,17 +80,27 @@ export default function UsersTable(data) {
           </div>
         </div>
       </div>
+      <div className="my-2 sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-base font-semibold leading-6 text-gray-900">
+            Users
+          </h1>
+          <p className="mt-2 text-sm text-gray-700">
+            This is a comprehensive list of all registered users in the system.
+          </p>
+        </div>
+      </div>
       <div className="px-6 lg:px-8">
         <div className="sm:flex sm:items-center"></div>
         <div className="flow-root mt-8">
           <div className="-mx-6 -my-2 overflow-x-auto lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <div className="inline-block min-w-full py-2 align-middle ">
               <table className="min-w-full divide-y divide-gray-300">
-                <thead>
+                <thead className="bg-gray-50">
                   <tr>
                     <th
                       scope="col"
-                      className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
                     >
                       Username
                     </th>
@@ -111,6 +122,12 @@ export default function UsersTable(data) {
                     >
                       Phone
                     </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Promotions
+                    </th>
 
                     <th
                       scope="col"
@@ -128,10 +145,10 @@ export default function UsersTable(data) {
                     ></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="bg-white">
                   {filteredData.map((person) => (
                     <tr key={person.email}>
-                      <td className="py-4 pl-6 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0">
+                      <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         {person?.username}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
@@ -142,6 +159,9 @@ export default function UsersTable(data) {
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {person?.countryCode} {person?.phone}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {person?.promotionalEmails ? "Yes" : "No"}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(person.updatedAt).toLocaleDateString()}

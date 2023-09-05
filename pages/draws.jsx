@@ -14,7 +14,7 @@ function Draws() {
         <Layout title="Draws">
           <a
             href="/adddraw"
-            className="p-2 px-4 my-2 font-semibold text-center text-white rounded-md bg-green"
+            className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
             Add Draw
           </a>

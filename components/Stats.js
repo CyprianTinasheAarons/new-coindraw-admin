@@ -1,4 +1,3 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/20/solid";
 import {
   ChartBarIcon,
   ClockIcon,
@@ -11,10 +10,6 @@ import transactionService from "../api/transaction.service";
 import UserService from "../api/user.service";
 import WinnerService from "../api/winner.service";
 import { useEffect, useState } from "react";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function Stats() {
   const [totalUsers, setTotalUsers] = useState(0);
@@ -35,7 +30,7 @@ export default function Stats() {
     transactionService.getAll().then((response) => {
       setTotalTransactions(response.data.length);
     });
-  }, []);
+  }, [totalUsers, totalTransactions, totalWinners]);
 
   const stats = [
     {
