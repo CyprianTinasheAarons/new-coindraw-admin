@@ -2,7 +2,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect } from "react";
 import winnerService from "../../api/winner.service";
 
-
 export default function ViewWinner({ id }) {
   let [isOpen, setIsOpen] = useState(false);
   let [winner, setWinner] = useState([]);
@@ -28,9 +27,9 @@ export default function ViewWinner({ id }) {
         <button
           type="button"
           onClick={openModal}
-          className="flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-green hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className="flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
-          View Details
+          View Winner
         </button>
       </div>
 

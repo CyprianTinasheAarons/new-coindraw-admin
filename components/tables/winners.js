@@ -3,11 +3,33 @@ import { useState, useEffect } from "react";
 import CsvDownloader from "react-csv-downloader";
 import { useToast } from "@chakra-ui/react";
 import WinnerService from "../../api/winner.service";
+import drawService from "../../api/draw.service";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 export default function WinnersTable({ data }) {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [draws, setDraws] = useState([]);
+  const [winner, setWinner] = useState({
+    id: "",
+    name: "",
+    email: "",
+    address: "",
+    price: "",
+    date: "",
+    draw: "",
+  });
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const deleteWinner = async (id) => {
     try {
@@ -34,6 +56,31 @@ export default function WinnersTable({ data }) {
     }
   };
 
+  const updateWinner = async (id) => {
+    try {
+      await WinnerService.update(id, winner)
+        .then(() => {
+          toast({
+            title: "Winner updated successfully",
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+          });
+          location.reload();
+        })
+        .catch((err) => {
+          toast({
+            title: "Error updating winner",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     setFilteredData(
       data.filter((w) => {
@@ -46,8 +93,96 @@ export default function WinnersTable({ data }) {
     );
   }, [search, data]);
 
+  useEffect(() => {
+    drawService.getAll().then((res) => {
+      setDraws(res.data);
+    });
+  }, []);
+
   return (
     <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Winner</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={winner.name}
+                  onChange={(e) =>
+                    setWinner({ ...winner, name: e.target.value })
+                  }
+                  className="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  value={winner.email}
+                  onChange={(e) =>
+                    setWinner({ ...winner, email: e.target.value })
+                  }
+                  className="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  value={winner.address}
+                  onChange={(e) =>
+                    setWinner({ ...winner, address: e.target.value })
+                  }
+                  className="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Draw
+                </label>
+
+                {/* select with opitons from draws */}
+                <select
+                  value={winner.draw}
+                  onChange={(e) => {
+                    setWinner({ ...winner, draw: e.target.value });
+                  }}
+                  className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
+                >
+                  {draws.map((draw) => (
+                    <option key={draw._id} value={draw.title}>
+                      {draw.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button onClick={onClose} className="mr-3 text-indigo-500">
+              Cancel
+            </button>
+            <button
+              onClick={() => updateWinner(winner.id)}
+              className="px-5 py-2 text-white bg-indigo-500 rounded"
+            >
+              Update
+            </button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <div className="my-2 ">
         <CsvDownloader
           datas={filteredData}
@@ -98,7 +233,7 @@ export default function WinnersTable({ data }) {
           </div>
         </div>
       </div>
-      <div></div>
+      <div>
         <div className="flow-root mt-8">
           <div className="-mx-6 -my-2 overflow-x-auto lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -156,6 +291,24 @@ export default function WinnersTable({ data }) {
 
                       <td className="relative flex items-center py-4 pl-3 pr-6 text-sm font-medium text-right align-middle whitespace-nowrap sm:pr-0">
                         <ViewWinner id={winner.id} />
+                        <button
+                          className="p-2 px-4 mx-2 mr-2 text-white rounded-md bg-green"
+                          onClick={() => {
+                            setWinner({
+                              id: winner.id,
+                              name: winner.name,
+                              email: winner.email,
+                              address: winner.address,
+                              price: winner.price,
+                              date: winner.date,
+                              draw: winner.draw,
+                            });
+                            onOpen();
+                          }}
+                        >
+                          Edit
+                        </button>
+
                         <button
                           className="p-2 px-4 mx-2 mr-2 text-white bg-red-500 rounded-md"
                           onClick={() => deleteWinner(winner.id)}

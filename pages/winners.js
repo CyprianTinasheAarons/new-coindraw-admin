@@ -137,18 +137,15 @@ function Winners() {
               <label htmlFor="draw">Draw</label>
               {/* select with opitons from draws */}
               <select
-                defaultValue={"Classic Weekly"}
                 value={draw}
                 onChange={(e) => setDraw(e.target.value)}
                 className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
               >
-                {draws
-                  .filter((d) => d.live !== false)
-                  .map((draw) => (
-                    <option key={draw._id} value={draw.title}>
-                      {draw.title}
-                    </option>
-                  ))}
+                {draws.map((draw) => (
+                  <option key={draw._id} value={draw.title}>
+                    {draw.title}
+                  </option>
+                ))}
               </select>
             </div>
           </form>
