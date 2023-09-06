@@ -98,7 +98,7 @@ export default function WinnersTable({ data }) {
           </div>
         </div>
       </div>
-      <div>
+      <div></div>
         <div className="flow-root mt-8">
           <div className="-mx-6 -my-2 overflow-x-auto lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">

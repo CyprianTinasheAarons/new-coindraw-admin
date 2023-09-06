@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import CsvDownloader from "react-csv-downloader";
 import { useSelector } from "react-redux";
-import { Spinner, Tooltip } from "@chakra-ui/react";
+import { Spinner, Tooltip, useToast } from "@chakra-ui/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { useToast } from "@chakra-ui/react";
 import transactionService from "../../api/transaction.service";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 
@@ -363,11 +362,11 @@ export default function HistoryTable({ data }) {
                           {tnx?.PaypalPayment ? (
                             <p>{tnx?.success ? "Success" : "Failed"}</p>
                           ) : (
-                            "Success"
+                            <p>{tnx?.success ? "Success" : "Failed"}</p>
                           )}
                         </td>
                         <td>
-                          {!tnx.success ? (
+                          {!tnx.success && !tnx?.PaypalPayment ? (
                             <>
                               <button
                                 onClick={() => remint(tnx)}

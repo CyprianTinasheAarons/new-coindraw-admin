@@ -2,9 +2,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import authService from "../../api/auth.service";
 import { useForm } from "react-hook-form";
+import { useToast } from "@chakra-ui/react";
 
 export default function AddUser({ fetchUsers }) {
   let [isOpen, setIsOpen] = useState(false);
+  const toast = useToast();
   const {
     register,
     handleSubmit,
@@ -24,7 +26,17 @@ export default function AddUser({ fetchUsers }) {
   }
 
   const signup = (data) => {
-    data.role = "admin";
+    if (!data || Object.keys(data).length === 0) {
+      toast({
+        title: "Error",
+        description: "Data is empty",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      throw new Error("Data is empty");
+    }
+
     try {
       authService
         .register(data)
@@ -32,15 +44,28 @@ export default function AddUser({ fetchUsers }) {
           console.log("User has been registered");
           fetchUsers();
           closeModal();
+          toast({
+            title: "Success",
+            description: "User has been registered successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
         })
         .catch(() => {
           console.log("Failed to register user");
+          toast({
+            title: "Error",
+            description: "Failed to register user",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
         });
     } catch (error) {
       console.log("something went wrong");
     }
   };
-
   return (
     <>
       <div className="my-6">
@@ -92,7 +117,7 @@ export default function AddUser({ fetchUsers }) {
                             alt="Your Company"
                           />
                         </a>
-                        <h2 className="mt-6 text-xl font-bold tracking-tight text-center text-gray-900">
+                        <h2 className="mt-1 text-xl font-bold tracking-tight text-center text-gray-900">
                           Register New Admin User
                         </h2>
                       </div>
@@ -208,6 +233,26 @@ export default function AddUser({ fetchUsers }) {
                                 type="password"
                                 className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                               />
+                            </div>
+                          </div>
+                          {/* add function to select role user or admin */}
+                          <div className="py-1">
+                            <label
+                              htmlFor="role"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Role
+                            </label>
+                            <div className="mt-1">
+                              <select
+                                id="role"
+                                name="role"
+                                {...register("role")}
+                                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                              >
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                              </select>
                             </div>
                           </div>
 
