@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useToast } from "@chakra-ui/react";
-import { Spinner } from "@chakra-ui/react";
+
 export default function AddImage(props) {
   const [bannerImage, setBannerImage] = useState("");
   const [banner, setBanner] = useState("");
@@ -8,15 +8,10 @@ export default function AddImage(props) {
 
   const toast = useToast();
 
-  function handleBannerChange(e) {
-    setBanner(URL.createObjectURL(e.target.files[0]));
-    setBannerImage(e.target.files[0]);
-  }
-
-  const uploadBannerImage = async () => {
+  const uploadBannerImage = async (file) => {
     setIsLoading(true);
     const data = new FormData();
-    data.append("file", bannerImage);
+    data.append("file", file);
     data.append("upload_preset", "strgdopr");
     data.append("cloud_name", "coindraw");
 
@@ -48,6 +43,13 @@ export default function AddImage(props) {
         setIsLoading(false);
       });
   };
+
+  function handleBannerChange(e) {
+    const file = e.target.files[0];
+    setBanner(URL.createObjectURL(file));
+    setBannerImage(file);
+    uploadBannerImage(file);
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -100,7 +102,7 @@ export default function AddImage(props) {
         </label>
       </div>
 
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <button
           type="button"
           className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
@@ -108,7 +110,7 @@ export default function AddImage(props) {
         >
           {isLoading ? <Spinner size="sm" /> : "Upload Image"}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
