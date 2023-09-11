@@ -49,12 +49,7 @@ export default function DistributionTable({ data }) {
                     >
                       To
                     </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Amount
-                    </th>
+
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -90,9 +85,7 @@ export default function DistributionTable({ data }) {
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         <Tooltip label={tnx.to}>{truncate(tnx.to, 12)}</Tooltip>
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {tnx.amount}
-                      </td>
+
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(tnx.createdAt).toLocaleDateString()}
                       </td>

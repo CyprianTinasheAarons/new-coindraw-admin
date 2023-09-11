@@ -9,7 +9,7 @@ const initialState = {
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
-  async (_, { dispatch }) => {
+  async () => {
     try {
       const response = await transactionService.getAll();
 
@@ -17,14 +17,6 @@ export const getTransactions = createAsyncThunk(
       const sortedTransactions = response.data.sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt);
       });
-
-      // Dispatch the sorted transactions
-      dispatch({ type: 'transactions/setTransactions', payload: sortedTransactions });
-
-      // Refresh transactions every 5 minutes
-      setTimeout(() => {
-        dispatch(getTransactions());
-      }, 300000);
 
       return sortedTransactions;
     } catch (e) {

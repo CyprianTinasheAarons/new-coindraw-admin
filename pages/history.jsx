@@ -8,17 +8,17 @@ import { getTransactions } from "../slices/transactions";
 function History() {
   const dispatch = useDispatch();
   const [transactions, setTransactions] = useState([]);
-
   const getData = async () => {
-    await dispatch(getTransactions())
-      .unwrap()
-      .then((res) => {
-        setTransactions(res);
-      });
+    const res = await dispatch(getTransactions()).unwrap();
+    setTransactions(res);
   };
 
   useEffect(() => {
-    getData();
+    getData(); // Fetch transactions immediately on component mount
+    const interval = setInterval(() => {
+      getData();
+    }, 300000); // Fetches transactions every 5 minutes
+    return () => clearInterval(interval); // Cleanup on component unmount
   }, [dispatch]);
   return (
     <div>

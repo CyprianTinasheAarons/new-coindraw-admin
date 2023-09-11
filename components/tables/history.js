@@ -366,7 +366,7 @@ export default function HistoryTable({ data }) {
                           )}
                         </td>
                         <td>
-                          {!tnx.success && !tnx?.PaypalPayment ? (
+                          {!tnx.success && tnx?.PaypalPayment ? (
                             <>
                               <button
                                 onClick={() => remint(tnx)}

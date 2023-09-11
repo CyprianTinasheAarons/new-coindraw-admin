@@ -90,7 +90,7 @@ const Referrals = () => {
   const create = async () => {
     await dispatch(createReferral(refferer))
       .unwrap()
-      .then((res) => {
+      .then(() => {
         toast({
           title: "Referral Created",
           description: "Referral created successfully",

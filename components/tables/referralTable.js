@@ -97,7 +97,7 @@ export default function ReferralTable({ data }) {
                 </thead>
                 <tbody className="bg-white">
                   {data?.map((r) => (
-                    <tr key={r.id}>
+                    <tr key={r?.id}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         <Tooltip label={r?.reffererWalletAddress}>
                           {truncate(r?.reffererWalletAddress, 12)}
