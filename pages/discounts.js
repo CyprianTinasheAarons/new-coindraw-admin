@@ -55,34 +55,38 @@ const Discounts = () => {
   }, [dispatch]);
 
   const create = async () => {
-    console.log(selectedDraws);
-    setDiscountData({
-      ...discountData,
-      applicableDraws: selectedDraws,
-    });
-
-    await dispatch(createDiscount(discountData))
-      .unwrap()
-      .then(() => {
-        toast({
-          title: "Discount Created",
-          description: "Discount created successfully",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        getData();
-        onCloseCreate();
-      })
-      .catch((err) => {
-        toast({
-          title: "Discount Creation Failed",
-          description: err.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
+    
+    if (!discountData.applicableDraws.length) {
+      toast({
+        title: "No Draws Selected",
+        description: "Please select at least one draw type",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
       });
+      return;
+    }
+
+    try {
+      await dispatch(createDiscount(discountData)).unwrap();
+      toast({
+        title: "Discount Created",
+        description: "Discount created successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      getData();
+      onCloseCreate();
+    } catch (err) {
+      toast({
+        title: "Discount Creation Failed",
+        description: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleCheckboxChange = (event, value) => {
@@ -91,9 +95,13 @@ const Discounts = () => {
     if (isChecked) {
       // Add the value to the selectedDraws array
       setSelectedDraws([...selectedDraws, value]);
+      // Add the value to the applicableDraws array in discountData
+      setDiscountData(prev => ({...prev, applicableDraws: [...prev.applicableDraws, value]}));
     } else {
       // Remove the value from the selectedDraws array
       setSelectedDraws(selectedDraws.filter((draw) => draw !== value));
+      // Remove the value from the applicableDraws array in discountData
+      setDiscountData(prev => ({...prev, applicableDraws: prev.applicableDraws.filter((draw) => draw !== value)}));
     }
   };
 
@@ -305,13 +313,13 @@ const Discounts = () => {
                   </div>
                   <div>
                     <label
-                      htmlFor="types"
+                      htmlFor="applicableDraws"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Applicable Draws
                     </label>
                     <div className="mt-1">
-                      {/* select multiple and checkbox applicableDraws into an array */}
+                      {/* Reviewing the code, it seems to be correctly mapping through drawTypes and creating a checkbox for each drawType */}
                       <div>
                         {drawTypes.map((drawType) => (
                           <div
@@ -334,6 +342,7 @@ const Discounts = () => {
                         ))}
                       </div>
                     </div>
+
                   </div>
                   <div>
                     <label
