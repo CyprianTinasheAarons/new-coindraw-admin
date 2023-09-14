@@ -161,7 +161,7 @@ const Referrals = () => {
       </div>
       <div>
         <p className="py-1 italic font-bold text-indigo-500">
-          {referrals.length > 0 &&
+          {referrals?.length > 0 &&
             `Current Rewards percentage is : ${referrals[0]?.referralPercentage}%`}
         </p>
       </div>
