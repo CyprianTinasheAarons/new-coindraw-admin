@@ -5,7 +5,6 @@ import Users from "../components/referrals/users";
 import Details from "../components/referrals/details";
 import Distribute from "../components/referrals/distribute";
 import DistributeAll from "../components/referrals/distributeAll";
-import SetPercentage from "../components/referrals/setPercentage";
 
 import {
   Modal,

@@ -261,7 +261,6 @@ export default function DrawViewer() {
                     />
                   </div>
                 </div>
-
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="closeDate"
@@ -271,7 +270,7 @@ export default function DrawViewer() {
                   </label>
                   <div className="mt-2">
                     <DatePicker
-                      dateFormat={"dd/MM/yyyy"}
+                      dateFormat={"dd/MM/yyyy h:mm aa"}
                       showTimeSelect
                       selected={new Date(draw?.closeDate).getTime()}
                       className="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
