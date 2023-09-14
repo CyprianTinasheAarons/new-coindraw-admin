@@ -5,25 +5,15 @@ import Users from "../components/referrals/users";
 import Details from "../components/referrals/details";
 import Distribute from "../components/referrals/distribute";
 import DistributeAll from "../components/referrals/distributeAll";
-import setPercentage from "../components/referrals/setPercentage";
+import SetPercentage from "../components/referrals/setPercentage";
 import CustomModal from "../components/CustomModal";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { createReferral, getReferrals } from "../slices/referral";
 
-const Referrals = () => {
+const ReferralsComponent = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const contractAddress = referralAddress;
@@ -196,7 +186,7 @@ const Referrals = () => {
         onClose={onCloseSetPercentage}
         title="Set Percentages"
       >
-        <setPercentage />
+        <SetPercentage />
       </CustomModal>
 
       <CustomModal
@@ -221,4 +211,4 @@ const Referrals = () => {
   );
 };
 
-export default Referrals;
+export default ReferralsComponent;
