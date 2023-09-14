@@ -5,7 +5,8 @@ import Users from "../components/referrals/users";
 import Details from "../components/referrals/details";
 import Distribute from "../components/referrals/distribute";
 import DistributeAll from "../components/referrals/distributeAll";
-
+import setPercentage from "../components/referrals/setPercentage";
+import CustomModal from "../components/CustomModal";
 import {
   Modal,
   ModalOverlay,
@@ -166,89 +167,56 @@ const Referrals = () => {
       </div>
       {referrals && <ReferralTable data={referrals} />}
 
-      <Modal isOpen={isOpenDistribute} onClose={onCloseDistribute}>
-        <div>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Distribute</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <div className="flex flex-col">
-                <Distribute />
-              </div>
-            </ModalBody>
-          </ModalContent>
-        </div>
-      </Modal>
+      <CustomModal
+        isOpen={isOpenDistribute}
+        onClose={onCloseDistribute}
+        title="Distribute"
+      >
+        <Distribute />
+      </CustomModal>
 
-      <Modal isOpen={isOpenDistributeAll} onClose={onCloseDistributeAll}>
-        <div>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Distribute All</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <div className="flex flex-col">
-                <DistributeAll />
-              </div>
-            </ModalBody>
-          </ModalContent>
-        </div>
-      </Modal>
+      <CustomModal
+        isOpen={isOpenDistributeAll}
+        onClose={onCloseDistributeAll}
+        title="Distribute All"
+      >
+        <DistributeAll />
+      </CustomModal>
 
-      <Modal isOpen={isOpenDetails} onClose={onCloseDetails} size="full">
-        <div>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Details</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <div className="flex flex-col">
-                <Details data={referrals} />
-              </div>
-            </ModalBody>
-          </ModalContent>
-        </div>
-      </Modal>
+      <CustomModal
+        isOpen={isOpenDetails}
+        onClose={onCloseDetails}
+        title="Details"
+      >
+        <Details data={referrals} />
+      </CustomModal>
 
-      <Modal isOpen={isOpenSetPercentage} onClose={onCloseSetPercentage}>
-        <div>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Details</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <div className="flex flex-col">
-                <Details data={referrals} />
-              </div>
-            </ModalBody>
-          </ModalContent>
-        </div>
-      </Modal>
+      <CustomModal
+        isOpen={isOpenSetPercentage}
+        onClose={onCloseSetPercentage}
+        title="Set Percentages"
+      >
+        <setPercentage />
+      </CustomModal>
 
-      <Modal isOpen={isReffererModalOpen} onClose={onCloseReffererModal}>
-        <div>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Add New Refferer</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <div className="flex flex-col">
-                <Users onData={handleSelected} />
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <button
-                type="button"
-                onClick={create}
-                className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                Create
-              </button>
-            </ModalFooter>
-          </ModalContent>
+      <CustomModal
+        isOpen={isReffererModalOpen}
+        onClose={onCloseReffererModal}
+        title="Add New Refferer"
+      >
+        <div className="flex flex-col">
+          <Users onData={handleSelected} />
+          <div className="my-6">
+            <button
+              type="button"
+              onClick={create}
+              className="absolute bottom-0 right-0 inline-flex items-center px-3 py-2 m-2 mx-4 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            >
+              Create
+            </button>
+          </div>
         </div>
-      </Modal>
+      </CustomModal>
     </Layout>
   );
 };
