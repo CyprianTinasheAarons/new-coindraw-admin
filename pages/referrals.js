@@ -165,7 +165,7 @@ const Referrals = () => {
             `Current Rewards percentage is : ${referrals[0]?.referralPercentage}%`}
         </p>
       </div>
-      <ReferralTable data={referrals} />
+      {referrals && <ReferralTable data={referrals} />}
 
       <Modal isOpen={isOpenDistribute} onClose={onCloseDistribute}>
         <ModalOverlay />
