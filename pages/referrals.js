@@ -168,77 +168,87 @@ const Referrals = () => {
       {referrals && <ReferralTable data={referrals} />}
 
       <Modal isOpen={isOpenDistribute} onClose={onCloseDistribute}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Distribute</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <div className="flex flex-col">
-              <Distribute />
-            </div>
-          </ModalBody>
-        </ModalContent>
+        <div>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Distribute</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <div className="flex flex-col">
+                <Distribute />
+              </div>
+            </ModalBody>
+          </ModalContent>
+        </div>
       </Modal>
 
       <Modal isOpen={isOpenDistributeAll} onClose={onCloseDistributeAll}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Distribute All</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <div className="flex flex-col">
-              <DistributeAll />
-            </div>
-          </ModalBody>
-        </ModalContent>
+        <div>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Distribute All</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <div className="flex flex-col">
+                <DistributeAll />
+              </div>
+            </ModalBody>
+          </ModalContent>
+        </div>
       </Modal>
 
       <Modal isOpen={isOpenDetails} onClose={onCloseDetails} size="full">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Details</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <div className="flex flex-col">
-              <Details data={referrals} />
-            </div>
-          </ModalBody>
-        </ModalContent>
+        <div>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Details</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <div className="flex flex-col">
+                <Details data={referrals} />
+              </div>
+            </ModalBody>
+          </ModalContent>
+        </div>
       </Modal>
 
       <Modal isOpen={isOpenSetPercentage} onClose={onCloseSetPercentage}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Set Percentage Reward</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <div className="flex flex-col">
-              <SetPercentage />
-            </div>
-          </ModalBody>
-        </ModalContent>
+        <div>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Details</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <div className="flex flex-col">
+                <Details data={referrals} />
+              </div>
+            </ModalBody>
+          </ModalContent>
+        </div>
       </Modal>
 
       <Modal isOpen={isReffererModalOpen} onClose={onCloseReffererModal}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add New Refferer</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <div className="flex flex-col">
-              <Users onData={handleSelected} />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <button
-              type="button"
-              onClick={create}
-              className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            >
-              Create
-            </button>
-          </ModalFooter>
-        </ModalContent>
+        <div>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Add New Refferer</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <div className="flex flex-col">
+                <Users onData={handleSelected} />
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <button
+                type="button"
+                onClick={create}
+                className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              >
+                Create
+              </button>
+            </ModalFooter>
+          </ModalContent>
+        </div>
       </Modal>
     </Layout>
   );
