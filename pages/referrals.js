@@ -1,5 +1,5 @@
 import Layout from "../components/Layout";
-import { referralAddress } from "../common/addresses";
+import { distributeAddress } from "../common/addresses";
 import ReferralTable from "../components/tables/referralTable";
 import Users from "../components/referrals/users";
 import Details from "../components/referrals/details";
@@ -16,7 +16,7 @@ import { createReferral, getReferrals } from "../slices/referral";
 const ReferralsComponent = () => {
   const toast = useToast();
   const dispatch = useDispatch();
-  const contractAddress = referralAddress;
+  const contractAddress = distributeAddress;
   const {
     isOpen: isReffererModalOpen,
     onOpen: onOpenReffererModal,

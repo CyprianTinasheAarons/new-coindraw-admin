@@ -19,6 +19,8 @@ export default function Login() {
   };
 
   const login = async () => {
+    // 1234567890aA!
+
     setLoading(true);
     try {
       await AuthService.login(userData)
@@ -38,7 +40,7 @@ export default function Login() {
           toast({
             title: "Account Error.",
             description: error.response.data.message,
-            status: "success",
+            status: "error",
             duration: 9000,
             isClosable: true,
           });

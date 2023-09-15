@@ -12,6 +12,8 @@ function classNames(...classes) {
 export default function Users({ onData }) {
   const [query, setQuery] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const [referralExpiryDate, setReferralExpiryDate] = useState(null);
+  const [referralPercentage, setReferralPercentage] = useState(null);
   const users = useSelector((state) => state.users.users);
   const isLoading = useSelector((state) => state.users.isLoading);
 
@@ -29,8 +31,8 @@ export default function Users({ onData }) {
   }, [dispatch]);
 
   useEffect(() => {
-    onData(selectedPerson);
-  }, [selectedPerson]);
+    onData(selectedPerson, referralExpiryDate, referralPercentage);
+  }, [selectedPerson, referralExpiryDate, referralPercentage]);
 
   return (
     <>

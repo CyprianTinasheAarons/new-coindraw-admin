@@ -9,7 +9,7 @@ import {
 
 const CustomModal = ({ isOpen, onClose, title, children }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size={'2xl'}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>

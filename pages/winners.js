@@ -6,6 +6,8 @@ import UserService from "../api/user.service";
 import { toast } from "react-toastify";
 import drawService from "../api/draw.service";
 import WinnersTable from "../components/tables/winners";
+import { Combobox } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import {
   Modal,
   ModalOverlay,
@@ -16,6 +18,10 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function Winners() {
   const [winners, setWinners] = useState([]);
@@ -90,7 +96,9 @@ function Winners() {
   useEffect(() => {
     if (selectedUser) {
       console.log(selectedUser);
-      const user = users.find((user) => user.username === selectedUser);
+      const user = users.find(
+        (user) => user.username === selectedUser?.username
+      );
       setWinner({
         ...winner,
         name: user.username,
@@ -123,33 +131,84 @@ function Winners() {
             <ModalCloseButton />
             <ModalBody>
               <form>
-                <div className="flex flex-col form-group">
-                  <label htmlFor="search">Search User</label>
-                  <input
-                    type="text"
-                    id="search"
-                    name="search"
-                    placeholder="Enter username"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
-                  />
-                  <label className="py-1" htmlFor="search">
-                    Select User
-                  </label>
-                  <select
-                    id="user"
-                    value={selectedUser}
-                    onChange={(e) => setSelectedUser(e.target.value)}
-                    className="block w-full p-2 mb-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
-                  >
-                    {filteredUsers.map((user) => (
-                      <option key={user._id} value={user._id}>
-                        {user.username}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <Combobox
+                  as="div"
+                  value={selectedUser}
+                  onChange={setSelectedUser}
+                >
+                  <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">
+                    Select a user
+                  </Combobox.Label>
+                  <div className="relative mt-2">
+                    <Combobox.Input
+                      className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      onChange={(event) => setSearch(event.target.value)}
+                      displayValue={(user) => user?.name}
+                    />
+                    <Combobox.Button className="absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-none">
+                      <ChevronUpDownIcon
+                        className="w-5 h-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </Combobox.Button>
+                    {filteredUsers.length > 0 && (
+                      <Combobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        {filteredUsers.map((user) => (
+                          <Combobox.Option
+                            key={user._id}
+                            value={user}
+                            className={({ active }) =>
+                              classNames(
+                                "relative cursor-default select-none py-2 pl-3 pr-9",
+                                active
+                                  ? "bg-indigo-600 text-white"
+                                  : "text-gray-900"
+                              )
+                            }
+                          >
+                            {({ active, selected }) => (
+                              <>
+                                <div className="flex items-center">
+                                  <span
+                                    className={classNames(
+                                      "inline-block h-2 w-2 flex-shrink-0 rounded-full",
+                                      user.online
+                                        ? "bg-green-400"
+                                        : "bg-gray-200"
+                                    )}
+                                    aria-hidden="true"
+                                  />
+                                  <span
+                                    className={classNames(
+                                      "ml-3 truncate",
+                                      selected && "font-semibold"
+                                    )}
+                                  >
+                                    {user.username}
+                                  </span>
+                                </div>
+
+                                {selected && (
+                                  <span
+                                    className={classNames(
+                                      "absolute inset-y-0 right-0 flex items-center pr-4",
+                                      active ? "text-white" : "text-indigo-600"
+                                    )}
+                                  >
+                                    <CheckIcon
+                                      className="w-5 h-5"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </Combobox.Option>
+                        ))}
+                      </Combobox.Options>
+                    )}
+                  </div>
+                </Combobox>
                 <div className="form-group">
                   <label className="py-1" htmlFor="name">
                     Name

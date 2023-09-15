@@ -32,7 +32,7 @@ const Details = ({ data }) => {
   }, [selected]);
   return (
     <>
-      <div>
+      <div className="w-full">
         <button
           onClick={() => {
             const newSelected = {};
