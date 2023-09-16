@@ -78,7 +78,9 @@ export const getReferrals = createAsyncThunk(
   async () => {
     try {
       const response = await refferalService.getAll();
-      return response.data;
+      // Sort the referrals by createdAt, newest first
+      const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      return sortedData;
     } catch (e) {
       console.log(e);
       throw e;

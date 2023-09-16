@@ -2,10 +2,12 @@ import { Spinner, Tooltip, useToast } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteReferral } from "../../slices/referral";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import userService from "../../api/user.service";
+import React, { useState, useEffect } from "react";
 
 export default function ReferralTable({ data }) {
   const isLoading = useSelector((state) => state.referral.isLoading);
-
+  const [usernames, setUsernames] = useState({});
   const toast = useToast();
 
   const truncate = (str, n) => {
@@ -26,6 +28,27 @@ export default function ReferralTable({ data }) {
         });
         location.reload();
       });
+  };
+
+  useEffect(() => {
+    const fetchUsernames = async () => {
+      const newNames = {};
+      for (const r of data) {
+        const username = await fetchUser(r?.refferer);
+        newNames[r?.refferer] = username;
+      }
+      setUsernames(newNames);
+    };
+
+    fetchUsernames();
+  }, [data]);
+
+  const fetchUser = async (id) => {
+    let username = null;
+    await userService.get(id).then((res) => {
+      username = res.data.username;
+    });
+    return username;
   };
 
   return (
@@ -99,9 +122,7 @@ export default function ReferralTable({ data }) {
                   {data?.map((r) => (
                     <tr key={r?.id}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                        <Tooltip label={r?.reffererWalletAddress}>
-                          {truncate(r?.reffererWalletAddress, 12)}
-                        </Tooltip>
+                        {usernames[r?.refferer]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {r?.referralCode}
