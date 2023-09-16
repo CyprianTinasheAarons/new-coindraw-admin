@@ -30,6 +30,14 @@ export default function ReferralTable({ data }) {
       });
   };
 
+  const calculateDaysLeft = (expiryDate) => {
+    const currentDate = new Date();
+    const expirationDate = new Date(expiryDate);
+    const diffTime = Math.abs(expirationDate - currentDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   useEffect(() => {
     const fetchUsernames = async () => {
       const newNames = {};
@@ -92,6 +100,13 @@ export default function ReferralTable({ data }) {
                     >
                       Referral Link
                     </th>
+
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Days Left
+                    </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -128,10 +143,24 @@ export default function ReferralTable({ data }) {
                         {r?.referralCode}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {" "}
-                        <Tooltip label={r?.referralLink}>
-                          {truncate(r?.referralLink, 20)}
-                        </Tooltip>
+                        <CopyToClipboard
+                          text={r?.referralLink}
+                          onCopy={() =>
+                            toast({
+                              title: "Link copied.",
+                              status: "success",
+                              duration: 9000,
+                              isClosable: true,
+                            })
+                          }
+                        >
+                          <button className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            {truncate(r?.referralLink, 20)}
+                          </button>
+                        </CopyToClipboard>
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {calculateDaysLeft(r?.referralExpiryDate)}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {r?.reffererCount}

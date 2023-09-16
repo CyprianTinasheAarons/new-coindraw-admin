@@ -13,7 +13,6 @@ export default function Users({ onData }) {
   const [query, setQuery] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [referralExpiryDate, setReferralExpiryDate] = useState(null);
-  const [referralPercentage, setReferralPercentage] = useState(null);
   const users = useSelector((state) => state.users.users);
   const isLoading = useSelector((state) => state.users.isLoading);
 
@@ -31,8 +30,8 @@ export default function Users({ onData }) {
   }, [dispatch]);
 
   useEffect(() => {
-    onData(selectedPerson, referralExpiryDate, referralPercentage);
-  }, [selectedPerson, referralExpiryDate, referralPercentage]);
+    onData(selectedPerson, referralExpiryDate);
+  }, [selectedPerson, referralExpiryDate]);
 
   return (
     <>
@@ -120,6 +119,22 @@ export default function Users({ onData }) {
                 {selectedPerson.username}
               </span>
             </p>
+          </div>
+          <div className="mt-2">
+            <label
+              htmlFor="referralExpiryDate"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Referral Expiry Date
+            </label>
+            <input
+              type="date"
+              id="referralExpiryDate"
+              name="referralExpiryDate"
+              className="block w-full px-3 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              value={referralExpiryDate || ""}
+              onChange={(e) => setReferralExpiryDate(e.target.value)}
+            />
           </div>
         </div>
       )}

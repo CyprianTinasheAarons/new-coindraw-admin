@@ -67,11 +67,13 @@ const ReferralsComponent = () => {
     walletAddress: "",
   });
 
-  const handleSelected = async (user) => {
+  const handleSelected = async (user, referralExpiryDate) => {
+    console.log(user, referralExpiryDate);
     if (user) {
       setRefferer({
         refferer: user.id,
         walletAddress: user.walletAddress,
+        referralExpiryDate: referralExpiryDate,
       });
       setSelectedUser(user);
     }
