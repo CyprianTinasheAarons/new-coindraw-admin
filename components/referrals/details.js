@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Spinner, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
@@ -17,12 +17,12 @@ const Details = ({ data }) => {
     const selectedUsers = Object.keys(selected).filter((key) => selected[key]);
     const selectedWallets = selectedUsers.map((user) => {
       const selectedUser = data.find((item) => item.id === user);
-      return selectedUser.reffererWalletAddress;
+      return selectedUser.referrerWalletAddress;
     });
 
     const selectedAmounts = selectedUsers.map((user) => {
       const selectedUser = data.find((item) => item.id === user);
-      return selectedUser.reffererReward;
+      return selectedUser.referrerReward;
     });
 
     setSelectedDetails({
@@ -88,7 +88,7 @@ const Details = ({ data }) => {
               scope="col"
               className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
             >
-              Refferer Address
+              referrer Address
             </th>
             <th
               scope="col"
@@ -123,16 +123,16 @@ const Details = ({ data }) => {
                 />
               </td>
               <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                {r?.reffererWalletAddress}
+                {r?.referrerWalletAddress}
               </td>
               <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                {r?.reffererReward}
+                {r?.referrerReward}
               </td>
               <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                 <CopyToClipboard
                   text={JSON.stringify({
-                    address: r?.reffererWalletAddress,
-                    amount: r?.reffererReward,
+                    address: r?.referrerWalletAddress,
+                    amount: r?.referrerReward,
                   })}
                   onCopy={() => [
                     setCopied(r?.id),
