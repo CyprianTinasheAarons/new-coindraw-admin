@@ -154,7 +154,7 @@ export default function ReferralTable({ data }) {
                             })
                           }
                         >
-                          <button className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                          <button className="inline-flex items-center py-2 text-sm font-semibold text-gray-900 underline bg-white rounded-md shadow-sm hover:bg-gray-50">
                             {truncate(r?.referralLink, 20)}
                           </button>
                         </CopyToClipboard>
