@@ -1,4 +1,4 @@
-import { Spinner, Tooltip, useToast } from "@chakra-ui/react";
+import { Spinner, useToast } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteReferral } from "../../slices/referral";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -37,13 +37,12 @@ export default function ReferralTable({ data }) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
-
   useEffect(() => {
     const fetchUsernames = async () => {
       const newNames = {};
       for (const r of data) {
-        const username = await fetchUser(r?.refferer);
-        newNames[r?.refferer] = username;
+        const username = await fetchUser(r?.userId);
+        newNames[r?.userId] = username;
       }
       setUsernames(newNames);
     };
@@ -111,19 +110,19 @@ export default function ReferralTable({ data }) {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Referral Count
+                      Count
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Refferer Reward
+                      Rewards
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Total Rewards
+                      Total
                     </th>
                     <th
                       scope="col"
@@ -137,7 +136,7 @@ export default function ReferralTable({ data }) {
                   {data?.map((r) => (
                     <tr key={r?.id}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                        {usernames[r?.refferer]}
+                        {usernames[r?.userId]}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {r?.referralCode}
@@ -163,13 +162,13 @@ export default function ReferralTable({ data }) {
                         {calculateDaysLeft(r?.referralExpiryDate)}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {r?.reffererCount}
+                        {r?.referrerCount}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {r?.reffererReward}
+                        {r?.referrerReward}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {r?.reffererTotalReward}
+                        {r?.referrerTotalReward}
                       </td>
                       <td className="flex px-3 py-4 text-sm text-gray-500 align-middle whitespace-nowrap">
                         <CopyToClipboard

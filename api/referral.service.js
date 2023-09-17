@@ -5,20 +5,8 @@ class ReferralService {
     return httpCommon.post("/referral", data);
   }
 
-  get(data) {
-    return httpCommon.get("/referral", data);
-  }
-
   getAll() {
-    return httpCommon.get("/referral/referrers");
-  }
-
-  getAllByReferrer(data) {
-    return httpCommon.get("/referral/referrals", data);
-  }
-
-  getReferredUsers(data) {
-    return httpCommon.get("/referral/referred-users", data);
+    return httpCommon.get("/referral");
   }
 
   update(data) {
@@ -33,8 +21,8 @@ class ReferralService {
     return httpCommon.put("/referral/update-referral-percentage", data);
   }
 
-  delete() {
-    return httpCommon.delete("/referral");
+  delete(id) {
+    return httpCommon.delete("/referral/" + id);
   }
 }
 

@@ -79,34 +79,10 @@ export const getReferrals = createAsyncThunk(
     try {
       const response = await refferalService.getAll();
       // Sort the referrals by createdAt, newest first
-      const sortedData = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const sortedData = response.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
       return sortedData;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-);
-
-export const getAllByReferrer = createAsyncThunk(
-  "referrals/getAllByReferrer",
-  async (data) => {
-    try {
-      const response = await refferalService.getAllByReferrer(data);
-      return response.data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-);
-
-export const getReferredUsers = createAsyncThunk(
-  "referrals/getReferredUsers",
-  async (data) => {
-    try {
-      const response = await refferalService.getReferredUsers(data);
-      return response.data;
     } catch (e) {
       console.log(e);
       throw e;
@@ -187,28 +163,6 @@ export const referralSlice = createSlice({
       state.referrals = action.payload;
     },
     [getReferrals.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.errorMessage = action.error.message;
-    },
-    [getAllByReferrer.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [getAllByReferrer.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      state.referrals = action.payload;
-    },
-    [getAllByReferrer.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.errorMessage = action.error.message;
-    },
-    [getReferredUsers.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [getReferredUsers.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      state.referrals = action.payload;
-    },
-    [getReferredUsers.rejected]: (state, action) => {
       state.isLoading = false;
       state.errorMessage = action.error.message;
     },

@@ -63,7 +63,7 @@ const ReferralsComponent = () => {
   }, [dispatch]);
 
   const [refferer, setRefferer] = useState({
-    refferer: "",
+    userId: "",
     walletAddress: "",
   });
 
@@ -71,7 +71,7 @@ const ReferralsComponent = () => {
     console.log(user, referralExpiryDate);
     if (user) {
       setRefferer({
-        refferer: user.id,
+        userId: user.id,
         walletAddress: user.walletAddress,
         referralExpiryDate: referralExpiryDate,
       });
