@@ -24,7 +24,9 @@ const Giveaway = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const contractAddress = airdropAddress;
-  const [approvalAddress, setApprovalAddress] = useState("");
+  const [approvalAddress, setApprovalAddress] = useState(
+    "0xa3c697137d1b56c8e39bd5d3fa6713121fbfcb8a"
+  );
   const [giveawayHistory, setGiveawayHistory] = useState([]);
 
   const getData = async () => {
@@ -211,18 +213,19 @@ const Giveaway = () => {
         <div className="flex mt-3 sm:ml-4 sm:mt-0">
           <button
             type="button"
-            onClick={() => onAirdropOpen()}
-            className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-          >
-            Airdrop
-          </button>
-          <button
-            type="button"
             onClick={() => onAirdropMultipleOpen()}
             className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
+            Airdrop (Single)
+          </button>
+          <button
+            type="button"
+            onClick={() => onAirdropOpen()}
+            className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
             Airdrop (Multiple)
           </button>
+
           <button
             type="button"
             onClick={() => onApprovalOpen()}
@@ -243,7 +246,7 @@ const Giveaway = () => {
       <Modal isOpen={isAirdropOpen} onClose={onAirdropClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Airdrop</ModalHeader>
+          <ModalHeader>Airdrop (Multiple)</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="flex flex-col">
@@ -290,7 +293,7 @@ const Giveaway = () => {
             </div>
             <div className="flex flex-col">
               <label className="block text-sm font-medium text-gray-700">
-                Giveaway Contract Address
+                Competition Address
               </label>
               <input
                 type="text"
@@ -364,7 +367,7 @@ const Giveaway = () => {
       <Modal isOpen={isAirdropMultipleOpen} onClose={onAirdropMultipleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Airdrop (Multiple)</ModalHeader>
+          <ModalHeader>Airdrop (Single)</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="flex flex-col">
@@ -409,7 +412,7 @@ const Giveaway = () => {
             </div>
             <div className="flex flex-col">
               <label className="block text-sm font-medium text-gray-700">
-                Giveaway Contract Address
+                Competition Address
               </label>
               <input
                 type="text"
