@@ -133,6 +133,12 @@ export default function UsersTable(data) {
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
                     >
+                      Referred
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                    >
                       Created On
                     </th>
                     <th
@@ -164,9 +170,12 @@ export default function UsersTable(data) {
                         {person?.promotionalEmails ? "Yes" : "No"}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {new Date(person.updatedAt).toLocaleDateString()}
+                        {person?.referred ? "Yes" : "No"}
                       </td>
 
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {new Date(person.updatedAt).toLocaleDateString()}
+                      </td>
                       <td className="py-4 text-sm font-medium text-right ">
                         <DeleteUser user={person.id} fetchUsers={fetchUsers} />
                       </td>
