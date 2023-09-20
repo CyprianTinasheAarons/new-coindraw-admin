@@ -367,12 +367,12 @@ const Giveaway = () => {
       <Modal isOpen={isAirdropMultipleOpen} onClose={onAirdropMultipleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Airdrop (Single)</ModalHeader>
+          <ModalHeader>Airdrop</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div className="flex flex-col">
               <label className="block text-sm font-medium text-gray-700">
-                Winner Address (Single)
+                Winner Address 
               </label>
               <input
                 type="text"
