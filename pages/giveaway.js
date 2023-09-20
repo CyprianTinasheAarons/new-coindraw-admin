@@ -216,7 +216,7 @@ const Giveaway = () => {
             onClick={() => onAirdropMultipleOpen()}
             className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
-            Airdrop 
+            Airdrop
           </button>
           <button
             type="button"
@@ -372,7 +372,7 @@ const Giveaway = () => {
           <ModalBody>
             <div className="flex flex-col">
               <label className="block text-sm font-medium text-gray-700">
-                Winner Address 
+                Winner Address
               </label>
               <input
                 type="text"
@@ -484,7 +484,7 @@ const Giveaway = () => {
               onError={onErrorAirDropMultiple}
               onSubmit={onSubmitAirdropMultiple}
             >
-              Airdrop (Multiple)
+              Airdrop
             </Web3Button>
           </ModalFooter>
         </ModalContent>
