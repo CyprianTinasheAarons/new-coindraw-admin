@@ -28,6 +28,7 @@ function TwoFactor() {
           });
 
           localStorage.setItem("admin-token", res.data.accessToken);
+          localStorage.setItem("user-coindraw", JSON.stringify(res?.data?.user));
           location.href = "/";
         })
         .catch((error) => {

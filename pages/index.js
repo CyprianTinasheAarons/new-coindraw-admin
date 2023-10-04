@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import Stats from "../components/Stats";
 
 export default function Home() {
+  
   return (
     <div>
       <Head>

@@ -55,17 +55,29 @@ export default function Layout(props) {
   const router = useRouter();
 
   const signOut = () => {
+    console.log("Signing out...");
     AuthService.logout();
+    console.log("Redirecting to login page...");
     router.push("/login");
   };
 
   const authethicated = () => {
-    return localStorage.getItem("admin-token") !== null;
+    const token = localStorage.getItem("admin-token");
+    console.log("Token:", token);
+    return token !== null;
+  };
+
+  const isRole = () => {
+    const role = JSON.parse(localStorage.getItem("user-coindraw"))?.role;
+    console.log("Role:", role);
+    return role === "referrer";
   };
 
   useEffect(() => {
-    if (!authethicated()) {
-      router.push("/login");
+    console.log("Checking authentication and role...");
+    if (!authethicated() || !isRole()) {
+      console.log("Not authenticated or not referrer, signing out...");
+      signOut();
     }
   }, []);
 

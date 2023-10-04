@@ -2,21 +2,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Head from "next/head";
 import Layout from "../../components/ui/Layout";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-} from "@chakra-ui/react";
+
 import { getReferral } from "../../slices/referral";
 import { getTransactions } from "../../slices/transactions";
-
-
 
 function Referrals() {
 
@@ -41,9 +29,9 @@ function Referrals() {
           const userEmail = JSON.parse(
             localStorage.getItem("user-coindraw")
           )?.email;
-          const filteredTransactions = res.filter(
-            (transaction) => transaction.email === userEmail
-          );
+          const filteredTransactions = res
+            .filter((transaction) => transaction.email === userEmail)
+            .filter(t => ["Paypal", "Fiat", "Crypto(MATIC)"].includes(t.type));
           setTransactions(filteredTransactions);
         });
     }, []);
@@ -69,9 +57,7 @@ function Referrals() {
       <Layout title={"Payouts"}>
         {/* Buttons */}
         <div className="p-8 ">
-          <h3 className="text-base font-semibold leading-6 text-gray-900">
-            Last 30 days
-          </h3>
+        
           <dl className="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
             {stats.map((item) => (
               <div
@@ -88,33 +74,96 @@ function Referrals() {
             ))}
           </dl>
         </div>
-        <TableContainer>
-          <Table variant="simple">
-            <TableCaption>Transaction History</TableCaption>
-            <Thead>
-              <Tr>
-                <Th>Transaction Hash</Th>
-                <Th>Type</Th>
-                <Th>Amount</Th>
-                <Th>Date</Th>
-                <Th>Receipt</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {transactions.map((transaction) => (
-                <Tr key={transaction.transactionHash}>
-                  <Td>{transaction.transactionHash}</Td>
-                  <Td>{transaction.transactionType}</Td>
-                  <Td isNumeric>{transaction.transactionAmount}</Td>
-                  <Td>{transaction.transactionDate}</Td>
-                  <Td>
-                    <a href={transaction.receiptUrl}>View Receipt</a>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Email
+              </th>
+              <th
+                scope="col"
+                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+              >
+                Transaction
+              </th>
+              <th
+                scope="col"
+                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Type
+              </th>
+              <th
+                scope="col"
+                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Amount
+              </th>
+              <th
+                scope="col"
+                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Date
+              </th>
+              <th
+                scope="col"
+                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Receipt URL
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {transactions?.map((t) => (
+              <tr key={t?.id}>
+                <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                  {t?.email}
+                </td>
+                <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
+                  {t?.transactionHash
+                    ? t?.transactionHash?.substring(0, 20) + "..."
+                    : "No hash"}
+                  {t?.transactionHash && (
+                    <button
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          t?.transactionHash ? t?.transactionHash : "No hash"
+                        )
+                      }
+                      className="px-2 py-1 ml-2 text-xs text-white bg-blue-500 rounded"
+                    >
+                      Copy
+                    </button>
+                  )}
+                </td>
+                <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                  {t?.type}
+                </td>
+                <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                  {t?.amount}
+                </td>
+                <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                  {new Date(t?.createdAt).toLocaleDateString()}
+                </td>
+
+                <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+           
+                    <a
+                      href={t?.receiptUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline uppercase text-green"
+                    >
+                      View Receipt
+                    </a>
+             
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </Layout>
     </div>
   );

@@ -27,6 +27,7 @@ export default function Login() {
         .then((res) => {
           setLoading(false);
           localStorage.setItem("admin-email", userData.email);
+        
           if (res.data.dataUrl == null) {
             location.href = "/twofactor";
           } else {

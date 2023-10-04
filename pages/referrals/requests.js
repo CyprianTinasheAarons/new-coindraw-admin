@@ -12,7 +12,6 @@ function Referrals() {
   const toast = useToast();
    const dispatch = useDispatch();
    const [refferer, setRefferer] = useState({});
-   const [transactions, setTransactions] = useState([]);
 
    useEffect(() => {
      const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
@@ -24,19 +23,6 @@ function Referrals() {
        });
    }, []);
 
-   useEffect(() => {
-     dispatch(getTransactions())
-       .unwrap()
-       .then((res) => {
-         const userEmail = JSON.parse(
-           localStorage.getItem("user-coindraw")
-         )?.email;
-         const filteredTransactions = res.filter(
-           (transaction) => transaction.email === userEmail
-         );
-         setTransactions(filteredTransactions);
-       });
-   }, []);
 
 
    const stats = [
@@ -168,6 +154,23 @@ function Referrals() {
               </div>
             ))}
           </dl>
+          <div className="mt-5">
+            {refferer?.requestPayout?.requested && !refferer?.requestPayout.accepted && (
+              <div className="p-4 mb-4 bg-yellow-200 rounded-md">
+                <p className="text-lg font-semibold text-yellow-700">Payout Requested on {new Date(refferer?.requestPayout.requestedDate).toLocaleDateString()}</p>
+              </div>
+            )}
+            {refferer?.requestNewCode?.requested && !refferer?.requestNewCode?.accepted && (
+              <div className="p-4 mb-4 bg-blue-200 rounded-md">
+                <p className="text-lg font-semibold text-blue-700">New Code Requested on {new Date(refferer?.requestNewCode.requestedDate).toLocaleDateString()}</p>
+              </div>
+            )}
+            {refferer?.requestDateExtension?.requested && !refferer?.requestDateExtension?.accepted && (
+              <div className="p-4 mb-4 rounded-md bg-green">
+                <p className="text-lg font-semibold text-white">Date Extension Requested on {new Date(refferer?.requestDateExtension.requestedDate).toLocaleDateString()}</p>
+              </div>
+            )}
+          </div>
         </div>
       </Layout>
     </div>
