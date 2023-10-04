@@ -1,32 +1,75 @@
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useToast } from "@chakra-ui/react";
 
-export default function MyProfile() {
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useToast } from "@chakra-ui/react";
+import { updateReferralData } from "../../slices/referral";
+
+export default function MyProfile({user}) {
+  const dispatch = useDispatch();
   const toast = useToast();
-  const [payout, setPayout] = useState({
-    payoutType: "",
-    walletAddress: "",
-    paypalId: "",
-    bankDetails: {
-      bankName: "",
-      accountName: "",
-      accountNumber: "",
-      routingNumber: "",
-      swiftCode: "",
-      bankAddress: "",
-      bankCity: "",
-      bankState: "",
-      bankZip: "",
-      bankCountry: "",
-      isFiat: false,
-      fiatCurrency: "",
-      iban: "",
+  const [userProfile, setUserProfile] = useState({
+    userId: user?.userId || "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    country: user?.country || "",
+    address: user?.address || "",
+    city: user?.city || "",
+    state: user?.state || "",
+    zip: user?.zip || "",
+    payout: {
+      payoutType: user?.payout?.payoutType || "",
+      walletAddress: user?.payout?.walletAddress || "",
+      paypalId: user?.payout?.paypalId || "",
+      bankDetails: {
+        bankName: user?.payout?.bankDetails?.bankName || "",
+        accountName: user?.payout?.bankDetails?.accountName || "",
+        accountNumber: user?.payout?.bankDetails?.accountNumber || "",
+        routingNumber: user?.payout?.bankDetails?.routingNumber || "",
+        swiftCode: user?.payout?.bankDetails?.swiftCode || "",
+        bankAddress: user?.payout?.bankDetails?.bankAddress || "",
+        bankCity: user?.payout?.bankDetails?.bankCity || "",
+        bankState: user?.payout?.bankDetails?.bankState || "",
+        bankZip: user?.payout?.bankDetails?.bankZip || "",
+        bankCountry: user?.payout?.bankDetails?.bankCountry || "",
+        isFiat: user?.payout?.bankDetails?.isFiat || false,
+        fiatCurrency: user?.payout?.bankDetails?.fiatCurrency || "",
+        iban: user?.payout?.bankDetails?.iban || "",
+      },
     },
+
   });
+
+  const handleSubmit = () => {
+    dispatch(updateReferralData({ id: user?.userId, data: userProfile }))
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Referral updated successfully",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+        toast({
+          title: "Error",
+          description: "Error updating referral",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  }
+  
+
+  
   return (
-    <form>
+    <div>
       <div className="space-y-12">
         <div className="pb-12 border-b border-gray-900/10">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -39,7 +82,7 @@ export default function MyProfile() {
           <div className="grid grid-cols-1 mt-10 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label
-                htmlFor="first-name"
+                htmlFor="firstName"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 First name
@@ -47,9 +90,12 @@ export default function MyProfile() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
+                  name="firstName"
+                  id="firstName"
+                  value={userProfile.firstName}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, firstName: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -57,7 +103,7 @@ export default function MyProfile() {
 
             <div className="sm:col-span-3">
               <label
-                htmlFor="last-name"
+                htmlFor="lastName"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Last name
@@ -65,9 +111,12 @@ export default function MyProfile() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="last-name"
-                  id="last-name"
-                  autoComplete="family-name"
+                  name="lastName"
+                  id="lastName"
+                  value={userProfile.lastName}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, lastName: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -85,7 +134,10 @@ export default function MyProfile() {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
+                  value={userProfile.email}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, email: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -93,16 +145,20 @@ export default function MyProfile() {
 
             <div className="sm:col-span-3">
               <label
-                htmlFor="wallet-address"
+                htmlFor="phone"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Wallet Address
+                Phone Number
               </label>
               <div className="mt-2">
                 <input
-                  id="wallet-address"
-                  name="wallet-address"
+                  id="phone"
+                  name="phone"
                   type="text"
+                  value={userProfile.phone}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, phone: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -119,19 +175,26 @@ export default function MyProfile() {
                 <select
                   id="country"
                   name="country"
-                  autoComplete="country-name"
+                  value={userProfile.country}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, country: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 p-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Mexico</option>
+                  <option value="UK">United Kingdom</option>
+                  <option value="CA">Canada</option>
+                  <option value="FR">France</option>
+                  <option value="DE">Germany</option>
+                  <option value="IT">Italy</option>
+                  <option value="JP">Japan</option>
+                  <option value="US">United States</option>
                 </select>
               </div>
             </div>
 
             <div className="col-span-full">
               <label
-                htmlFor="street-address"
+                htmlFor="address"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Street address
@@ -139,9 +202,12 @@ export default function MyProfile() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="street-address"
-                  id="street-address"
-                  autoComplete="street-address"
+                  name="address"
+                  id="address"
+                  value={userProfile.address}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, address: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -159,7 +225,10 @@ export default function MyProfile() {
                   type="text"
                   name="city"
                   id="city"
-                  autoComplete="address-level2"
+                  value={userProfile.city}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, city: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -167,7 +236,7 @@ export default function MyProfile() {
 
             <div className="sm:col-span-2">
               <label
-                htmlFor="region"
+                htmlFor="state"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 State / Province
@@ -175,9 +244,12 @@ export default function MyProfile() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="region"
-                  id="region"
-                  autoComplete="address-level1"
+                  name="state"
+                  id="state"
+                  value={userProfile.state}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, state: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -185,7 +257,7 @@ export default function MyProfile() {
 
             <div className="sm:col-span-2">
               <label
-                htmlFor="postal-code"
+                htmlFor="zip"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 ZIP / Postal code
@@ -193,9 +265,12 @@ export default function MyProfile() {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="postal-code"
-                  id="postal-code"
-                  autoComplete="postal-code"
+                  name="zip"
+                  id="zip"
+                  value={userProfile.zip}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, zip: e.target.value })
+                  }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -213,17 +288,18 @@ export default function MyProfile() {
           <div className="grid grid-cols-1 mt-10 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label
-                htmlFor="payout-type"
+                htmlFor="payoutType"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Payout Type
               </label>
               <div className="mt-2">
                 <select
-                  name="payout-type"
-                  id="payout-type"
+                  name="type"
+                  id="type"
+                  value={userProfile.payout.payoutType}
                   onChange={(e) =>
-                    setPayout({ ...payout, payoutType: e.target.value })
+                    setUserProfile({ ...userProfile, payout: { ...userProfile.payout, payoutType: e.target.value } })
                   }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-1"
                 >
@@ -234,10 +310,10 @@ export default function MyProfile() {
               </div>
             </div>
 
-            {payout.payoutType === "FIAT" && (
+            {userProfile.payout.payoutType === "FIAT" && (
               <div className="sm:col-span-3">
                 <label
-                  htmlFor="bank-name"
+                  htmlFor="bankName"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Bank Name
@@ -245,13 +321,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="bank-name"
-                    id="bank-name"
+                    name="bankName"
+                    id="bankName"
+                    value={userProfile.payout.bankDetails.bankName}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankName: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="account-name"
+                  htmlFor="accountName"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Account Name
@@ -259,13 +339,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="account-name"
-                    id="account-name"
+                    name="accountName"
+                    id="accountName"
+                    value={userProfile.payout.bankDetails.accountName}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, accountName: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="account-number"
+                  htmlFor="accountNumber"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Account Number
@@ -273,13 +357,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="account-number"
-                    id="account-number"
+                    name="accountNumber"
+                    id="accountNumber"
+                    value={userProfile.payout.bankDetails.accountNumber}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, accountNumber: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="routing-number"
+                  htmlFor="routingNumber"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Routing Number
@@ -287,13 +375,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="routing-number"
-                    id="routing-number"
+                    name="routingNumber"
+                    id="routingNumber"
+                    value={userProfile.payout.bankDetails.routingNumber}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, routingNumber: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="swift-code"
+                  htmlFor="swiftCode"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Swift Code
@@ -301,13 +393,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="swift-code"
-                    id="swift-code"
+                    name="swiftCode"
+                    id="swiftCode"
+                    value={userProfile.payout.bankDetails.swiftCode}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, swiftCode: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="bank-address"
+                  htmlFor="bankAddress"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Bank Address
@@ -315,13 +411,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="bank-address"
-                    id="bank-address"
+                    name="bankAddress"
+                    id="bankAddress"
+                    value={userProfile.payout.bankDetails.bankAddress}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankAddress: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="bank-city"
+                  htmlFor="bankCity"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Bank City
@@ -329,13 +429,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="bank-city"
-                    id="bank-city"
+                    name="bankCity"
+                    id="bankCity"
+                    value={userProfile.payout.bankDetails.bankCity}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankCity: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="bank-state"
+                  htmlFor="bankState"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Bank State
@@ -343,13 +447,17 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="bank-state"
-                    id="bank-state"
+                    name="bankState"
+                    id="bankState"
+                    value={userProfile.payout.bankDetails.bankState}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankState: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
                 <label
-                  htmlFor="bank-zip"
+                  htmlFor="bankZip"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Bank ZIP
@@ -357,8 +465,12 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="bank-zip"
-                    id="bank-zip"
+                    name="bankZip"
+                    id="bankZip"
+                    value={userProfile.payout.bankDetails.bankZip}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankZip: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -373,6 +485,10 @@ export default function MyProfile() {
                     type="text"
                     name="bank-country"
                     id="bank-country"
+                    value={userProfile.payout.bankDetails.bankCountry}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankCountry: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -387,12 +503,16 @@ export default function MyProfile() {
                     type="text"
                     name="iban"
                     id="iban"
+                    value={userProfile.payout.bankDetails.iban}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, iban: e.target.value } } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
             )}
-            {payout.payoutType === "Wallet" && (
+            {userProfile.payout.payoutType === "Wallet" && (
               <div className="sm:col-span-3">
                 <label
                   htmlFor="wallet-address"
@@ -403,14 +523,18 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="wallet-address"
-                    id="wallet-address"
+                    name="walletAddress"
+                    id="walletAddress"
+                    value={userProfile.payout.walletAddress}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, walletAddress: e.target.value } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
             )}
-            {payout.payoutType === "Paypal" && (
+            {userProfile.payout.payoutType === "Paypal" && (
               <div className="sm:col-span-3">
                 <label
                   htmlFor="paypal-id"
@@ -421,8 +545,12 @@ export default function MyProfile() {
                 <div className="mt-2">
                   <input
                     type="text"
-                    name="paypal-id"
-                    id="paypal-id"
+                    name="paypalId"
+                    id="paypalId"
+                    value={userProfile.payout.paypalId}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, paypalId: e.target.value } })
+                    }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -440,12 +568,12 @@ export default function MyProfile() {
           Cancel
         </button>
         <button
-          type="submit"
+          onClick={handleSubmit}
           className="px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Save
         </button>
       </div>
-    </form>
+    </div>
   );
 }

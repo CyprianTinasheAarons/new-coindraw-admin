@@ -21,6 +21,32 @@ export const createReferral = createAsyncThunk(
   }
 );
 
+export const getReferral = createAsyncThunk(
+  "referrals/getReferral",
+  async (id) => {
+    try {
+      const response = await refferalService.get(id);
+      return response.data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+);
+
+export const updateReferralData = createAsyncThunk(
+    "referrals/updateReferralData",
+    async (id,data) => {
+      try {
+        const response = await refferalService.updateData(id,data);
+        return response.data;
+      } catch (e) {
+        console.log(e);
+        throw e;
+      }
+    }
+  );
+
 export const updateReferral = createAsyncThunk(
   "referrals/updateReferral",
   async (data) => {
@@ -237,6 +263,28 @@ export const referralSlice = createSlice({
       state.referrals.push(action.payload);
     },
     [createReferral.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.errorMessage = action.error.message;
+    },
+    [getReferral.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getReferral.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.refferer = action.payload;
+    },
+    [getReferral.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.errorMessage = action.error.message;
+    },
+    [updateReferralData.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [updateReferralData.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.refferer = action.payload;
+    },
+    [updateReferralData.rejected]: (state, action) => {
       state.isLoading = false;
       state.errorMessage = action.error.message;
     },

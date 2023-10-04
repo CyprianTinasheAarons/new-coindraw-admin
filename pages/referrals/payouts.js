@@ -13,15 +13,48 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
+import { getReferral } from "../../slices/referral";
+import { getTransactions } from "../../slices/transactions";
 
-const stats = [
-  { name: "Amount Due", stat: "50 MATIC" },
-  { name: "Total Amount", stat: "1000 MATIC" },
-  { name: "Total Payouts", stat: "230" },
-];
+
 
 function Referrals() {
-  const transactions = [];
+
+    const dispatch = useDispatch();
+    const [refferer, setRefferer] = useState({});
+    const [transactions, setTransactions] = useState([]);
+
+    useEffect(() => {
+      const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
+      dispatch(getReferral(id))
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+          setRefferer(res);
+        });
+    }, []);
+
+    useEffect(() => {
+      dispatch(getTransactions())
+        .unwrap()
+        .then((res) => {
+          const userEmail = JSON.parse(
+            localStorage.getItem("user-coindraw")
+          )?.email;
+          const filteredTransactions = res.filter(
+            (transaction) => transaction.email === userEmail
+          );
+          setTransactions(filteredTransactions);
+        });
+    }, []);
+
+    const stats = [
+      { name: "Amount Due", stat: refferer?.referrerReward + " MATIC" },
+      { name: "Total Amount", stat: refferer?.referrerTotalReward + " MATIC" },
+      { name: "Total Payouts", stat: refferer?.referrerCount },
+    ];
+
+
 
   return (
     <div>

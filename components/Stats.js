@@ -11,7 +11,7 @@ import UserService from "../api/user.service";
 import WinnerService from "../api/winner.service";
 import { useEffect, useState } from "react";
 
-export default function Stats() {
+export default function Stats({ user, transactions}) {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalDraws, setTotalDraws] = useState(0);
   const [totalWinners, setTotalWinners] = useState(0);

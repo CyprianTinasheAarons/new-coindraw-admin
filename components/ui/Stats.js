@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,7 +10,6 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { faker } from "@faker-js/faker";
 
 ChartJS.register(
   CategoryScale,
@@ -23,65 +21,55 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top",
-    },
-    title: {
-      display: true,
-      text: "Monthly Payouts",
-    },
-  },
-};
-
-const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-export const data = {
-  labels,
-  datasets: [
+export default function Stats({user, transactions}) {
+  const stats = [
     {
-      label: "Payouts",
-      data: labels.map(() => faker.datatype.number({ min: 0, max: 10000 })),
-      borderColor: "rgb(0, 255, 0)",
-      backgroundColor: "rgba(0, 255, 0, 0.5)",
+      name: "Total Amount Due",
+      value: user?.referrerReward,
     },
-  ],
-};
+    {
+      name: "Total Amount Paid",
+      value: user?.referrerTotalReward,
+    },
+    {
+      name: "Total Payouts",
+      value: transactions?.length,
+    },
+    {
+      name: "Total Referrals",
+      value: user?.referrerCount,
+    },
+  ];
 
-const stats = [
-  {
-    name: "Total Amount Due",
-    value: "$405.00",
-    change: "+4.75%",
-    changeType: "positive",
-  },
-  {
-    name: "Total Amount Paid",
-    value: "$12.00",
-    change: "+54.02%",
-    changeType: "negative",
-  },
-  {
-    name: "Total Payouts",
-    value: "$245.00",
-    change: "-1.39%",
-    changeType: "positive",
-  },
-  {
-    name: "Total Referrals",
-    value: "$30.00",
-    change: "+10.18%",
-    changeType: "negative",
-  },
-];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+   const options = {
+     responsive: true,
+     plugins: {
+       legend: {
+         position: "top",
+       },
+       title: {
+         display: true,
+         text: "Monthly Payouts",
+       },
+     },
+   };
 
-export default function Stats() {
+   const labels = transactions.map(transaction => new Date(transaction.createdAt).toLocaleDateString());
+
+   const data = {
+     labels,
+     datasets: [
+       {
+         label: "Payouts",
+         data: transactions.map(transaction => transaction.amount),
+         borderColor: "rgb(0, 255, 0)",
+         backgroundColor: "rgba(0, 255, 0, 0.5)",
+       },
+     ],
+   };
+
+  
   return (
     <>
       {/* Line Graph */}
@@ -97,19 +85,10 @@ export default function Stats() {
             <dt className="text-sm font-medium leading-6 text-gray-500">
               {stat.name}
             </dt>
-            <dd
-              className={classNames(
-                stat.changeType === "negative"
-                  ? "text-rose-600"
-                  : "text-gray-700",
-                "text-xs font-medium"
-              )}
-            >
-              {stat.change}
-            </dd>
-            <dd className="flex-none w-full text-3xl font-medium leading-10 tracking-tight text-gray-900">
+            <dd className="flex items-baseline justify-end text-2xl font-semibold text-gray-900">
               {stat.value}
             </dd>
+       
           </div>
         ))}
       </dl>

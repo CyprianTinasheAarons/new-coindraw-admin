@@ -5,6 +5,14 @@ class ReferralService {
     return httpCommon.post("/referral", data);
   }
 
+  get(id) {
+    return httpCommon.get("/referral/" + id);
+  }
+
+  updateData(data) {
+    return httpCommon.put("/referral/" + data.id, data.data);
+  }
+
   getAll() {
     return httpCommon.get("/referral");
   }
