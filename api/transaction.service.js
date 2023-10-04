@@ -14,8 +14,8 @@ class TransactionService  {
             return http.post('/transactions', data);
         }
 
-        update(id, data){
-            return http.put(`/transactions/${id}`, data);
+        update(data){
+            return http.put(`/transactions/${data?.id}`, data);
         }
 
         delete(id){

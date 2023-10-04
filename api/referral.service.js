@@ -24,6 +24,45 @@ class ReferralService {
   delete(id) {
     return httpCommon.delete("/referral/" + id);
   }
+  sendEmail(data) {
+    return httpCommon.post("/referral/send-email", data);
+  }
+
+  requestPayout(data) {
+    return httpCommon.post("/referral/request-payout", data);
+  }
+
+  requestNewCode(data) {
+    return httpCommon.post("/referral/request-new-code", data);
+  }
+
+  requestDateExtension(data) {
+    return httpCommon.post("/referral/request-date-extension", data);
+  }
+
+  acceptPayout(data) {
+    return httpCommon.put("/referral/accept-payout", data);
+  }
+
+  acceptNewCode(data) {
+    return httpCommon.put("/referral/accept-new-code", data);
+  }
+
+  acceptDateExtension(data) {
+    return httpCommon.put("/referral/accept-date-extension", data);
+  }
+
+  applyAsReferrer(data) {
+    return httpCommon.post("/referral/apply-as-referrer", data);
+  }
+
+  acceptReferrer(data) {
+    return httpCommon.put("/referral/accept-referrer", data);
+  }
+
+  updatePayoutDetails(data) {
+    return httpCommon.put("/referral/update-payout-details", data);
+  }
 }
 
 const referralService = new ReferralService();

@@ -60,7 +60,7 @@ const ReferralsComponent = () => {
 
   useEffect(() => {
     getData();
-  }, [dispatch]);
+  }, []);
 
   const [refferer, setRefferer] = useState({
     userId: "",

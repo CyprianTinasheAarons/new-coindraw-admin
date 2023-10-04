@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { useToast } from "@chakra-ui/react";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import userService from "../../api/user.service";
 
 const Details = ({ data }) => {
   const [copiedList, setCopiedList] = useState([]);
   const [selected, setSelected] = useState({});
   const [selectedDetails, setSelectedDetails] = useState({});
+  const [usernames, setUsernames] = useState({});
+  
   const toast = useToast();
 
   const setCopied = (id) => {
@@ -30,6 +33,29 @@ const Details = ({ data }) => {
       selectedAmounts,
     });
   }, [selected]);
+
+
+    useEffect(() => {
+      const fetchUsernames = async () => {
+        const newNames = {};
+        for (const r of data) {
+          const username = await fetchUser(r?.userId);
+          newNames[r?.userId] = username;
+        }
+        setUsernames(newNames);
+      };
+
+      fetchUsernames();
+    }, [data]);
+
+    const fetchUser = async (id) => {
+      let username = null;
+      await userService.get(id).then((res) => {
+        username = res.data.username;
+      });
+      return username;
+    };
+    
   return (
     <>
       <div className="w-full">
@@ -84,6 +110,14 @@ const Details = ({ data }) => {
             >
               Select
             </th>
+
+            <th
+              scope="col"
+              className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+            >
+              referrer Username
+            </th>
+
             <th
               scope="col"
               className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
@@ -122,6 +156,10 @@ const Details = ({ data }) => {
                   }}
                 />
               </td>
+              <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
+                {usernames[r?.userId]}
+              </td>
+
               <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                 {r?.referrerWalletAddress}
               </td>
