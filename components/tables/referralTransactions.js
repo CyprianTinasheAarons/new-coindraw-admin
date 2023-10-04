@@ -1,6 +1,9 @@
 import { useDispatch } from "react-redux";
-import { getTransactions,createTransaction, updateTransaction } from "../../slices/transactions";
+import { getTransactions, updateTransaction } from "../../slices/transactions";
+import { sendReward } from "../../slices/referral";
 import {useEffect, useState} from 'react'
+import { Combobox } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 import {
   Modal,
@@ -15,9 +18,14 @@ import {
   ,useToast
 } from "@chakra-ui/react";
 
-export default function ReferralTransactions() {
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export default function ReferralTransactions({data}) {
   const dispatch = useDispatch();
   const toast = useToast();
+  const [query, setQuery] = useState("");
   const [usersTransactions, setUsersTransactions] = useState([]);
   const [transaction, setTransaction] = useState({
     email: "",
@@ -54,17 +62,45 @@ export default function ReferralTransactions() {
   }
 
   const handleSave = async () => {
-    const res = await dispatch(createTransaction(transaction)).unwrap();
-    if(res){
+    if (selectedUser.referrerReward <= 0) {
       toast({
-        title: "Transaction saved.",
-        description: "We've saved your transaction.",
-        status: "success",
+        title: "Insufficient Reward.",
+        description: "The selected user does not have enough referrer reward.",
+        status: "error",
         duration: 9000,
         isClosable: true,
       });
-      getData();
-      onSaveClose();
+      return;
+    }
+    try {
+      const data = {
+        email: selectedUser.email,
+        receiptUrl: transaction.receiptUrl,
+        amount: selectedUser.referrerReward,
+        type: transaction.type || 'Paypal'
+      }
+
+      const res = await dispatch(sendReward(data)).unwrap()
+      if(res){
+        toast({
+          title: "Transaction saved.",
+          description: "We've saved your transaction.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        getData();
+        onSaveClose();
+      }
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: "An error occurred.",
+        description: `Unable to save transaction`,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     }
   }
 
@@ -82,6 +118,8 @@ export default function ReferralTransactions() {
       onUploadClose();
     }
   }
+
+  console.log(data)
   
   return (
     <div>
@@ -90,7 +128,7 @@ export default function ReferralTransactions() {
           onClick={saveTransaction}
           className="p-2 m-1 border-2 border-gray-300 rounded-md border-green hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green"
         >
-          Save Transaction
+          Save Payout
         </button>
       </div>
       <table className="min-w-full divide-y divide-gray-300">
@@ -237,26 +275,91 @@ export default function ReferralTransactions() {
           <ModalCloseButton />
           <ModalBody>
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+              <Combobox
+                as="div"
+                value={selectedUser}
+                onChange={setSelectedUser}
               >
-                Email
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                  onChange={(e) =>
-                    setTransaction({
-                      ...transaction,
-                      email: e.target.value,
-                    })
-                  }
-                />
-              </div>
+                <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">
+                  Select a person
+                </Combobox.Label>
+                <div className="relative mt-2">
+                  <Combobox.Input
+                    className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    onChange={(event) => setQuery(event.target.value)}
+                    displayValue={(person) => person?.email}
+                  />
+                  <Combobox.Button className="absolute inset-y-0 right-0 flex items-center px-2 rounded-r-md focus:outline-none">
+                    <ChevronUpDownIcon
+                      className="w-5 h-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </Combobox.Button>
+                  {data?.length > 0 && (
+                    <Combobox.Options className="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      {data?.map((person) => (
+                        <Combobox.Option
+                          key={person.id}
+                          value={person}
+                          className={({ active }) =>
+                            classNames(
+                              "relative cursor-default select-none py-2 pl-3 pr-9",
+                              active
+                                ? "bg-indigo-600 text-white"
+                                : "text-gray-900"
+                            )
+                          }
+                        >
+                          {({ active, selected }) => (
+                            <>
+                              <div className="flex items-center">
+                                <span
+                                  className={classNames(
+                                    "inline-block h-2 w-2 flex-shrink-0 rounded-full",
+                                    person.referrerReward > 0
+                                      ? "bg-green"
+                                      : "bg-red-400"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                                <span
+                                  className={classNames(
+                                    "ml-3 truncate",
+                                    selected && "font-semibold"
+                                  )}
+                                >
+                                  {person.email}
+                                </span>
+                                <span
+                                  className={classNames(
+                                    "ml-3 truncate",
+                                    selected && "font-semibold"
+                                  )}
+                                >
+                                 $ = {person.referrerReward}
+                                </span>
+                              </div>
+                              {selected && (
+                                <span
+                                  className={classNames(
+                                    "absolute inset-y-0 right-0 flex items-center pr-4",
+                                    active ? "text-white" : "text-indigo-600"
+                                  )}
+                                >
+                                  <CheckIcon
+                                    className="w-5 h-5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </Combobox.Option>
+                      ))}
+                    </Combobox.Options>
+                  )}
+                </div>
+              </Combobox>
               <label
                 htmlFor="receipt"
                 className="block text-sm font-medium text-gray-700"
@@ -277,26 +380,7 @@ export default function ReferralTransactions() {
                   }
                 />
               </div>
-              <label
-                htmlFor="amount"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Amount
-              </label>
-              <div className="mt-1">
-                <input
-                  id="amount"
-                  name="amount"
-                  type="text"
-                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                  onChange={(e) =>
-                    setTransaction({
-                      ...transaction,
-                      amount: e.target.value,
-                    })
-                  }
-                />
-              </div>
+
               <label
                 htmlFor="type"
                 className="block text-sm font-medium text-gray-700"
@@ -314,6 +398,7 @@ export default function ReferralTransactions() {
                       type: e.target.value,
                     })
                   }
+                  defaultChecked="Paypal"
                 >
                   <option value="Paypal">Paypal</option>
                   <option value="Fiat">Fiat</option>

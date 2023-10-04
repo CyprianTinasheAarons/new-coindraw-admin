@@ -68,18 +68,7 @@ export default function ReferralApprovals({approvals}) {
             >
               Approved
             </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              Approved Date
-            </th>
-            <th
-              scope="col"
-              className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              Approved By
-            </th>
+      
             <th
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -106,12 +95,7 @@ export default function ReferralApprovals({approvals}) {
               <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                 {a?.approved ? "Yes" : "No"}
               </td>
-              <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                {a?.approvedDate}
-              </td>
-              <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                {a?.approvedBy}
-              </td>
+      
               <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                 <button onClick={() => handleApproval(a?.id, true ,a?.email)} className="px-2 py-1 text-white rounded bg-green">Yes</button>
                 <button onClick={() => handleApproval(a?.id, false, a?.email)} className="px-2 py-1 ml-2 text-white bg-red-500 rounded">No</button>

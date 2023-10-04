@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 import ReferralApprovals from "../../components/tables/referralApprovals";
 import ReferralTransactions from "../../components/tables/referralTransactions";
 
+
 export default function ReferralTable({ data }) {
   const isLoading = useSelector((state) => state.referral.isLoading);
   const [usernames, setUsernames] = useState({});
@@ -63,36 +64,65 @@ export default function ReferralTable({ data }) {
 
   return (
     <div className="mt-4">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">
-            Referrals
-          </h1>
-          <p className="mt-2 text-sm text-gray-700">
-            This is a list of all referrals created by the administrator.
-          </p>
+      {tab === "referrals" && (
+        <div className="sm:flex sm:items-center">
+          <div className="sm:flex-auto">
+            <h1 className="text-base font-semibold leading-6 text-gray-900">
+              Referrals
+            </h1>
+            <p className="mt-2 text-sm text-gray-700">
+              This is a list of all referrals created by the administrator.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
+      {tab === "transactions" && (
+        <div className="sm:flex sm:items-center">
+          <div className="sm:flex-auto">
+            <h1 className="text-base font-semibold leading-6 text-gray-900">
+              Transactions
+            </h1>
+            <p className="mt-2 text-sm text-gray-700">
+              This is a list of all transactions related to referrals.
+            </p>
+          </div>
+        </div>
+      )}
+      {tab === "approvals" && (
+        <div className="sm:flex sm:items-center">
+          <div className="sm:flex-auto">
+            <h1 className="text-base font-semibold leading-6 text-gray-900">
+              Approvals
+            </h1>
+            <p className="mt-2 text-sm text-gray-700">
+              This is a list of all approvals related to referrals.
+            </p>
+          </div>
+        </div>
+      )}
       <div>
         <div className="flex justify-end">
      
           <button
             onClick={() => setTab("referrals")}
-            className="p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className={`p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${tab == "referrals" ? "ring-indigo-500" : ""}`}
           >
             View Referrals
           </button>
           <button
             onClick={() => setTab("transactions")}
-            className="p-2 mx-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className={`p-2 mx-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${tab == "transactions" ? "ring-indigo-500 " : ""}`}
           >
             View Transactions
           </button>
           <button
             onClick={() => setTab("approvals")}
-            className="p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className={`p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${tab == "approvals" ? "ring-indigo-500" : ""}`}
           >
             View Approvals
+            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              {data.filter((approval) => !approval.approved).length}
+            </span>
           </button>
         </div>
       </div>
@@ -243,7 +273,7 @@ export default function ReferralTable({ data }) {
                   </table>
                 )}
                 {tab == "transactions" && (
-                  <ReferralTransactions transactions={data} />
+                  <ReferralTransactions data={data} />
                 )}
                 {tab == "approvals" && (
                   <ReferralApprovals
