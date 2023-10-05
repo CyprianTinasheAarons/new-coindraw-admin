@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Head from "next/head";
 import Layout from "../../components/ui/Layout";
 import { useToast } from "@chakra-ui/react";
