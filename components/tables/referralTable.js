@@ -148,6 +148,9 @@ export default function ReferralTable({ data }) {
             }`}
           >
             View Requests
+            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+              {data.filter((t) => t?.requestPayout?.requested === true || t?.requestNewCode?.requested === true || t?.requestDateExtension?.requested === true).length}
+            </span>
           </button>
         </div>
       </div>
@@ -303,13 +306,7 @@ export default function ReferralTable({ data }) {
                     approvals={data.filter((approval) => !approval.approved)}
                   />
                 )}
-                {
-                  tab == "requests" && (
-                    <ReferralRequests
-                    data={data}
-                    />
-                  )
-                }
+                {tab == "requests" && <ReferralRequests data={data} />}
               </>
             )}
           </div>

@@ -19,7 +19,7 @@ export default function MyProfile({user}) {
     state: user?.state || "",
     zip: user?.zip || "",
     payout: {
-      payoutType: user?.payout?.payoutType || "",
+      payoutType: user?.payout?.payoutType || "FIAT",
       walletAddress: user?.payout?.walletAddress || "",
       paypalId: user?.payout?.paypalId || "",
       bankDetails: {

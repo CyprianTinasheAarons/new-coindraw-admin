@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector } from "react-redux";
 import {
   acceptNewCode,
   acceptPayout,
@@ -6,11 +6,12 @@ import {
   getReferrals,
 } from "../../slices/referral";
 import { useState } from "react";
-import { useToast } from "@chakra-ui/react";
+
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import {
+  useToast,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -34,6 +35,8 @@ export default function ReferralRequests({ data }) {
   const [selected, setSelected] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const updatedData = useSelector((state) => state.referral.referrals);
+
   const [combinedData, setCombinedData] = useState(data.filter((t) => t?.requestPayout?.requested === true || t?.requestNewCode?.requested === true || t?.requestDateExtension?.requested === true));
 
   const dispatch = useDispatch();
@@ -54,7 +57,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-      const updatedData = await dispatch(getReferrals()).unwrap();
+      dispatch(getReferrals()).unwrap();
       setCombinedData(updatedData.filter((t) => t?.requestPayout?.requested === true || t?.requestNewCode?.requested === true || t?.requestDateExtension?.requested === true));
 
     } catch (error) {
@@ -76,6 +79,14 @@ export default function ReferralRequests({ data }) {
     }
     try {
       dispatch(acceptPayout(data));
+       setCombinedData(
+         updatedData.filter(
+           (t) =>
+             t?.requestPayout?.requested === true ||
+             t?.requestNewCode?.requested === true ||
+             t?.requestDateExtension?.requested === true
+         )
+       );
       toast({
         title: "Success",
         description: "Payout request accepted",
@@ -83,7 +94,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-          const updatedData = await dispatch(getReferrals()).unwrap();
+           await dispatch(getReferrals()).unwrap();
           setCombinedData(
             updatedData.filter(
               (t) =>
@@ -113,7 +124,7 @@ export default function ReferralRequests({ data }) {
     }
 
     try {
-      dispatch(acceptDateExtension(data));
+      dispatch(acceptDateExtension(data))
       toast({
         title: "Success",
         description: "Date extension request accepted",
@@ -121,7 +132,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-          const updatedData = await dispatch(getReferrals()).unwrap();
+           dispatch(getReferrals())
           setCombinedData(
             updatedData.filter(
               (t) =>
@@ -160,27 +171,33 @@ export default function ReferralRequests({ data }) {
               <Td>{t?.email}</Td>
               <Td>
                 <Text textAlign="left">
-                  {t?.requestPayout?.requested ? "Requested" : "Accepted"}
+                  {t?.requestPayout?.requested ? "Requested" : ""}
                 </Text>
-                <Button
-                  colorScheme="blue"
-                  onClick={() => handleAcceptPayout(t, true)}
-                  className="mr-2"
-                >
-                  Accept
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => handleAcceptPayout(t, false)}
-                >
-                  Decline
-                </Button>
+                {t?.requestPayout?.requested ? (
+                  <>
+                    {" "}
+                    <Button
+                      colorScheme="blue"
+                      onClick={() => handleAcceptPayout(t, true)}
+                      className="mr-2"
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={() => handleAcceptPayout(t, false)}
+                    >
+                      Decline
+                    </Button>
+                  </>
+                ): "-"}
               </Td>
               <Td>
                 <Text textAlign="left">
-                  {t?.requestNewCode?.requested ? "Requested" : "Accepted"}
+                  {t?.requestNewCode?.requested ? "Requested" : ""}
                 </Text>
-                <Button
+                   {t?.requestNewCode?.requested ? <>
+                    <Button
                   colorScheme="blue"
                   onClick={() => handleAcceptNewCode(t, true)}
                   className="mr-2"
@@ -192,15 +209,16 @@ export default function ReferralRequests({ data }) {
                   onClick={() => handleAcceptNewCode(t, false)}
                 >
                   Decline
-                </Button>
+                </Button></>
+                : "-"} 
               </Td>
               <Td>
                 <Text textAlign="left">
                   {t?.requestDateExtension?.requested
                     ? "Requested"
-                    : "Accepted"}
+                    : ""}
                 </Text>
-                <Button
+                {t?.requestDateExtension?.requested ?<> <Button
                   colorScheme="blue"
                   onClick={() => {
                     onOpen();
@@ -216,6 +234,7 @@ export default function ReferralRequests({ data }) {
                 >
                   Decline
                 </Button>
+                </> : "-"}
               </Td>
               <Td>{new Date(t?.updatedAt).toLocaleDateString()}</Td>
             </Tr>
@@ -234,6 +253,7 @@ export default function ReferralRequests({ data }) {
                 onChange={(date) => setStartDate(date)}
                 minDate={new Date()}
                 className="w-full border rounded-md"
+                dateFormat="dd/MM/yyyy"
               />
             </div>
           </ModalBody>
