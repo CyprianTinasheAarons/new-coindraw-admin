@@ -10,7 +10,7 @@ class ReferralService {
   }
 
   updateData(data) {
-    return httpCommon.put("/referral/" + data.id, data.data);
+    return httpCommon.put("/referral/profile/" + data.id, data.data);
   }
 
   getAll() {
@@ -65,7 +65,7 @@ class ReferralService {
   }
 
   acceptReferrer(data) {
-    return httpCommon.put("/referral/accept-referrer", data);
+    return httpCommon.post("/referral/accept-referrer", data);
   }
 
   updatePayoutDetails(data) {

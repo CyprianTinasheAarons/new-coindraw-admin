@@ -53,6 +53,7 @@ function Referrals() {
          duration: 5000,
          isClosable: true,
        });
+            location.reload();
      } catch (error) {
        toast({
          title: "Error",
@@ -73,6 +74,7 @@ function Referrals() {
          duration: 5000,
          isClosable: true,
        });
+       location.reload();
      } catch (error) {
        toast({
          title: "Error",
@@ -93,6 +95,7 @@ function Referrals() {
          duration: 5000,
          isClosable: true,
        });
+            location.reload();
      } catch (error) {
        toast({
          title: "Error",

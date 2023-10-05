@@ -29,7 +29,12 @@ function TwoFactor() {
 
           localStorage.setItem("admin-token", res.data.accessToken);
           localStorage.setItem("user-coindraw", JSON.stringify(res?.data?.user));
-          location.href = "/";
+          const role = JSON.parse(localStorage.getItem("user-coindraw"))?.role;
+          if (role === "referrer") {
+            location.href = "/referrals/dashboard";
+          } else {
+            location.href = "/";
+          }
         })
         .catch((error) => {
           console.log(error);
