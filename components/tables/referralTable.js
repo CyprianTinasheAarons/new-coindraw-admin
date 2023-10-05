@@ -7,13 +7,15 @@ import React, { useState, useEffect } from "react";
 import ReferralApprovals from "../../components/tables/referralApprovals";
 import ReferralTransactions from "../../components/tables/referralTransactions";
 import ReferralRequests from "../../components/tables/referralRequests";
+import {  getReferrals } from "../../slices/referral";
 
-export default function ReferralTable({ data }) {
+export default function ReferralTable() {
   const isLoading = useSelector((state) => state.referral.isLoading);
   const [usernames, setUsernames] = useState({});
   const [tab, setTab] = useState(
     localStorage.getItem("tab") ? localStorage.getItem("tab") : "referrals"
   )
+  const [data, setData] = useState([]);
   const toast = useToast();
 
   const truncate = (str, n) => {
@@ -21,6 +23,19 @@ export default function ReferralTable({ data }) {
   };
 
   const dispatch = useDispatch();
+
+
+   const getData = async () => {
+     await dispatch(getReferrals())
+       .unwrap()
+       .then((res) => {
+         setData(res);
+       });
+   };
+
+   useEffect(() => {
+     getData();
+   }, []);
 
   const handleDelete = async (id) => {
     await dispatch(deleteReferral(id))
