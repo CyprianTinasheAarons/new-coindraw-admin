@@ -4,7 +4,6 @@ import Head from "next/head";
 import Layout from "../../components/ui/Layout";
 import { useToast } from "@chakra-ui/react";
 import { getReferral, requestDateExtension,requestNewCode,requestPayout } from "../../slices/referral";
-import { getTransactions } from "../../slices/transactions";
 
 
 
@@ -158,17 +157,17 @@ function Referrals() {
             ))}
           </dl>
           <div className="mt-5">
-            {refferer?.requestPayout?.requested && !refferer?.requestPayout.accepted && (
+            {refferer?.requestPayout?.requested && (
               <div className="p-4 mb-4 bg-yellow-200 rounded-md">
                 <p className="text-lg font-semibold text-yellow-700">Payout Requested on {new Date(refferer?.requestPayout.requestedDate).toLocaleDateString()}</p>
               </div>
             )}
-            {refferer?.requestNewCode?.requested && !refferer?.requestNewCode?.accepted && (
+            {refferer?.requestNewCode?.requested && (
               <div className="p-4 mb-4 bg-blue-200 rounded-md">
                 <p className="text-lg font-semibold text-blue-700">New Code Requested on {new Date(refferer?.requestNewCode.requestedDate).toLocaleDateString()}</p>
               </div>
             )}
-            {refferer?.requestDateExtension?.requested && !refferer?.requestDateExtension?.accepted && (
+            {refferer?.requestDateExtension?.requested && (
               <div className="p-4 mb-4 rounded-md bg-green">
                 <p className="text-lg font-semibold text-white">Date Extension Requested on {new Date(refferer?.requestDateExtension.requestedDate).toLocaleDateString()}</p>
               </div>
