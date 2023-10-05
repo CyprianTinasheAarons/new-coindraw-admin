@@ -36,6 +36,7 @@ export default function ReferralRequests({ data }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const updatedData = useSelector((state) => state.referral.referrals);
+  console.log(data);
 
   const [combinedData, setCombinedData] = useState(data.filter((t) => t?.requestPayout?.requested === true || t?.requestNewCode?.requested === true || t?.requestDateExtension?.requested === true));
 
@@ -57,9 +58,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-      dispatch(getReferrals()).unwrap();
-      setCombinedData(updatedData.filter((t) => t?.requestPayout?.requested === true || t?.requestNewCode?.requested === true || t?.requestDateExtension?.requested === true));
-
+       location.reload();
     } catch (error) {
       toast({
         title: "Error",
@@ -94,15 +93,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-           await dispatch(getReferrals()).unwrap();
-          setCombinedData(
-            updatedData.filter(
-              (t) =>
-                t?.requestPayout?.requested === true ||
-                t?.requestNewCode?.requested === true ||
-                t?.requestDateExtension?.requested === true
-            )
-          );
+         location.reload();
 
     } catch (error) {
       toast({
@@ -132,15 +123,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-           dispatch(getReferrals())
-          setCombinedData(
-            updatedData.filter(
-              (t) =>
-                t?.requestPayout?.requested === true ||
-                t?.requestNewCode?.requested === true ||
-                t?.requestDateExtension?.requested === true
-            )
-          );
+             location.reload();
 
     } catch (error) {
       toast({

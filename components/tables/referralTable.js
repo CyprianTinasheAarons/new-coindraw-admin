@@ -11,7 +11,9 @@ import ReferralRequests from "../../components/tables/referralRequests";
 export default function ReferralTable({ data }) {
   const isLoading = useSelector((state) => state.referral.isLoading);
   const [usernames, setUsernames] = useState({});
-  const [tab, setTab] = useState("referrals");
+  const [tab, setTab] = useState(
+    localStorage.getItem("tab") ? localStorage.getItem("tab") : "referrals"
+  )
   const toast = useToast();
 
   const truncate = (str, n) => {
@@ -115,7 +117,7 @@ export default function ReferralTable({ data }) {
       <div>
         <div className="flex justify-end">
           <button
-            onClick={() => setTab("referrals")}
+            onClick={() => {setTab("referrals"); localStorage.setItem("tab", "referrals");}}
             className={`p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "referrals" ? "ring-indigo-500" : ""
             }`}
@@ -123,7 +125,7 @@ export default function ReferralTable({ data }) {
             View Referrals
           </button>
           <button
-            onClick={() => setTab("transactions")}
+            onClick={() => {setTab("transactions"); localStorage.setItem("tab", "transactions");}}
             className={`p-2 mx-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "transactions" ? "ring-indigo-500 " : ""
             }`}
@@ -131,7 +133,7 @@ export default function ReferralTable({ data }) {
             View Transactions
           </button>
           <button
-            onClick={() => setTab("approvals")}
+            onClick={() => {setTab("approvals"); localStorage.setItem("tab", "approvals");}}
             className={`p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "approvals" ? "ring-indigo-500" : ""
             }`}
@@ -142,7 +144,7 @@ export default function ReferralTable({ data }) {
             </span>
           </button>
           <button
-            onClick={() => setTab("requests")}
+            onClick={() => {setTab("requests"); localStorage.setItem("tab", "requests");}}
             className={`p-2 border-2 border-gray-300 rounded-md ml-2 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "requests" ? "ring-indigo-500" : ""
             }`}
