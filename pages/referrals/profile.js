@@ -4,6 +4,7 @@ import Head from "next/head";
 import Layout from "../../components/ui/Layout";
 import MyProfile from "../../components/ui/MyProfile";
 import { getReferral } from "../../slices/referral";
+import { Spinner } from "@chakra-ui/react";
 
 
 function Profile() {
@@ -24,7 +25,13 @@ function Profile() {
    }, [dispatch]);
 
    if (!refferer) {
-     return <div>Loading...</div>;
+     return (
+       <div className="flex h-screen">
+         <div className="m-auto">
+           <Spinner />
+         </div>
+       </div>
+     );
    }
 
   return (
