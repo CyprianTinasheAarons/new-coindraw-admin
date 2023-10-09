@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ConnectWallet } from "@thirdweb-dev/react";
+
 import { Tooltip } from "@chakra-ui/react";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -234,7 +234,7 @@ export default function Layout(props) {
                     </h2>
                   </div>
                   <div className="flex mt-4 md:ml-4 md:mt-0">
-                    <ConnectWallet />
+
                     <Tooltip label="Sign Out Account">
                       <button className="ml-4" onClick={signOut}>
                         <UserCircleIcon className="w-8 h-8" />

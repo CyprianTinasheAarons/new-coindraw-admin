@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import {useToast} from "@chakra-ui/react";
 
 ChartJS.register(
   CategoryScale,
@@ -22,6 +23,7 @@ ChartJS.register(
 );
 
 export default function Stats({user, transactions}) {
+  const toast = useToast();
   const stats = [
     {
       name: "Total Amount Due",
@@ -33,7 +35,7 @@ export default function Stats({user, transactions}) {
     },
     {
       name: "Total Payouts",
-      value: transactions?.length,
+      value: transactions?.length
     },
     {
       name: "Total Referrals",
@@ -88,10 +90,41 @@ export default function Stats({user, transactions}) {
             <dd className="flex items-baseline justify-end text-2xl font-semibold text-gray-900">
               {stat.value}
             </dd>
-       
           </div>
         ))}
       </dl>
+
+      {/* Buttons to copy on clipboard */}
+      <button
+        className="px-8 py-3 border-2 rounded-md"
+        onClick={() => {
+          navigator.clipboard.writeText(user?.referralCode);
+          toast({
+            title: "Copied!",
+            description: "Referral code copied to clipboard.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        }}
+      >
+        Copy Referral Code
+      </button>
+      <button
+        className="px-8 py-3 ml-4 border-2 rounded-md"
+        onClick={() => {
+          navigator.clipboard.writeText(user?.referralLink);
+          toast({
+            title: "Copied!",
+            description: "Referral link copied to clipboard.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        }}
+      >
+        Copy Referral Link
+      </button>
     </>
   );
 }

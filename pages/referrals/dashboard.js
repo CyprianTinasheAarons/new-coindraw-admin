@@ -24,7 +24,7 @@ function Dashboard() {
   useEffect(() => {
     dispatch(getTransactions()).unwrap().then((res) => {
       const userEmail = JSON.parse(localStorage.getItem("user-coindraw"))?.email;
-      const filteredTransactions = res.filter(transaction => transaction.email === userEmail);
+      const filteredTransactions = res.filter(transaction => transaction.email == userEmail && transaction.email);
       setTransactions(filteredTransactions);
 
     }

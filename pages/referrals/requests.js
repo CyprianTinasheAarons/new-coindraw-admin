@@ -32,7 +32,7 @@ function Referrals() {
      },
      {
        name: "Expiry Date",
-       stat: new Date(refferer?.referralExpiryDate).toLocaleDateString(),
+       stat: new Date(refferer?.referralExpiryDate).toLocaleDateString('en-GB'),
        button: "Request Date Extention",
      },
      {
@@ -119,7 +119,6 @@ function Referrals() {
       <Layout title={"Requests"}>
         {/* Buttons */}
         <div className="p-8 ">
-
           <dl className="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
             {stats.map((item, index) => (
               <div
@@ -133,23 +132,26 @@ function Referrals() {
                   {item.stat}
                 </dd>
                 {index === 0 && (
-                  <button onClick={
-                    handleRequestPayout
-                  } className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <button
+                    onClick={handleRequestNewCode}
+                    className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
                     {item.button}
                   </button>
                 )}
                 {index === 1 && (
-                  <button onClick={
-                    handleRequestDateExtension
-                   }  className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <button
+                    onClick={handleRequestDateExtension}
+                    className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
                     {item.button}
                   </button>
                 )}
                 {index === 2 && (
-                  <button onClick={
-                    handleRequestNewCode
-                  } className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <button
+                    onClick={handleRequestPayout}
+                    className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
                     {item.button}
                   </button>
                 )}
@@ -159,17 +161,32 @@ function Referrals() {
           <div className="mt-5">
             {refferer?.requestPayout?.requested && (
               <div className="p-4 mb-4 bg-yellow-200 rounded-md">
-                <p className="text-lg font-semibold text-yellow-700">Payout Requested on {new Date(refferer?.requestPayout.requestedDate).toLocaleDateString()}</p>
+                <p className="text-lg font-semibold text-yellow-700">
+                  Payout Requested on{" "}
+                  {new Date(
+                    refferer?.requestPayout.requestedDate
+                  ).toLocaleDateString()}
+                </p>
               </div>
             )}
             {refferer?.requestNewCode?.requested && (
               <div className="p-4 mb-4 bg-blue-200 rounded-md">
-                <p className="text-lg font-semibold text-blue-700">New Code Requested on {new Date(refferer?.requestNewCode.requestedDate).toLocaleDateString()}</p>
+                <p className="text-lg font-semibold text-blue-700">
+                  New Code Requested on{" "}
+                  {new Date(
+                    refferer?.requestNewCode.requestedDate
+                  ).toLocaleDateString()}
+                </p>
               </div>
             )}
             {refferer?.requestDateExtension?.requested && (
               <div className="p-4 mb-4 rounded-md bg-green">
-                <p className="text-lg font-semibold text-white">Date Extension Requested on {new Date(refferer?.requestDateExtension.requestedDate).toLocaleDateString()}</p>
+                <p className="text-lg font-semibold text-white">
+                  Date Extension Requested on{" "}
+                  {new Date(
+                    refferer?.requestDateExtension.requestedDate
+                  ).toLocaleDateString()}
+                </p>
               </div>
             )}
           </div>

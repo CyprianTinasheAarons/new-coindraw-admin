@@ -3,9 +3,8 @@ import {
   acceptNewCode,
   acceptPayout,
   acceptDateExtension,
-  getReferrals,
 } from "../../slices/referral";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -38,7 +37,18 @@ export default function ReferralRequests({ data }) {
   const updatedData = useSelector((state) => state.referral.referrals);
   console.log(data);
 
-  const [combinedData, setCombinedData] = useState(data.filter((t) => t?.requestPayout?.requested === true || t?.requestNewCode?.requested === true || t?.requestDateExtension?.requested === true));
+  const [combinedData, setCombinedData] = useState([]);
+
+  useEffect(() => {
+    setCombinedData(
+      data.filter(
+        (t) =>
+          t?.requestPayout?.requested === true ||
+          t?.requestNewCode?.requested === true ||
+          t?.requestDateExtension?.requested === true
+      )
+    );
+  }, [data]);
 
   const dispatch = useDispatch();
   const toast = useToast();
@@ -58,7 +68,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-       location.reload();
+      location.reload();
     } catch (error) {
       toast({
         title: "Error",
@@ -78,14 +88,6 @@ export default function ReferralRequests({ data }) {
     }
     try {
       dispatch(acceptPayout(data));
-       setCombinedData(
-         updatedData.filter(
-           (t) =>
-             t?.requestPayout?.requested === true ||
-             t?.requestNewCode?.requested === true ||
-             t?.requestDateExtension?.requested === true
-         )
-       );
       toast({
         title: "Success",
         description: "Payout request accepted",
@@ -93,8 +95,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-         location.reload();
-
+        location.reload();
     } catch (error) {
       toast({
         title: "Error", 
@@ -123,8 +124,7 @@ export default function ReferralRequests({ data }) {
         duration: 5000,
         isClosable: true,
       });
-             location.reload();
-
+     location.reload();
     } catch (error) {
       toast({
         title: "Error",
@@ -162,7 +162,7 @@ export default function ReferralRequests({ data }) {
                     <Button
                       colorScheme="blue"
                       onClick={() => handleAcceptPayout(t, true)}
-                      className="mr-2"
+                      className="mb-1 mr-2"
                     >
                       Accept
                     </Button>
