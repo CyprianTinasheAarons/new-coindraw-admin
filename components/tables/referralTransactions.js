@@ -91,6 +91,7 @@ export default function ReferralTransactions({data}) {
         });
         getData();
         onSaveClose();
+        location.reload();
       }
     } catch (error) {
       console.log(error)
