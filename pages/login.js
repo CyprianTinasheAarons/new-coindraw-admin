@@ -82,7 +82,7 @@ export default function Login() {
               />
             </a>
             <h2 className="mt-6 text-xl tracking-tight text-center text-white">
-              {affiliate === affiliate
+              {affiliate 
                 ? "Sign in to Coindraw Affiliate"
                 : "Sign in to Coindraw Admin"}
             </h2>
