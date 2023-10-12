@@ -151,7 +151,7 @@ export default function ReferralTransactions({data}) {
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
             >
-              Type
+              Preffered Payout Type
             </th>
             <th
               scope="col"
@@ -386,7 +386,7 @@ export default function ReferralTransactions({data}) {
                 htmlFor="type"
                 className="block text-sm font-medium text-gray-700"
               >
-                Type
+                Preffered Payout Type
               </label>
               <div className="mt-1">
                 <select
