@@ -1,4 +1,4 @@
-import { useDispatch ,useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   acceptNewCode,
   acceptPayout,
@@ -34,9 +34,6 @@ export default function ReferralRequests({ data }) {
   const [selected, setSelected] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const updatedData = useSelector((state) => state.referral.referrals);
-  console.log(data);
-
   const [combinedData, setCombinedData] = useState([]);
 
   useEffect(() => {
@@ -60,7 +57,7 @@ export default function ReferralRequests({ data }) {
       userId: user?.id,
     }
     try {
-     dispatch(acceptNewCode(data));
+     await dispatch(acceptNewCode(data)).unwrap();
       toast({
         title: "Success",
         description: "New code request accepted",
@@ -87,7 +84,7 @@ export default function ReferralRequests({ data }) {
       userId: user?.id,
     }
     try {
-      dispatch(acceptPayout(data));
+      await dispatch(acceptPayout(data)).unwrap();
       toast({
         title: "Success",
         description: "Payout request accepted",
@@ -116,7 +113,7 @@ export default function ReferralRequests({ data }) {
     }
 
     try {
-      dispatch(acceptDateExtension(data))
+      await dispatch(acceptDateExtension(data)).unwrap();
       toast({
         title: "Success",
         description: "Date extension request accepted",
