@@ -48,7 +48,7 @@ function Referrals() {
         name: "Amount Due",
         stat:
           refferer?.referrerReward?.toFixed(2) +
-          " MATIC/" +
+          " MATIC/ " +
           currencySymbols[refferer?.payout?.currency] +
           "" +
           (
@@ -59,7 +59,7 @@ function Referrals() {
         name: "Total Paid",
         stat:
           refferer?.referrerTotalReward?.toFixed(2) +
-          " MATIC/" +
+          " MATIC/ " +
           currencySymbols[refferer?.payout?.currency] +
           "" +
           (
@@ -74,7 +74,7 @@ function Referrals() {
         amount +
         " " +
         "Matic" +
-        " /" +
+        "/ " +
         currencySymbols[refferer?.payout?.currency] +
         "" +
         priceInMatic?.toFixed(3)

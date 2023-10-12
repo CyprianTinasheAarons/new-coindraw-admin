@@ -42,7 +42,7 @@ export default function Stats({user, transactions}) {
     },
     {
       name: "Total Amount Paid",
-      value: user?.referrerTotalReward?.toFixed(2) + " MATIC/" + currencySymbols[user?.payout?.currency] + "" + (user?.referrerTotalReward * prices?.[user?.payout?.currency])?.toFixed(3),
+      value: user?.referrerTotalReward?.toFixed(2) + " MATIC/ " + currencySymbols[user?.payout?.currency] + "" + (user?.referrerTotalReward * prices?.[user?.payout?.currency])?.toFixed(3),
     },
     {
       name: "Total Payouts",
