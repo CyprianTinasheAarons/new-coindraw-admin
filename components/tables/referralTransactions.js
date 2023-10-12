@@ -127,7 +127,15 @@ export default function ReferralTransactions({data}) {
     console.log(maticPrice)
     const priceInMatic = parseFloat(user?.referrerReward) * maticPrice?.[user?.payout?.currency];
      console.log(maticPrice?.[user?.payout?.currency]);
-    return  user?.referrerReward + " " + "Matic" +' /' + priceInMatic?.toFixed(5) + " " + currencySymbols[user?.payout?.currency];
+    return (
+      user?.referrerReward +
+      " " +
+      "Matic" +
+      " /" +
+      currencySymbols[user?.payout?.currency] +
+      " " +
+      priceInMatic?.toFixed(5)
+    );
   }
 
      
