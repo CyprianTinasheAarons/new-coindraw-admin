@@ -92,6 +92,7 @@ const ReferralsComponent = () => {
         });
         getData();
         onCloseReffererModal();
+        location.reload();
       })
       .catch((err) => {
         toast({
