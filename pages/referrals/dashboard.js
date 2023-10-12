@@ -26,7 +26,6 @@ function Dashboard() {
       const userEmail = JSON.parse(localStorage.getItem("user-coindraw"))?.email;
       const filteredTransactions = res.filter(transaction => transaction.email == userEmail && transaction.email);
       setTransactions(filteredTransactions);
-
     }
     )
   }

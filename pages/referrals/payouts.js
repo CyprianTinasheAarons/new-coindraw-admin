@@ -50,10 +50,10 @@ function Referrals() {
           refferer?.referrerReward?.toFixed(2) +
           " MATIC/" +
           currencySymbols[refferer?.payout?.currency] +
-          " " +
+          "" +
           (
             refferer?.referrerReward * prices?.[refferer?.payout?.currency]
-          )?.toFixed(2),
+          )?.toFixed(3),
       },
       {
         name: "Total Paid",
@@ -61,16 +61,24 @@ function Referrals() {
           refferer?.referrerTotalReward?.toFixed(2) +
           " MATIC/" +
           currencySymbols[refferer?.payout?.currency] +
-          " " +
+          "" +
           (
-            refferer?.referrerReward * prices?.[refferer?.payout?.currency]
-          )?.toFixed(2),
+            refferer?.referrerTotalReward * prices?.[refferer?.payout?.currency]
+          )?.toFixed(3),
       },
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
     const getPrice = (amount) => {
       const priceInMatic = amount * prices?.[refferer?.payout?.currency];
-      return  amount + " " + "Matic" +' /' + priceInMatic?.toFixed(5) + " " + currencySymbols[refferer?.payout?.currency];
+      return (
+        amount +
+        " " +
+        "Matic" +
+        " /" +
+        currencySymbols[refferer?.payout?.currency] +
+        "" +
+        priceInMatic?.toFixed(3)
+      ); 
     }
 
 

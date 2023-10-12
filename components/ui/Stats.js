@@ -11,6 +11,9 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import {useToast} from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
+import { getMaticPrice } from "../../slices/referral";
+import { useEffect, useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -24,6 +27,14 @@ ChartJS.register(
 
 export default function Stats({user, transactions}) {
   const toast = useToast();
+  const [prices, setPrices] = useState({});
+  const dispatch = useDispatch();
+   const currencySymbols = {
+     gbp: "£",
+     usd: "$",
+     eur: "€",
+   };
+   
   const stats = [
     {
       name: "Total Amount Due",
@@ -31,7 +42,7 @@ export default function Stats({user, transactions}) {
     },
     {
       name: "Total Amount Paid",
-      value: user?.referrerTotalReward?.toFixed(2),
+      value: user?.referrerTotalReward?.toFixed(2) + " MATIC/" + currencySymbols[user?.payout?.currency] + "" + (user?.referrerTotalReward * prices?.[user?.payout?.currency])?.toFixed(3),
     },
     {
       name: "Total Payouts",
@@ -70,6 +81,19 @@ export default function Stats({user, transactions}) {
        },
      ],
    };
+
+
+   
+
+     useEffect(() => {
+       dispatch(getMaticPrice())
+         .unwrap()
+         .then((res) => {
+           console.log(res);
+           setPrices(res);
+         });
+     }, []);
+
 
   
   return (
