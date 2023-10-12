@@ -128,7 +128,7 @@ export default function ReferralTransactions({data}) {
           onClick={saveTransaction}
           className="p-2 m-1 border-2 border-gray-300 rounded-md border-green hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green"
         >
-          Save Payout
+          Send Payout
         </button>
       </div>
       <table className="min-w-full divide-y divide-gray-300">

@@ -37,11 +37,14 @@ function Referrals() {
     }, []);
 
     const stats = [
-      { name: "Amount Due", stat: refferer?.referrerReward + " MATIC" },
-      { name: "Total Amount", stat: refferer?.referrerTotalReward + " MATIC" },
+      {
+        name: "Amount Due",
+        stat: refferer?.referrerReward + " MATIC",
+      },
+      { name: "Total Amount", stat: refferer?.otalReward + " MATIC" },
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
-
+   
 
 
   return (
@@ -140,6 +143,7 @@ function Referrals() {
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {t?.type}
+                
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {t?.amount}

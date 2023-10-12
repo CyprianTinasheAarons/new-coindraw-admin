@@ -273,7 +273,7 @@ export default function ReferralTable() {
                               {r?.referrerReward}
                             </td>
                             <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                              {r?.referrerTotalReward}
+                              {r?.referrerTotalReward?.toFixed(2)}
                             </td>
                             <td className="flex px-3 py-4 text-sm text-gray-500 align-middle whitespace-nowrap">
                               <CopyToClipboard

@@ -31,7 +31,7 @@ export default function Stats({user, transactions}) {
     },
     {
       name: "Total Amount Paid",
-      value: user?.referrerTotalReward,
+      value: user?.referrerTotalReward?.toFixed(2),
     },
     {
       name: "Total Payouts",

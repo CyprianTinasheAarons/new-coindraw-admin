@@ -3,6 +3,7 @@ import { useState } from "react";
 import AuthService from "../api/auth.service";
 import { useToast } from "@chakra-ui/react";
 import "react-toastify/dist/ReactToastify.css";
+import {useRouter} from "next/router";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -13,6 +14,10 @@ export default function Login() {
     password: "",
   });
   const [loggedIn, setLoggedIn] = useState(false);
+  const router = useRouter();
+
+  const url = router.asPath;  
+  const affiliate = url.split('?')[1];
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -77,7 +82,9 @@ export default function Login() {
               />
             </a>
             <h2 className="mt-6 text-xl tracking-tight text-center text-white">
-              Sign in to Coindraw Admin
+              {affiliate === affiliate
+                ? "Sign in to Coindraw Affiliate"
+                : "Sign in to Coindraw Admin"}
             </h2>
           </div>
 

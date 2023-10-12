@@ -32,13 +32,13 @@ function Referrals() {
      },
      {
        name: "Expiry Date",
-       stat: new Date(refferer?.referralExpiryDate).toLocaleDateString('en-GB'),
+       stat: new Date(refferer?.referralExpiryDate).toLocaleDateString("en-GB"),
        button: "Request Date Extention",
      },
      {
        name: "Pending Payout",
-       stat: refferer?.referrerCount,
-       button: "Request Payout"
+       stat: refferer?.referrerReward,
+       button: "Request Payout",
      },
    ];
 
