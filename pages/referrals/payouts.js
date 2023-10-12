@@ -37,11 +37,7 @@ function Referrals() {
         });
     }, []);
     
-    const currencySymbols = {
-      gbp: "£",
-      usd: "$",
-      eur: "€"
-    };
+   
 
     const stats = [
       {
@@ -64,10 +60,17 @@ function Referrals() {
           "" +
           (
             refferer?.referrerTotalReward * prices?.[refferer?.payout?.currency]
-          )?.toFixed(3),
+          )?.toFixed(3)
       },
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
+
+     const currencySymbols = {
+       gbp: "£",
+       usd: "$",
+       eur: "€",
+     };
+     
     const getPrice = (amount) => {
       const priceInMatic = amount * prices?.[refferer?.payout?.currency];
       return (

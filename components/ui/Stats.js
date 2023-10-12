@@ -41,7 +41,7 @@ export default function Stats({user, transactions}) {
       value: user?.referrerReward,
     },
     {
-      name: "Total Amount Paid",
+      name: "Total Paid",
       value: user?.referrerTotalReward?.toFixed(2) + " MATIC/ " + currencySymbols[user?.payout?.currency] + "" + (user?.referrerTotalReward * prices?.[user?.payout?.currency])?.toFixed(3),
     },
     {
@@ -68,24 +68,22 @@ export default function Stats({user, transactions}) {
      },
    };
 
-   const labels = transactions.map(transaction => new Date(transaction.createdAt).toLocaleDateString());
+   const reversedTransactions = transactions.slice().reverse();
+   const labels = reversedTransactions.map(transaction => new Date(transaction.createdAt).toLocaleDateString('en-GB'));
 
    const data = {
      labels,
      datasets: [
        {
          label: "Payouts",
-         data: transactions.map(transaction => transaction.amount),
+         data: reversedTransactions.map(transaction => transaction.amount),
          borderColor: "rgb(0, 255, 0)",
          backgroundColor: "rgba(0, 255, 0, 0.5)",
        },
      ],
    };
-
-
    
-
-     useEffect(() => {
+    useEffect(() => {
        dispatch(getMaticPrice())
          .unwrap()
          .then((res) => {
@@ -111,7 +109,7 @@ export default function Stats({user, transactions}) {
             <dt className="text-sm font-medium leading-6 text-gray-500">
               {stat.name}
             </dt>
-            <dd className="flex items-baseline justify-end text-2xl font-semibold text-gray-900">
+            <dd className="flex items-baseline justify-end text-sm font-semibold text-gray-900">
               {stat.value}
             </dd>
           </div>

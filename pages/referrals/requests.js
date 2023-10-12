@@ -4,13 +4,14 @@ import Head from "next/head";
 import Layout from "../../components/ui/Layout";
 import { useToast } from "@chakra-ui/react";
 import { getReferral, requestDateExtension,requestNewCode,requestPayout } from "../../slices/referral";
-
+import { getMaticPrice } from "../../slices/referral";
 
 
 function Referrals() {
   const toast = useToast();
    const dispatch = useDispatch();
    const [refferer, setRefferer] = useState({});
+  const [prices, setPrices] = useState({});
 
    useEffect(() => {
      const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
@@ -21,6 +22,13 @@ function Referrals() {
          setRefferer(res);
        });
    }, []);
+
+
+     const currencySymbols = {
+       gbp: "£",
+       usd: "$",
+       eur: "€",
+     };
 
 
 
@@ -37,7 +45,7 @@ function Referrals() {
      },
      {
        name: "Pending Payout",
-       stat: refferer?.referrerReward,
+       stat: refferer?.referrerReward?.toFixed(2) + " MATIC/ " + currencySymbols[refferer?.payout?.currency] + "" + (refferer?.referrerReward * prices?.[refferer?.payout?.currency])?.toFixed(3),
        button: "Request Payout",
      },
    ];
@@ -109,6 +117,17 @@ function Referrals() {
        });
      }
    }
+
+   
+     useEffect(() => {
+       dispatch(getMaticPrice())
+         .unwrap()
+         .then((res) => {
+           console.log(res);
+           setPrices(res);
+         });
+     }, []);
+
 
   return (
     <div>
