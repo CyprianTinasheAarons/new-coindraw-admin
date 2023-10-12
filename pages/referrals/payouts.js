@@ -49,18 +49,22 @@ function Referrals() {
         stat:
           refferer?.referrerReward?.toFixed(2) +
           " MATIC/" +
-          (refferer?.referrerReward * prices?.[refferer?.payout?.currency])?.toFixed(5) +
+          currencySymbols[refferer?.payout?.currency] +
           " " +
-          currencySymbols[refferer?.payout?.currency],
+          (
+            refferer?.referrerReward * prices?.[refferer?.payout?.currency]
+          )?.toFixed(2),
       },
       {
         name: "Total Paid",
         stat:
           refferer?.referrerTotalReward?.toFixed(2) +
           " MATIC/" +
-          (refferer?.referrerTotalReward * prices?.[refferer?.payout?.currency])?.toFixed(5) +
+          currencySymbols[refferer?.payout?.currency] +
           " " +
-          currencySymbols[refferer?.payout?.currency],
+          (
+            refferer?.referrerReward * prices?.[refferer?.payout?.currency]
+          )?.toFixed(2),
       },
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
