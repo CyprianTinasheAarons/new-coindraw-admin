@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { getTransactions, updateTransaction } from "../../slices/transactions";
-import { sendReward } from "../../slices/referral";
+import { sendReward, getMaticPrice } from "../../slices/referral";
 import {useEffect, useState} from 'react'
 import { Combobox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
@@ -33,24 +33,21 @@ export default function ReferralTransactions({data}) {
     amount: "",
     type: ""
   })
-  const [selectedUser, setSelectedUser] = useState({}); 
+  const [selectedUser, setSelectedUser] = useState(); 
   const { isOpen: isUploadOpen, onOpen: onUploadOpen, onClose: onUploadClose } = useDisclosure();
   const { isOpen: isSaveOpen, onOpen: onSaveOpen, onClose: onSaveClose } = useDisclosure();
   
   const getData = async () => {
     const res = await dispatch(getTransactions()).unwrap();
-    const filteredTransactions = res.filter(t => ["Paypal", "Fiat", "Crypto(MATIC)"].includes(t.type));
+    const filteredTransactions = res.filter(t => ["Paypal", "FIAT", "Wallet"].includes(t.type));
     setUsersTransactions(filteredTransactions);
   }
 
   useEffect(() => {
     getData(); // Fetch transactions immediately on component mount
-    const interval = setInterval(() => {
-      getData();
-    }, 300000); // Fetches transactions every 5 minutes
+    const interval = setInterval(getData, 300000); // Fetches transactions every 5 minutes
     return () => clearInterval(interval); // Cleanup on component unmount
-  }
-  , [dispatch]);
+  }, [dispatch]);
   
   const uploadReceipt = (receiptUrl) => {
     setTransaction({...transaction, receiptUrl});
@@ -77,8 +74,8 @@ export default function ReferralTransactions({data}) {
         email: selectedUser.email,
         receiptUrl: transaction.receiptUrl,
         amount: selectedUser.referrerReward,
-        type: transaction.type || 'Paypal'
-      }
+        type: selectedUser?.payout?.payoutType || "Paypal",
+      };
 
       const res = await dispatch(sendReward(data)).unwrap()
       if(res){
@@ -119,15 +116,27 @@ export default function ReferralTransactions({data}) {
       onUploadClose();
     }
   }
+     const currencySymbols = {
+       gbp: "£",
+       usd: "$",
+       eur: "€",
+     };
 
-  console.log(data)
-  
+  const getPrice = (user) => {
+    const maticPrice = JSON.parse(localStorage.getItem("maticPrice"))['matic-network']
+    console.log(maticPrice)
+    const priceInMatic = parseFloat(user?.referrerReward) * maticPrice?.[user?.payout?.currency];
+     console.log(maticPrice?.[user?.payout?.currency]);
+    return  user?.referrerReward + " " + "Matic" +' /' + priceInMatic?.toFixed(5) + " " + currencySymbols[user?.payout?.currency];
+  }
+
+     
   return (
     <div>
       <div className="flex justify-end">
         <button
           onClick={saveTransaction}
-          className="p-2 m-1 border-2 border-gray-300 rounded-md border-green hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green"
+          className="p-2 m-1 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green"
         >
           Send Payout
         </button>
@@ -151,7 +160,7 @@ export default function ReferralTransactions({data}) {
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
             >
-              Preffered Payout Type
+              Preffered Payout
             </th>
             <th
               scope="col"
@@ -337,7 +346,7 @@ export default function ReferralTransactions({data}) {
                                     selected && "font-semibold"
                                   )}
                                 >
-                                  $ = {person.referrerReward}
+                                  {person?.referrerReward} MATIC
                                 </span>
                               </div>
                               {selected && (
@@ -381,7 +390,6 @@ export default function ReferralTransactions({data}) {
                   }
                 />
               </div>
-
               <label
                 htmlFor="type"
                 className="block text-sm font-medium text-gray-700"
@@ -406,6 +414,17 @@ export default function ReferralTransactions({data}) {
                   <option value="Paypal">Paypal</option>
                 </select>
               </div>
+              {selectedUser && (
+                <>
+                  <label
+                    htmlFor="price"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Reward
+                  </label>
+                  <div className="mt-1 font-semibold">{getPrice(selectedUser) || 0}</div>
+                </>
+              )}
             </div>
           </ModalBody>
           <ModalFooter>

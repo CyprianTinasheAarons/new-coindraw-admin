@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import Head from "next/head";
 import Layout from "../../components/ui/Layout";
-
 import { getReferral } from "../../slices/referral";
 import { getTransactions } from "../../slices/transactions";
+import { getMaticPrice } from "../../slices/referral";
 
 function Referrals() {
 
     const dispatch = useDispatch();
     const [refferer, setRefferer] = useState({});
     const [transactions, setTransactions] = useState([]);
+    const [prices, setPrices] = useState({})
 
     useEffect(() => {
       const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
@@ -31,19 +32,52 @@ function Referrals() {
           )?.email;
           const filteredTransactions = res
             .filter((transaction) => transaction.email === userEmail)
-            .filter(t => ["Paypal", "Fiat", "Crypto(MATIC)"].includes(t.type));
+            .filter(t => ["Paypal", "FIAT", "Wallet"].includes(t.type));
           setTransactions(filteredTransactions);
         });
     }, []);
+    
+    const currencySymbols = {
+      gbp: "£",
+      usd: "$",
+      eur: "€"
+    };
 
     const stats = [
       {
         name: "Amount Due",
-        stat: refferer?.referrerReward + " MATIC",
+        stat:
+          refferer?.referrerReward?.toFixed(2) +
+          " MATIC/" +
+          (refferer?.referrerReward * prices?.[refferer?.payout?.currency])?.toFixed(5) +
+          " " +
+          currencySymbols[refferer?.payout?.currency],
       },
-      { name: "Total Paid", stat: refferer?.referrerTotalReward?.toFixed(2) + " MATIC" },
+      {
+        name: "Total Paid",
+        stat:
+          refferer?.referrerTotalReward?.toFixed(2) +
+          " MATIC/" +
+          (refferer?.referrerTotalReward * prices?.[refferer?.payout?.currency])?.toFixed(5) +
+          " " +
+          currencySymbols[refferer?.payout?.currency],
+      },
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
+    const getPrice = (amount) => {
+      const priceInMatic = amount * prices?.[refferer?.payout?.currency];
+      return  amount + " " + "Matic" +' /' + priceInMatic?.toFixed(5) + " " + currencySymbols[refferer?.payout?.currency];
+    }
+
+
+    useEffect(() => {
+      dispatch(getMaticPrice())
+        .unwrap()
+        .then((res) => {
+          console.log(res)
+          setPrices(res);
+        });
+    }, []);
    
 
 
@@ -146,7 +180,7 @@ function Referrals() {
                 
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                  {t?.amount}
+                  {getPrice(t?.amount)}
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {new Date(t?.createdAt).toLocaleDateString()}

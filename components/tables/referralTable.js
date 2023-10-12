@@ -79,6 +79,8 @@ export default function ReferralTable() {
     return username;
   };
 
+  
+
   return (
     <div className="mt-4">
       {tab === "referrals" && (

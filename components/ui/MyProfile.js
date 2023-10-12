@@ -22,6 +22,7 @@ export default function MyProfile({user}) {
       payoutType: user?.payout?.payoutType || "FIAT",
       walletAddress: user?.payout?.walletAddress || "",
       paypalId: user?.payout?.paypalId || "",
+      currency: user?.payout?.currency || "gbp",
       bankDetails: {
         bankName: user?.payout?.bankDetails?.bankName || "",
         accountName: user?.payout?.bankDetails?.accountName || "",
@@ -313,7 +314,33 @@ export default function MyProfile({user}) {
                   <option value="Paypal">Paypal</option>
                 </select>
               </div>
+                          {userProfile.payout.payoutType === "FIAT" && (
+                  <div className="sm:col-span-3">
+                <label
+                  htmlFor="currency"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Currency
+                </label>
+                <div className="mt-2">
+                  <select
+                    name="currency"
+                    id="currency"
+                    value={userProfile.payout.currency}
+                    onChange={(e) =>
+                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, currency: e.target.value } })
+                    }
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-1"
+                  >
+                    <option value="gbp">GBP (£)</option>
+                    <option value="usd">USD ($)</option>
+                    <option value="eur">EUR (€)</option>
+                  </select>
+                </div>
+              </div>
+                          )}
             </div>
+          
 
             {userProfile.payout.payoutType === "FIAT" && (
               <div className="sm:col-span-3">

@@ -246,6 +246,30 @@ export const updatePayoutDetails = createAsyncThunk(
   }
 );
 
+const url =
+  "https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=usd,eur,gbp";
+
+export const getMaticPrice = createAsyncThunk(
+  "referrals/getMaticPrice",
+  async () => {
+    try {
+      let data = JSON.parse(localStorage.getItem('maticPrice'));
+      const currentTime = new Date().getTime();
+      const lastFetchTime = localStorage.getItem('lastFetchTime');
+      if (!data || !lastFetchTime || currentTime - lastFetchTime > 30 * 60 * 1000) {
+        const response = await fetch(url);
+        data = await response.json();
+        localStorage.setItem('maticPrice', JSON.stringify(data));
+        localStorage.setItem('lastFetchTime', currentTime.toString());
+      }
+      return data?.["matic-network"];
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+);
+
 export const referralSlice = createSlice({
   name: "referrals",
   initialState,
@@ -501,6 +525,17 @@ export const referralSlice = createSlice({
       });
     },
     [updatePayoutDetails.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.errorMessage = action.error.message;
+    },
+    [getMaticPrice.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getMaticPrice.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.maticPrice = action.payload;
+    },
+    [getMaticPrice.rejected]: (state, action) => {
       state.isLoading = false;
       state.errorMessage = action.error.message;
     },

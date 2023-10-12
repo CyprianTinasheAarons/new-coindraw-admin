@@ -11,7 +11,7 @@ import { useDisclosure, useToast } from "@chakra-ui/react";
 
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { createReferral, getReferrals } from "../slices/referral";
+import { createReferral, getReferrals,getMaticPrice } from "../slices/referral";
 
 const ReferralsComponent = () => {
   const toast = useToast();
@@ -104,7 +104,15 @@ const ReferralsComponent = () => {
         });
       });
   };
-
+  
+ useEffect(() => {
+   dispatch(getMaticPrice())
+     .unwrap()
+     .then((res) => {
+       console.log(res?.["matic-network"]);
+     });
+ }, []);
+ 
   return (
     <Layout>
       <div className="py-8 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
