@@ -271,7 +271,7 @@ export default function ReferralTransactions({data}) {
       <Modal isOpen={isSaveOpen} onClose={onSaveClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Save Transaction</ModalHeader>
+          <ModalHeader>Send Payout</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <div>
@@ -336,7 +336,7 @@ export default function ReferralTransactions({data}) {
                                     selected && "font-semibold"
                                   )}
                                 >
-                                 $ = {person.referrerReward}
+                                  $ = {person.referrerReward}
                                 </span>
                               </div>
                               {selected && (
@@ -398,11 +398,11 @@ export default function ReferralTransactions({data}) {
                       type: e.target.value,
                     })
                   }
-                  defaultChecked="Paypal"
+                  value={selectedUser?.payout?.payoutType || "Paypal"}
                 >
+                  <option value="FIAT">FIAT</option>
+                  <option value="Wallet">Wallet</option>
                   <option value="Paypal">Paypal</option>
-                  <option value="Fiat">Fiat</option>
-                  <option value="Crypto(MATIC)">Crypto(MATIC)</option>
                 </select>
               </div>
             </div>
