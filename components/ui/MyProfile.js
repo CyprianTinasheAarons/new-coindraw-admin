@@ -291,7 +291,7 @@ export default function MyProfile({user}) {
                 htmlFor="payoutType"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Payout Type
+                Payout Type <span style={{ fontStyle: 'italic', color: 'red' }}>(choose one payout type)</span>
               </label>
               <div className="mt-2">
                 <select
