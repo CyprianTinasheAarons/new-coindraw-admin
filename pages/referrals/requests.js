@@ -44,7 +44,7 @@ function Referrals() {
 
    const handleRequestPayout = async () => {
      try {
-      dispatch(requestPayout(refferer));
+      await dispatch(requestPayout(refferer)).unwrap();
        toast({
          title: "Success",
          description: "Payout request successful",
@@ -52,6 +52,8 @@ function Referrals() {
          duration: 5000,
          isClosable: true,
        });
+
+              location.reload();
      } catch (error) {
        toast({
          title: "Error",
@@ -64,7 +66,7 @@ function Referrals() {
    }
    const handleRequestNewCode = async () => {
      try {
-      dispatch(requestNewCode(refferer));
+      await dispatch(requestNewCode(refferer)).unwrap();
        toast({
          title: "Success",
          description: "New code request successful",
@@ -72,6 +74,8 @@ function Referrals() {
          duration: 5000,
          isClosable: true,
        });
+              location.reload();
+              
      } catch (error) {
        toast({
          title: "Error",
@@ -84,7 +88,7 @@ function Referrals() {
    }
    const handleRequestDateExtension = async () => {
      try {
-      dispatch(requestDateExtension(refferer));
+      await dispatch(requestDateExtension(refferer)).unwrap();
        toast({
          title: "Success",
          description: "Date extension request successful",
@@ -92,6 +96,8 @@ function Referrals() {
          duration: 5000,
          isClosable: true,
        });
+
+       location.reload();
 
      } catch (error) {
        toast({
