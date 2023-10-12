@@ -41,7 +41,7 @@ function Referrals() {
         name: "Amount Due",
         stat: refferer?.referrerReward + " MATIC",
       },
-      { name: "Total Amount", stat: refferer?.otalReward + " MATIC" },
+      { name: "Total Paid", stat: refferer?.referrerTotalReward?.toFixed(2) + " MATIC" },
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
    
