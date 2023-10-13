@@ -9,15 +9,19 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [qr, setQr] = useState("");
   const toast = useToast();
+
+   const [loggedIn, setLoggedIn] = useState(false);
+   const router = useRouter();
+   
+   const url = router.asPath;
+   const affiliate = url.split("?")[1];
+   
   const [userData, setUserData] = useState({
     email: "",
     password: "",
+    role: affiliate ? "affiliate" : "admin",
   });
-  const [loggedIn, setLoggedIn] = useState(false);
-  const router = useRouter();
-
-  const url = router.asPath;  
-  const affiliate = url.split('?')[1];
+ 
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -82,7 +86,7 @@ export default function Login() {
               />
             </a>
             <h2 className="mt-6 text-xl tracking-tight text-center text-white">
-              {affiliate 
+              {affiliate
                 ? "Sign in to Coindraw Affiliate"
                 : "Sign in to Coindraw Admin"}
             </h2>
@@ -143,14 +147,31 @@ export default function Login() {
                       {loading ? "Signing in..." : "Sign in"}
                     </button>
                   </div>
+                  <div>
+                    {affiliate && (
+                      <button
+                        onClick={() =>
+                          (window.location.href =
+                            "https://new-coindraw-main.vercel.app/apply-affiliate?affiliate=admin")
+                        }
+                        onKeyUp={(event) => {
+                          if (event.key === "Enter")
+                            window.location.href =
+                              "https://new-coindraw-main.vercel.app/apply-affiliate?affiliate=admin";
+                        }}
+                        className="flex justify-center w-full px-4 py-3 my-5 text-sm font-medium text-[#101422] border border-[#101422]  rounded-md shadow-sm bg "
+                      >
+                        Get Started
+                      </button>
+                    )}
+                  </div>
                 </>
               ) : (
                 <div>
-                  <p className="p-2 text-center text-white">
-                    {" "}
-                    Scan this QR code to login
+                  <p className="p-2 text-center text-black">
+                    In order to proceed you must setup multi-factor authentication, using an authentication app of your choice please scan the below QR to get generate a code and enter below
                   </p>
-                  <div className="flex justify-center p-2m-2">
+                  <div className="flex justify-center p-2 m-2">
                     <img src={qr} alt="PNG image"></img>
                   </div>
                   <div>

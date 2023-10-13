@@ -1,11 +1,16 @@
 import { useDispatch } from "react-redux";
 import { getTransactions, updateTransaction } from "../../slices/transactions";
-import { sendReward, getMaticPrice } from "../../slices/referral";
+import { sendReward} from "../../slices/referral";
 import {useEffect, useState} from 'react'
 import { Combobox } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-
 import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -102,7 +107,7 @@ export default function ReferralTransactions({data}) {
     }
   }
 
-  const handleUpload = (id) => {
+  const handleUpload = () => {
     const res = dispatch(updateTransaction({id: selectedUser?.id, receiptUrl: transaction?.receiptUrl})).unwrap();
     if(res){
       toast({
@@ -116,7 +121,8 @@ export default function ReferralTransactions({data}) {
       onUploadClose();
     }
   }
-     const currencySymbols = {
+
+  const currencySymbols = {
        gbp: "£",
        usd: "$",
        eur: "€",
@@ -168,7 +174,7 @@ export default function ReferralTransactions({data}) {
               scope="col"
               className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
             >
-              Preffered Payout
+              Preferred Payout
             </th>
             <th
               scope="col"
@@ -402,7 +408,7 @@ export default function ReferralTransactions({data}) {
                 htmlFor="type"
                 className="block text-sm font-medium text-gray-700"
               >
-                Preffered Payout Type
+                Preferred Payout Type
               </label>
               <div className="mt-1">
                 <select
@@ -417,7 +423,7 @@ export default function ReferralTransactions({data}) {
                   }
                   value={selectedUser?.payout?.payoutType || "Paypal"}
                 >
-                  <option value="FIAT">FIAT</option>
+                  <option value="FIAT">Bank Transfer</option>
                   <option value="Wallet">Wallet</option>
                   <option value="Paypal">Paypal</option>
                 </select>
@@ -430,9 +436,272 @@ export default function ReferralTransactions({data}) {
                   >
                     Reward
                   </label>
-                  <div className="mt-1 font-semibold">{getPrice(selectedUser) || 0}</div>
+                  <div className="mt-1 font-semibold">
+                    {getPrice(selectedUser) || 0}
+                  </div>
                 </>
               )}
+
+              <Accordion allowToggle>
+                <AccordionItem>
+                  <h2 className="text-sm ext-gray-700 tfont-medium ">
+                    <AccordionButton>
+                      <Box as="span" flex="1" textAlign="left">
+                        <p className="text-xs"> View Payout Details</p>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4}>
+                    {selectedUser && (
+                      <>
+                        {selectedUser?.payout?.payoutType === "Wallet" && (
+                          <p className="flex justify-between text-xs font-light">
+                            Wallet Address:{" "}
+                            {selectedUser?.payout?.walletAddress}
+                            <button
+                              style={{ marginLeft: "10px" }}
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  selectedUser?.payout?.walletAddress
+                                )
+                              }
+                              className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                            >
+                              Copy
+                            </button>
+                          </p>
+                        )}
+                        {selectedUser?.payout?.payoutType === "Paypal" && (
+                          <p className="flex justify-between text-xs font-light">
+                            Paypal ID: {selectedUser?.payout?.paypalId}
+                            <button
+                              style={{ marginLeft: "10px" }}
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  selectedUser?.payout?.paypalId
+                                )
+                              }
+                              className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                            >
+                              Copy
+                            </button>
+                          </p>
+                        )}
+                        {selectedUser?.payout?.payoutType === "FIAT" && (
+                          <>
+                            <p className="font-light ">Bank Details:</p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Bank Name:{" "}
+                              {selectedUser?.payout?.bankDetails?.bankName}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails?.bankName
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Account Name:{" "}
+                              {selectedUser?.payout?.bankDetails?.accountName}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails
+                                      ?.accountName
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Account Number:{" "}
+                              {selectedUser?.payout?.bankDetails?.accountNumber}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails
+                                      ?.accountNumber
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Routing Number:{" "}
+                              {selectedUser?.payout?.bankDetails?.routingNumber}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails
+                                      ?.routingNumber
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Swift Code:{" "}
+                              {selectedUser?.payout?.bankDetails?.swiftCode}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails?.swiftCode
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Bank Address:{" "}
+                              {selectedUser?.payout?.bankDetails?.bankAddress}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails
+                                      ?.bankAddress
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Bank City:{" "}
+                              {selectedUser?.payout?.bankDetails?.bankCity}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails?.bankCity
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Bank State:{" "}
+                              {selectedUser?.payout?.bankDetails?.bankState}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails?.bankState
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Bank Zip:{" "}
+                              {selectedUser?.payout?.bankDetails?.bankZip}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails?.bankZip
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Bank Country:{" "}
+                              {selectedUser?.payout?.bankDetails?.bankCountry}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails
+                                      ?.bankCountry
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Is Fiat:{" "}
+                              {selectedUser?.payout?.bankDetails?.isFiat
+                                ? "Yes"
+                                : "No"}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails?.isFiat
+                                      ? "Yes"
+                                      : "No"
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light ">
+                              Fiat Currency:{" "}
+                              {selectedUser?.payout?.bankDetails?.fiatCurrency}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails
+                                      ?.fiatCurrency
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                            <p className="flex justify-between ml-4 text-xs font-light">
+                              IBAN: {selectedUser?.payout?.bankDetails?.iban}
+                              <button
+                                style={{ marginLeft: "10px" }}
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    selectedUser?.payout?.bankDetails?.iban
+                                  )
+                                }
+                                className="p-1 my-1 text-xs font-bold uppercase border rounded-md"
+                              >
+                                Copy
+                              </button>
+                            </p>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
             </div>
           </ModalBody>
           <ModalFooter>

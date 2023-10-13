@@ -95,7 +95,10 @@ export default function MyProfile({user}) {
                   id="firstName"
                   value={userProfile.firstName}
                   onChange={(e) =>
-                    setUserProfile({ ...userProfile, firstName: e.target.value })
+                    setUserProfile({
+                      ...userProfile,
+                      firstName: e.target.value,
+                    })
                   }
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -292,7 +295,10 @@ export default function MyProfile({user}) {
                 htmlFor="payoutType"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Payout Type <span style={{ fontStyle: 'italic', color: 'red' }}>(choose one payout type)</span>
+                Payout Type{" "}
+                <span style={{ fontStyle: "italic", color: "red" }}>
+                  (choose one payout type)
+                </span>
               </label>
               <div className="mt-2">
                 <select
@@ -303,44 +309,58 @@ export default function MyProfile({user}) {
                     const newPayoutType = e.target.value;
                     let newPayoutDetails = { ...userProfile.payout };
                     if (newPayoutType !== "FIAT") {
-                      newPayoutDetails = { ...newPayoutDetails, bankDetails: {} };
+                      newPayoutDetails = {
+                        ...newPayoutDetails,
+                        bankDetails: {},
+                      };
                     }
-                    setUserProfile({ ...userProfile, payout: { ...newPayoutDetails, payoutType: newPayoutType } });
+                    setUserProfile({
+                      ...userProfile,
+                      payout: {
+                        ...newPayoutDetails,
+                        payoutType: newPayoutType,
+                      },
+                    });
                   }}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-1"
                 >
-                  <option value="FIAT">FIAT</option>
+                  <option value="FIAT">Bank Transfer</option>
                   <option value="Wallet">Wallet</option>
                   <option value="Paypal">Paypal</option>
                 </select>
               </div>
-                          {userProfile.payout.payoutType === "FIAT" && (
-                  <div className="sm:col-span-3">
-                <label
-                  htmlFor="currency"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Currency
-                </label>
-                <div className="mt-2">
-                  <select
-                    name="currency"
-                    id="currency"
-                    value={userProfile.payout.currency}
-                    onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, currency: e.target.value } })
-                    }
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-1"
+              {userProfile.payout.payoutType === "FIAT" && (
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="currency"
+                    className="block text-sm font-medium leading-6 text-gray-900"
                   >
-                    <option value="gbp">GBP (£)</option>
-                    <option value="usd">USD ($)</option>
-                    <option value="eur">EUR (€)</option>
-                  </select>
+                    Currency
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      name="currency"
+                      id="currency"
+                      value={userProfile.payout.currency}
+                      onChange={(e) =>
+                        setUserProfile({
+                          ...userProfile,
+                          payout: {
+                            ...userProfile.payout,
+                            currency: e.target.value,
+                          },
+                        })
+                      }
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 p-1"
+                    >
+                      <option value="gbp">GBP (£)</option>
+                      <option value="usd">USD ($)</option>
+                      <option value="eur">EUR (€)</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-                          )}
+              )}
             </div>
-          
 
             {userProfile.payout.payoutType === "FIAT" && (
               <div className="sm:col-span-3">
@@ -357,7 +377,16 @@ export default function MyProfile({user}) {
                     id="bankName"
                     value={userProfile.payout.bankDetails.bankName}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankName: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            bankName: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -375,7 +404,16 @@ export default function MyProfile({user}) {
                     id="accountName"
                     value={userProfile.payout.bankDetails.accountName}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, accountName: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            accountName: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -393,7 +431,16 @@ export default function MyProfile({user}) {
                     id="accountNumber"
                     value={userProfile.payout.bankDetails.accountNumber}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, accountNumber: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            accountNumber: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -411,7 +458,16 @@ export default function MyProfile({user}) {
                     id="routingNumber"
                     value={userProfile.payout.bankDetails.routingNumber}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, routingNumber: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            routingNumber: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -429,7 +485,16 @@ export default function MyProfile({user}) {
                     id="swiftCode"
                     value={userProfile.payout.bankDetails.swiftCode}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, swiftCode: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            swiftCode: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -447,7 +512,16 @@ export default function MyProfile({user}) {
                     id="bankAddress"
                     value={userProfile.payout.bankDetails.bankAddress}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankAddress: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            bankAddress: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -465,7 +539,16 @@ export default function MyProfile({user}) {
                     id="bankCity"
                     value={userProfile.payout.bankDetails.bankCity}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankCity: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            bankCity: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -483,7 +566,16 @@ export default function MyProfile({user}) {
                     id="bankState"
                     value={userProfile.payout.bankDetails.bankState}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankState: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            bankState: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -501,7 +593,16 @@ export default function MyProfile({user}) {
                     id="bankZip"
                     value={userProfile.payout.bankDetails.bankZip}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankZip: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            bankZip: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -519,7 +620,16 @@ export default function MyProfile({user}) {
                     id="bank-country"
                     value={userProfile.payout.bankDetails.bankCountry}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, bankCountry: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            bankCountry: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -537,7 +647,16 @@ export default function MyProfile({user}) {
                     id="iban"
                     value={userProfile.payout.bankDetails.iban}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, bankDetails: { ...userProfile.payout.bankDetails, iban: e.target.value } } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          bankDetails: {
+                            ...userProfile.payout.bankDetails,
+                            iban: e.target.value,
+                          },
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -559,7 +678,13 @@ export default function MyProfile({user}) {
                     id="walletAddress"
                     value={userProfile.payout.walletAddress}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, walletAddress: e.target.value } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          walletAddress: e.target.value,
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -581,7 +706,13 @@ export default function MyProfile({user}) {
                     id="paypalId"
                     value={userProfile.payout.paypalId}
                     onChange={(e) =>
-                      setUserProfile({ ...userProfile, payout: { ...userProfile.payout, paypalId: e.target.value } })
+                      setUserProfile({
+                        ...userProfile,
+                        payout: {
+                          ...userProfile.payout,
+                          paypalId: e.target.value,
+                        },
+                      })
                     }
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />

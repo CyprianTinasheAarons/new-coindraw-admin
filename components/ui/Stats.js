@@ -38,15 +38,29 @@ export default function Stats({user, transactions}) {
   const stats = [
     {
       name: "Total Amount Due",
-      value: user?.referrerReward,
+      value:
+        user?.referrerReward?.toFixed(2) +
+        " MATIC/ " +
+        currencySymbols[user?.payout?.currency] +
+        "" +
+        (user?.referrerReward * prices?.[user?.payout?.currency])?.toFixed(
+          2
+        ),
     },
     {
       name: "Total Paid",
-      value: user?.referrerTotalReward?.toFixed(2) + " MATIC/ " + currencySymbols[user?.payout?.currency] + "" + (user?.referrerTotalReward * prices?.[user?.payout?.currency])?.toFixed(3),
+      value:
+        user?.referrerTotalReward?.toFixed(2) +
+        " MATIC/ " +
+        currencySymbols[user?.payout?.currency] +
+        "" +
+        (user?.referrerTotalReward * prices?.[user?.payout?.currency])?.toFixed(
+          2
+        ),
     },
     {
       name: "Total Payouts",
-      value: transactions?.length
+      value: transactions?.filter(t => ["Wallet", "FIAT", "Paypal"].includes(t.type)).length,
     },
     {
       name: "Total Referrals",
@@ -102,11 +116,11 @@ export default function Stats({user, transactions}) {
       <Line options={options} data={data} />
 
       {/* Stats */}
-      <dl className="grid grid-cols-1 gap-px p-8 m-8 mx-auto border rounded-md bg-gray-900/5 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="grid grid-cols-1 p-2 m-8 mx-auto border rounded-md bg-gray-900/5 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <div
             key={stat.name}
-            className="flex flex-wrap items-baseline justify-between px-4 py-10 bg-white gap-x-4 gap-y-2 sm:px-6 xl:px-8"
+            className="flex flex-wrap items-baseline justify-between px-4 py-10 bg-white gap-x-4 gap-y-2 sm:px-6 xl:px-4"
           >
             <dt className="text-sm font-medium leading-6 text-gray-500">
               {stat.name}

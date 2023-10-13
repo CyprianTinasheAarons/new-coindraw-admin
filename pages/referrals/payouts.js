@@ -57,7 +57,7 @@ function Referrals() {
           "" +
           (
             refferer?.referrerReward * prices?.[refferer?.payout?.currency]
-          )?.toFixed(3),
+          )?.toFixed(2),
       },
       {
         name: "Total Paid",
@@ -68,7 +68,7 @@ function Referrals() {
           "" +
           (
             refferer?.referrerTotalReward * prices?.[refferer?.payout?.currency]
-          )?.toFixed(3)
+          )?.toFixed(2)
       },
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
@@ -83,7 +83,7 @@ function Referrals() {
         "/ " +
         currencySymbols[refferer?.payout?.currency] +
         "" +
-        priceInMatic?.toFixed(3)
+        priceInMatic?.toFixed(2)
       ); 
     }
 

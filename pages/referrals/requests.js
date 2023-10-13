@@ -2,16 +2,27 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Head from "next/head";
 import Layout from "../../components/ui/Layout";
-import { useToast } from "@chakra-ui/react";
 import { getReferral, requestDateExtension,requestNewCode,requestPayout } from "../../slices/referral";
 import { getMaticPrice } from "../../slices/referral";
 
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useToast,
+  useDisclosure
+} from "@chakra-ui/react";
 
 function Referrals() {
   const toast = useToast();
    const dispatch = useDispatch();
    const [refferer, setRefferer] = useState({});
   const [prices, setPrices] = useState({});
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
    useEffect(() => {
      const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
@@ -45,7 +56,7 @@ function Referrals() {
      },
      {
        name: "Pending Payout",
-       stat: refferer?.referrerReward?.toFixed(2) + " MATIC/ " + currencySymbols[refferer?.payout?.currency] + "" + (refferer?.referrerReward * prices?.[refferer?.payout?.currency])?.toFixed(3),
+       stat: refferer?.referrerReward?.toFixed(2) + " MATIC/ " + currencySymbols[refferer?.payout?.currency] + "" + (refferer?.referrerReward * prices?.[refferer?.payout?.currency])?.toFixed(2),
        button: "Request Payout",
      },
    ];
@@ -173,12 +184,28 @@ function Referrals() {
                   </button>
                 )}
                 {index === 2 && (
-                  <button
-                    onClick={handleRequestPayout}
-                    className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    {item.button}
-                  </button>
+                  <>
+                    <button
+                      onClick={onOpen}
+                      className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      {item.button}
+                    </button>
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Request Payout</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                          This payment will be made to the preferred payment method set in your My Profile section.
+                        </ModalBody>
+                        <ModalFooter>
+                          <button className="p-1 mr-3 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={handleRequestPayout}>Confirm</button>
+                          <button className="p-1 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={onClose}>Cancel</button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+                  </>
                 )}
               </div>
             ))}
