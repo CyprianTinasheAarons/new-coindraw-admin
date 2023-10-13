@@ -84,12 +84,14 @@ export default function Stats({user, transactions}) {
    };
    
     useEffect(() => {
-       dispatch(getMaticPrice())
-         .unwrap()
-         .then((res) => {
-           console.log(res);
-           setPrices(res);
-         });
+ 
+         dispatch(getMaticPrice())
+           .unwrap()
+           .then((res) => {
+             console.log(res);
+             setPrices(res);
+           });
+       
      }, []);
 
 

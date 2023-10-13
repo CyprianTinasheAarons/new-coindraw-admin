@@ -13,6 +13,14 @@ function Referrals() {
     const [transactions, setTransactions] = useState([]);
     const [prices, setPrices] = useState({})
 
+
+       const currencySymbols = {
+         gbp: "£",
+         usd: "$",
+         eur: "€",
+       };
+     
+
     useEffect(() => {
       const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
       dispatch(getReferral(id))
@@ -65,12 +73,7 @@ function Referrals() {
       { name: "Total Payouts", stat: refferer?.referrerCount },
     ];
 
-     const currencySymbols = {
-       gbp: "£",
-       usd: "$",
-       eur: "€",
-     };
-     
+  
     const getPrice = (amount) => {
       const priceInMatic = amount * prices?.[refferer?.payout?.currency];
       return (
@@ -86,14 +89,15 @@ function Referrals() {
 
 
     useEffect(() => {
-      dispatch(getMaticPrice())
-        .unwrap()
-        .then((res) => {
-          console.log(res)
-          setPrices(res);
-        });
+ 
+        dispatch(getMaticPrice())
+          .unwrap()
+          .then((res) => {
+            console.log(res)
+            setPrices(res);
+          });
+      
     }, []);
-   
 
 
   return (
