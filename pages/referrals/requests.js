@@ -2,8 +2,14 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Head from "next/head";
 import Layout from "../../components/ui/Layout";
-import { getReferral, requestDateExtension,requestNewCode,requestPayout } from "../../slices/referral";
-import { getMaticPrice } from "../../slices/referral";
+import {
+  getReferral,
+  requestDateExtension,
+  requestNewCode,
+  requestPayout,
+  getMaticPrice,
+} from "../../slices/referral";
+
 
 import {
   Modal,
@@ -19,10 +25,12 @@ import {
 
 function Referrals() {
   const toast = useToast();
-   const dispatch = useDispatch();
-   const [refferer, setRefferer] = useState({});
+  const dispatch = useDispatch();
+  const [refferer, setRefferer] = useState({});
   const [prices, setPrices] = useState({});
-    const { isOpen, onOpen, onClose } = useDisclosure();
+  const [requestedCode, setRequestedCode] = useState('');
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {isOpen: isOpen2, onOpen: onOpen2, onClose: onClose2} = useDisclosure();
 
    useEffect(() => {
      const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
@@ -72,7 +80,7 @@ function Referrals() {
          isClosable: true,
        });
 
-              location.reload();
+      location.reload();
      } catch (error) {
        toast({
          title: "Error",
@@ -84,8 +92,13 @@ function Referrals() {
      }
    }
    const handleRequestNewCode = async () => {
+      const data = {
+        userId: refferer?.userId,
+        code: requestedCode
+      }
+     
      try {
-      await dispatch(requestNewCode(refferer)).unwrap();
+      await dispatch(requestNewCode(data)).unwrap();
        toast({
          title: "Success",
          description: "New code request successful",
@@ -168,12 +181,33 @@ function Referrals() {
                   {item.stat}
                 </dd>
                 {index === 0 && (
-                  <button
-                    onClick={handleRequestNewCode}
-                    className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    {item.button}
-                  </button>
+                  <>
+                    <button
+                      onClick={onOpen2}
+                      className="p-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      {item.button}
+                    </button>
+                    <Modal isOpen={isOpen2} onClose={onClose2}>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Request New Code</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                          <div className="flex flex-col">
+                            <label htmlFor="newCode" className="mb-2 text-sm font-medium text-gray-700">New Code (leave blank for random code):</label>
+                            <input type="text" id="code" name="code"  value={requestedCode} className="p-2 border border-gray-300 rounded-md" onChange={
+                              (e) => setRequestedCode(e.target.value)
+                            } />
+                          </div>
+                        </ModalBody>
+                        <ModalFooter>
+                          <button className="p-1 mr-3 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={handleRequestNewCode}>Confirm</button>
+                          <button className="p-1 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={onClose}>Cancel</button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+                  </>
                 )}
                 {index === 1 && (
                   <button
