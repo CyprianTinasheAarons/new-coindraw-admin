@@ -151,7 +151,9 @@ export default function ReferralRequests({ data }) {
               <Td>{t?.email}</Td>
               <Td>
                 <Text textAlign="left">
-                  {t?.requestPayout?.requested ? "Requested" : ""}
+                  <div className="mb-1">
+                    {t?.requestPayout?.requested ? "Requested" : ""}
+                  </div>
                 </Text>
                 {t?.requestPayout?.requested ? (
                   <>
@@ -170,51 +172,69 @@ export default function ReferralRequests({ data }) {
                       Decline
                     </Button>
                   </>
-                ): "-"}
+                ) : (
+                  "-"
+                )}
               </Td>
               <Td>
                 <Text textAlign="left">
-                  {t?.requestNewCode?.requested ? "Requested" : ""}
+                  <div className="mb-1">
+                    {t?.requestNewCode?.requested
+                      ? t?.requestNewCode?.requestedCode
+                        ? `Requested: ${t?.requestNewCode?.requestedCode}`
+                        : "Requested"
+                      : ""}
+                  </div>
                 </Text>
-                   {t?.requestNewCode?.requested ? <>
+                {t?.requestNewCode?.requested ? (
+                  <>
                     <Button
-                  colorScheme="blue"
-                  onClick={() => handleAcceptNewCode(t, true)}
-                  className="mr-2"
-                >
-                  Accept
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => handleAcceptNewCode(t, false)}
-                >
-                  Decline
-                </Button></>
-                : "-"} 
+                      colorScheme="blue"
+                      onClick={() => handleAcceptNewCode(t, true)}
+                      className="mr-2"
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={() => handleAcceptNewCode(t, false)}
+                    >
+                      Decline
+                    </Button>
+                  </>
+                ) : (
+                  "-"
+                )}
               </Td>
               <Td>
                 <Text textAlign="left">
-                  {t?.requestDateExtension?.requested
-                    ? "Requested"
-                    : ""}
+                  <div className="mb-1">
+                    {t?.requestDateExtension?.requested ? "Requested" : ""}
+                  </div>
                 </Text>
-                {t?.requestDateExtension?.requested ?<> <Button
-                  colorScheme="blue"
-                  onClick={() => {
-                    onOpen();
-                    setSelected(t);
-                  }}
-                  className="mr-2"
-                >
-                  Accept
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => handleAcceptDateExtension(t, false)}
-                >
-                  Decline
-                </Button>
-                </> : "-"}
+                {t?.requestDateExtension?.requested ? (
+                  <>
+                    {" "}
+                    <Button
+                      colorScheme="blue"
+                      onClick={() => {
+                        onOpen();
+                        setSelected(t);
+                      }}
+                      className="mr-2"
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={() => handleAcceptDateExtension(t, false)}
+                    >
+                      Decline
+                    </Button>
+                  </>
+                ) : (
+                  "-"
+                )}
               </Td>
               <Td>{new Date(t?.updatedAt).toLocaleDateString()}</Td>
             </Tr>
