@@ -36,9 +36,9 @@ export const getReferral = createAsyncThunk(
 
 export const updateReferralData = createAsyncThunk(
     "referrals/updateReferralData",
-    async (id,data) => {
+    async ({ id, data }) => {
       try {
-        const response = await refferalService.updateData(id,data);
+        const response = await refferalService.updateData(id, data);
         return response.data;
       } catch (e) {
         console.log(e);

@@ -9,8 +9,8 @@ class ReferralService {
     return httpCommon.get("/referral/" + id);
   }
 
-  updateData(data) {
-    return httpCommon.put("/referral/profile/" + data.id, data.data);
+  updateData( id, data ) {
+    return httpCommon.put("/referral/profile/" + id, data);
   }
 
   getAll() {

@@ -1,21 +1,37 @@
-import { Spinner, useToast } from "@chakra-ui/react";
+import { 
+  Spinner, 
+  useToast, 
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure
+} from '@chakra-ui/react'
 import { useSelector, useDispatch } from "react-redux";
-import { deleteReferral } from "../../slices/referral";
+import {
+  deleteReferral,
+updateReferralData,
+  getReferrals,
+} from "../../slices/referral";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import userService from "../../api/user.service";
 import React, { useState, useEffect } from "react";
 import ReferralApprovals from "../../components/tables/referralApprovals";
 import ReferralTransactions from "../../components/tables/referralTransactions";
 import ReferralRequests from "../../components/tables/referralRequests";
-import {  getReferrals } from "../../slices/referral";
 
 export default function ReferralTable() {
   const isLoading = useSelector((state) => state.referral.isLoading);
+  const [newReferralCode, setNewReferralCode] = useState("");
   const [usernames, setUsernames] = useState({});
   const [tab, setTab] = useState(
     localStorage.getItem("tab") ? localStorage.getItem("tab") : "referrals"
   )
   const [data, setData] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
   const truncate = (str, n) => {
@@ -51,6 +67,22 @@ export default function ReferralTable() {
       });
   };
 
+  const handleUpdateReferralCode = async (id, newReferralCode) => {
+    const updatedData = { referralCode: newReferralCode };
+
+    await dispatch(updateReferralData({ id, data: updatedData}))
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Referral code updated.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        location.reload();
+      });
+  };
+
   const calculateDaysLeft = (expiryDate) => {
     const currentDate = new Date();
     const expirationDate = new Date(expiryDate);
@@ -78,8 +110,6 @@ export default function ReferralTable() {
     });
     return username;
   };
-
-  
 
   return (
     <div className="mt-4">
@@ -134,7 +164,10 @@ export default function ReferralTable() {
       <div>
         <div className="flex justify-end">
           <button
-            onClick={() => {setTab("referrals"); localStorage.setItem("tab", "referrals");}}
+            onClick={() => {
+              setTab("referrals");
+              localStorage.setItem("tab", "referrals");
+            }}
             className={`p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "referrals" ? "ring-indigo-500" : ""
             }`}
@@ -142,7 +175,10 @@ export default function ReferralTable() {
             View Referrals
           </button>
           <button
-            onClick={() => {setTab("transactions"); localStorage.setItem("tab", "transactions");}}
+            onClick={() => {
+              setTab("transactions");
+              localStorage.setItem("tab", "transactions");
+            }}
             className={`p-2 mx-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "transactions" ? "ring-indigo-500 " : ""
             }`}
@@ -150,7 +186,10 @@ export default function ReferralTable() {
             View Transactions
           </button>
           <button
-            onClick={() => {setTab("approvals"); localStorage.setItem("tab", "approvals");}}
+            onClick={() => {
+              setTab("approvals");
+              localStorage.setItem("tab", "approvals");
+            }}
             className={`p-2 border-2 border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "approvals" ? "ring-indigo-500" : ""
             }`}
@@ -161,14 +200,24 @@ export default function ReferralTable() {
             </span>
           </button>
           <button
-            onClick={() => {setTab("requests"); localStorage.setItem("tab", "requests");}}
+            onClick={() => {
+              setTab("requests");
+              localStorage.setItem("tab", "requests");
+            }}
             className={`p-2 border-2 border-gray-300 rounded-md ml-2 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
               tab == "requests" ? "ring-indigo-500" : ""
             }`}
           >
             View Requests
             <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-              {data.filter((t) => t?.requestPayout?.requested === true || t?.requestNewCode?.requested === true || t?.requestDateExtension?.requested === true).length}
+              {
+                data.filter(
+                  (t) =>
+                    t?.requestPayout?.requested === true ||
+                    t?.requestNewCode?.requested === true ||
+                    t?.requestDateExtension?.requested === true
+                ).length
+              }
             </span>
           </button>
         </div>
@@ -293,6 +342,47 @@ export default function ReferralTable() {
                                   Copy Link
                                 </button>
                               </CopyToClipboard>
+                              <button
+                                type="button"
+                                onClick={onOpen}
+                                className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                              >
+                                Edit Referral Code
+                              </button>
+                              <Modal isOpen={isOpen} onClose={onClose}>
+                                <ModalOverlay />
+                                <ModalContent className="bg-white rounded-lg">
+                                  <ModalHeader className="text-xl font-bold text-gray-900">
+                                    Edit Referral Code
+                                  </ModalHeader>
+                                  <ModalCloseButton className="text-gray-400 hover:text-gray-500" />
+                                  <ModalBody>
+                                    <input
+                                      type="text"
+                                      value={newReferralCode}
+                                      onChange={(e) =>
+                                        setNewReferralCode(e.target.value)
+                                      }
+                                      placeholder="Enter new referral code"
+                                      className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                    />
+                                  </ModalBody>
+                                  <ModalFooter>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handleUpdateReferralCode(
+                                          r?.id,
+                                          newReferralCode
+                                        )
+                                      }
+                                      className="px-4 py-2 text-black bg-white border rounded-md"
+                                    >
+                                      Save Changes
+                                    </button>
+                                  </ModalFooter>
+                                </ModalContent>
+                              </Modal>
                               <button
                                 type="button"
                                 onClick={() => handleDelete(r?.id)}
