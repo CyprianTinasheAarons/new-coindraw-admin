@@ -1,12 +1,26 @@
 import { useState } from "react";
 import AuthService from "../api/auth.service";
-import { useToast } from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useToast,
+  useDisclosure
+} from '@chakra-ui/react'
+
 
 function TwoFactor() {
   const [Data, setData] = useState({
     token: "",
   });
+  const [reseted2FA, setReseted2FA] = useState(false);
+  const [qr, setQr] = useState("");
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const handleChange = (e) => {
     setData({ ...Data, [e.target.name]: e.target.value });
@@ -65,6 +79,45 @@ function TwoFactor() {
     }
   };
 
+  const reset2FA = async () => {
+    try {
+      await AuthService.reset2fa({
+        email: localStorage.getItem("admin-email"),
+      })
+        .then((res) => {
+          setReseted2FA(true);
+          toast({
+            title: "Success",
+            description: "2FA reset successfully. Please setup your 2FA again.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          setQr(res.data.dataUrl);
+          onClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          toast({
+            title: "Error",
+            description: error.response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col justify-center h-screen py-12 sm:px-6 lg:px-8 bg-[#101422]">
@@ -83,10 +136,44 @@ function TwoFactor() {
             <p className="text-sm text-center text-white">
               Get your code from your authenticator app.
             </p>
+            <p
+              className="text-sm text-center text-white cursor-pointer"
+              onClick={onOpen}
+            >
+              Lost your authenticator?
+            </p>
           </div>
 
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Reset 2FA</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                Are you sure you want to reset your 2FA? You will need to set it
+                up again.
+              </ModalBody>
+              <ModalFooter>
+                <button
+                  className="p-1 mr-3 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  onClick={reset2FA}
+                >
+                  Confirm
+                </button>
+                <button
+                  className="p-1 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  onClick={onClose}
+                >
+                  Cancel
+                </button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+            {
+            !reseted2FA ? 
+            (<div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
               <div>
                 <label
                   htmlFor="code"
@@ -118,6 +205,26 @@ function TwoFactor() {
                 </button>
               </div>
             </div>
+            ):(<div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10"><div>
+              <p className="p-2 text-center text-black">
+                In order to proceed, you must set up multi-factor authentication
+                using an authentication app of your choice. Please scan the QR
+                code below to begin setup.
+              </p>
+              <div className="flex justify-center p-2 m-2">
+                <img src={qr} alt="PNG image"></img>
+              </div>
+              <div>
+                <button
+                  onClick={() => setReseted2FA(false)}
+                  className="flex justify-center w-full px-4 py-3 my-5 text-sm font-medium text-white bg-[#101422] border border-transparent rounded-md shadow-sm "
+                >
+                  Enter 2FA Code
+                </button>
+              </div>
+            </div>
+            </div>
+            )}
           </div>
         </div>
       </div>

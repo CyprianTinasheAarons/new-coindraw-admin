@@ -20,6 +20,10 @@ class AuthService {
   getCurrentUser() {
     return JSON.parse(localStorage.getItem("admin-user"));
   }
+
+  reset2fa(data) {
+    return http.post("/auth/reset-2fa", data);
+  }
 }
 
 export default new AuthService();

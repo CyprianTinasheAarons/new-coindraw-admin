@@ -203,7 +203,7 @@ function Referrals() {
                         </ModalBody>
                         <ModalFooter>
                           <button className="p-1 mr-3 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={handleRequestNewCode}>Confirm</button>
-                          <button className="p-1 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={onClose}>Cancel</button>
+                          <button className="p-1 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={onClose2}>Cancel</button>
                         </ModalFooter>
                       </ModalContent>
                     </Modal>
@@ -231,7 +231,7 @@ function Referrals() {
                         <ModalHeader>Request Payout</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
-                          This payment will be made to the preferred payment method set in your My Profile section.
+                          This payment will be made to the preferred payment method set in your <a href="/referrals/profile">My Profile</a> section.
                         </ModalBody>
                         <ModalFooter>
                           <button className="p-1 mr-3 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={handleRequestPayout}>Confirm</button>
