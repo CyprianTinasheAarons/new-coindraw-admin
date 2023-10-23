@@ -137,7 +137,7 @@ function TwoFactor() {
               Get your code from your authenticator app.
             </p>
             <p
-              className="text-sm text-center text-white cursor-pointer"
+              className="text-sm text-center text-white underline cursor-pointer"
               onClick={onOpen}
             >
               Lost your authenticator?

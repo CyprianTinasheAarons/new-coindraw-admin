@@ -26,6 +26,7 @@ import ReferralRequests from "../../components/tables/referralRequests";
 export default function ReferralTable() {
   const isLoading = useSelector((state) => state.referral.isLoading);
   const [newReferralCode, setNewReferralCode] = useState("");
+  const [selectedReferral, setSelectedReferral] = useState({}); // [id, referralCode
   const [usernames, setUsernames] = useState({});
   const [tab, setTab] = useState(
     localStorage.getItem("tab") ? localStorage.getItem("tab") : "referrals"
@@ -288,7 +289,7 @@ export default function ReferralTable() {
                     </thead>
                     <tbody className="bg-white">
                       {data
-                        ?.filter((r) => r?.approved === true)
+                        ?.filter((r) => r?.approved)
                         .map((r) => (
                           <tr key={r?.id}>
                             <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
@@ -344,7 +345,10 @@ export default function ReferralTable() {
                               </CopyToClipboard>
                               <button
                                 type="button"
-                                onClick={onOpen}
+                                onClick={() => {
+                                  setSelectedReferral(r);
+                                  onOpen();
+                                }}
                                 className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                               >
                                 Edit Referral Code
@@ -359,7 +363,10 @@ export default function ReferralTable() {
                                   <ModalBody>
                                     <input
                                       type="text"
-                                      value={newReferralCode}
+                                      value={
+                                        newReferralCode ||
+                                        selectedReferral?.referralCode
+                                      }
                                       onChange={(e) =>
                                         setNewReferralCode(e.target.value)
                                       }
@@ -372,7 +379,7 @@ export default function ReferralTable() {
                                       type="button"
                                       onClick={() =>
                                         handleUpdateReferralCode(
-                                          r?.id,
+                                          selectedReferral?.id,
                                           newReferralCode
                                         )
                                       }

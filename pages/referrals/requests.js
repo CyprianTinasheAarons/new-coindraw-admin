@@ -231,7 +231,7 @@ function Referrals() {
                         <ModalHeader>Request Payout</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
-                          This payment will be made to the preferred payment method set in your <a href="/referrals/profile">My Profile</a> section.
+                          This payment will be made to the preferred payment method set in your <a href="/referrals/profile" className="font-semibold underline">My Profile</a> section.
                         </ModalBody>
                         <ModalFooter>
                           <button className="p-1 mr-3 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onClick={handleRequestPayout}>Confirm</button>
