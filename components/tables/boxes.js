@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import boxService from "../../api/box.service";
+import userService from "../../api/user.service";
 import CsvDownloader from "react-csv-downloader";
 
 export default function BoxesTable(data) {
   const [boxes, setBoxes] = useState([]);
+  const [usersDetails, setUserDetails] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  
   const fetchBoxes = async () => {
-    await boxService.getAll().then((res) => {
-      setBoxes(res?.data);
-    });
+    const response = await boxService.getAll();
+    setBoxes(response?.data);
   };
+  
   useEffect(() => {
     fetchBoxes();
   }, []);
@@ -20,11 +23,29 @@ export default function BoxesTable(data) {
       boxes.filter(
         (b) =>
           b?.boxType?.toLowerCase().includes(search.toLowerCase()) ||
-          b?.owner?.toLowerCase().includes(search.toLowerCase()) ||
-          b?.prize?.toLowerCase().includes(search.toLowerCase())
+          b?.owner?.toLowerCase().includes(search.toLowerCase())
       )
     );
   }, [search, boxes]);
+
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const userDetails = await Promise.all(
+        boxes.map(async (box) => {
+          const response = await userService.get(box.owner);
+          return {
+            username: response?.data?.username,
+            walletAddress: response?.data?.walletAddress
+          };
+        })
+      );
+      setUserDetails(userDetails);
+    };
+    fetchUserDetails();
+  }, [boxes]);
+
+
 
   return (
     <>
@@ -125,31 +146,54 @@ export default function BoxesTable(data) {
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
                     >
-                      Contract Address
+                      Won
                     </th>
+
+                    <th
+                      scope="col"
+                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Date
+                    </th>
+           
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {filteredData.map((box) => (
-                    <tr key={box.contractAddress}>
+                  {filteredData.map((box,index) => (
+                    <tr key={box?.id}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         {box?.boxType}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {box.owner}
+                        <div className="flex items-center space-x-2">
+                          <div className="truncate">
+                            {usersDetails[index]?.username} - {usersDetails[index]?.walletAddress}
+                          </div>
+                          <button
+                            onClick={() => navigator.clipboard.writeText(`${usersDetails[index]?.username} - ${usersDetails[index]?.walletAddress}`)}
+                            className="text-blue-600 hover:text-blue-800 active:text-blue-900 focus:outline-none"
+                          >
+                            Copy
+                          </button>
+                        </div>
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {box.status ? "Opened" : "Unopened"}
+                        {box?.status ? "Opened" : "Unopened"}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {box?.prize}
+                        <div className="prize-details">
+                          <div className="prize-name">{box?.prize?.type}-{box?.prize?.name}</div>
+                
+                        </div>
                       </td>
-             
-               
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {box?.contractAddress}
+                        {box?.won ? "Yes" : "No"}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {new Intl.DateTimeFormat('en-GB').format(new Date(box?.createdAt))}
                       </td>
                     </tr>
+                    
                   ))}
                 </tbody>
               </table>
