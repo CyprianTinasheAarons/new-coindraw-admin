@@ -21,7 +21,7 @@ import {
 
 function Draws() {
   const toast = useToast();
-  const contractMaticAddress = "0xaf2df1bA6Fb1FC3Eda12b01e9d70F33332bAe672";
+  const contractMaticAddress = "0x976965F52dD000f3238F2775b80cb0906086614B";
   const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
   const [ loading, setLoading ] = useState(false);
 

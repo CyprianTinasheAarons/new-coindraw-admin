@@ -2,6 +2,7 @@ import Layout from "../../components/Layout";
 import { useEffect, useState } from "react";
 import boxService from "../../api/box.service";
 import Head from "next/head";
+import { useAddress } from "@thirdweb-dev/react";
 
 import {
   Modal,
@@ -16,6 +17,8 @@ import {
 } from "@chakra-ui/react";
 
 export default function BoxViewer() {
+ 
+
   const [box, setBox] = useState({
     boxType: "Classic", // Classic or Exclusive
     prizes: [
@@ -29,7 +32,7 @@ export default function BoxViewer() {
         probability: 0, // Probability of winning the prize
         discordNotificationType: "", // Type of Discord notification
         nftContractAddress: "", // Address of the contract
-        nftTokenId: 0, // Token ID of the NFT
+        nftTokenId: [0], // Token ID of the NFT
         maticPrice: 0, // Price of the prize in Matic
       },
     ],
@@ -46,7 +49,7 @@ export default function BoxViewer() {
     probability: 0, // Probability of winning the prize
     discordNotificationType: "Everyone", // Type of Discord notification
     nftContractAddress: "", // Address of the contract
-    nftTokenId: 0, // Token ID of the NFT
+    nftTokenId: [0], // Token ID of the NFT
     maticPrice: 0, // Price of the prize in Matic
   });
 
@@ -255,6 +258,7 @@ export default function BoxViewer() {
     onDeleteOpen();
   };
 
+
   return (
     <>
       <Head>
@@ -440,6 +444,7 @@ export default function BoxViewer() {
                                 type="text"
                                 placeholder="NFT Contract Address"
                               />
+
                               <label className="text-sm font-medium text-gray-900">
                                 NFT Token IDs
                               </label>
@@ -450,7 +455,7 @@ export default function BoxViewer() {
                                 onChange={(e) =>
                                   setPrize({
                                     ...prize,
-                                    nftTokenId: e.target.value,
+                                    nftTokenId: e.target.value.split(","),
                                   })
                                 }
                                 className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -647,7 +652,7 @@ export default function BoxViewer() {
                               onChange={(e) =>
                                 setPrize({
                                   ...prize,
-                                  nftTokenId: e.target.value,
+                                  nftTokenId: e.target.value.split(","),
                                 })
                               }
                               className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -885,7 +890,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                           {prize.nftContractAddress}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {prize.nftTokenId}
+                          {Array.isArray(prize.nftTokenId) ? prize.nftTokenId.join(", ") : prize.nftTokenId}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.maticPrice}

@@ -159,7 +159,7 @@ export default function BoxesTable(data) {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {filteredData.map((box,index) => (
+                  {filteredData.reverse().map((box,index) => (
                     <tr key={box?.id}>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                         {box?.boxType}
