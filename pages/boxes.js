@@ -19,12 +19,12 @@ import {
   Spinner
 } from "@chakra-ui/react";
 
-function Draws() {
+function Boxes() {
   const toast = useToast();
-  const contractMaticAddress = "0x976965F52dD000f3238F2775b80cb0906086614B";
-  const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
+const contractMaticAddress = "0xAc29f1f93F45A477C2D263a9EF4fe7476020C4ff";
+const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
   const [ loading, setLoading ] = useState(false);
-
+  const [balance,setBalance] = useState(0);
   const [amount, setAmount] = useState(0);
   const [contract, setContract] = useState("");
 
@@ -58,6 +58,7 @@ function Draws() {
       isClosable: true,
     });
     onCloseMatic();
+    window.location.reload();
   };
 
   const onErrorMatic = () =>
@@ -87,6 +88,7 @@ function Draws() {
       isClosable: true,
     });
     onCloseNFT();
+    window.location.reload();
   };
 
   const onErrorNFT = () =>
@@ -116,6 +118,17 @@ function Draws() {
       }
     };
 
+  useEffect(() => {
+    const getBalance = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractMaticAddress, abiMatic, signer);
+      const balance = await contract.balanceOf();
+      setBalance(ethers.utils.formatEther(balance));
+    };
+    getBalance();
+  }, [balance]);
+
   return (
     <div>
       <Head>
@@ -126,7 +139,7 @@ function Draws() {
       <main className="h-full bg-white">
         <Layout title="Coinbox">
           <div className="flex justify-between mt-4">
-            <div>
+            <div className="flex">
               <a
                 href="/configure/classic"
                 className="inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
@@ -140,13 +153,14 @@ function Draws() {
                 Configure Exclusive Box
               </a>
             </div>
-            <div>
+            <div className="flex items-center">
+              <p style={{color: 'green', fontSize: '16px'}} className="font-semibold">{balance} MATIC</p>
               {" "}
               <button
                 onClick={onOpenMatic}
                 className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
               >
-                Fund Coinbox Matic Price
+                Fund Coinbox Matic Price 
               </button>
               <button
                 onClick={onOpenNFT}
@@ -235,4 +249,4 @@ function Draws() {
   );
 }
 
-export default Draws;
+export default Boxes;
