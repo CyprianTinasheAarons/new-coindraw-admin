@@ -4,7 +4,8 @@ import BoxesTable from "../components/tables/boxes";
 import { useEffect, useState } from "react";
 import abiMatic from "../abi/abiMatic.json";
 import abiNFT from "../abi/abiNFT.json";
-import { useContract, useContractRead, Web3Button } from "@thirdweb-dev/react";
+import { Web3Button  ,useAddress} from "@thirdweb-dev/react";
+import { ethers } from "ethers";
 import {
   Modal,
   ModalOverlay,
@@ -14,25 +15,19 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  useToast,
+  Spinner
 } from "@chakra-ui/react";
 
 function Draws() {
-  const contractMaticAddress = "0xB35ac3B0470f967853a7E74F7F16199DAFbb95eC";
-  const contractNFTAddress = "0x3a8c339ee490fdCDD41F26aD5716424722d5979E";
-  const {
-    contract: contractMatic,
-    isLoading: isLoadingMatic,
-    error: errorMatic,
-  } = useContract(contractMaticAddress, abiMatic.abi);
-  const {
-    contract: contractNFT,
-    isLoading: isLoadingNFT,
-    error: errorNFT,
-  } = useContract(contractNFTAddress, abiNFT.abi);
-  const { data, isLoading, error } = useContractRead(contractMatic, "getName");
+  const toast = useToast();
+  const contractMaticAddress = "0xaf2df1bA6Fb1FC3Eda12b01e9d70F33332bAe672";
+  const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
+  const [ loading, setLoading ] = useState(false);
 
   const [amount, setAmount] = useState(0);
-  const [address, setAddress] = useState("");
+  const [contract, setContract] = useState("");
+
 
   const {
     isOpen: isOpenMatic,
@@ -44,6 +39,82 @@ function Draws() {
     onOpen: onOpenNFT,
     onClose: onCloseNFT,
   } = useDisclosure();
+
+  const onSubmitMatic = () =>
+    toast({
+      title: "Matic submission.",
+      description: "We've submitted your Matic request.",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
+
+  const onSuccessMatic = () => {
+    toast({
+      title: "Matic successful.",
+      description: "We've successfully processed the Matic.",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+    onCloseMatic();
+  };
+
+  const onErrorMatic = () =>
+    toast({
+      title: "Matic failed.",
+      description: "We've failed to process the Matic.",
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+
+  const onSubmitNFT = () =>
+    toast({
+      title: "NFT submission.",
+      description: "We've submitted your NFT request.",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
+
+  const onSuccessNFT = () => {
+    toast({
+      title: "NFT successful.",
+      description: "We've successfully processed the NFT.",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+    onCloseNFT();
+  };
+
+  const onErrorNFT = () =>
+    toast({
+      title: "NFT failed.",
+      description: "We've failed to process the NFT.",
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+
+    const sendFundsToContract = async () => {
+      setLoading(true);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(contractMaticAddress, abiMatic, signer);
+      try {
+        const transaction = await contract.deposit({value: ethers.utils.parseEther(amount)});
+        
+        await transaction.wait();
+        onSuccessMatic();
+        setLoading(false);
+      } catch (error) {
+        console.error("An error occurred", error);
+        onErrorMatic();
+        setLoading(false);
+      }
+    };
 
   return (
     <div>
@@ -102,15 +173,18 @@ function Draws() {
                 />
               </ModalBody>
               <ModalFooter>
-                <Web3Button
-                  contractAddress={contractMaticAddress} // Your smart contract address
-                  contractAbi={abiMatic.abi}
-                  action={async (contract) => {
-                    contract.methods.receive().send({from: accounts[0], value: web3.utils.toWei(amount, 'ether')});
-                  }}
+                <button
+                  onClick={() => sendFundsToContract()}
+                  className="px-3 py-3 mx-1 text-black bg-gray-100 rounded-md"
                 >
-                  Send Funds
-                </Web3Button>
+                  {loading ? (
+                    <div>
+                      <Spinner />
+                    </div>
+                  ) : (
+                    "Fund Contract"
+                  )}
+                </button>
 
                 <button onClick={onCloseMatic} className="mx-1">
                   Close
@@ -128,20 +202,26 @@ function Draws() {
                   type="text"
                   placeholder="Enter contract address"
                   className="w-full px-3 py-2 leading-tight text-gray-700 border-gray-200 rounded appearance-none focus:outline-none focus:shadow-outline"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  value={contract}
+                  onChange={(e) => setContract(e.target.value)}
                   name="address"
                 />
               </ModalBody>
               <ModalFooter>
                 <Web3Button
-                  contractAddress={contractNFTAddress} // Your smart contract address
-                  contractAbi={abiNFT.abi}
+                  contractAddress={contract} // Your smart contract address
+                  contractAbi={abiNFT}
                   action={async (contract) => {
-                    await someAction(contract);
+                    await contract.call("setApprovalForAll", [
+                      contractNFTAddress,
+                      true,
+                    ]);
                   }}
+                  onSuccess={onSuccessNFT}
+                  onError={onErrorNFT}
+                  onSubmit={onSubmitNFT}
                 >
-                  Execute Action
+                  Set Approval
                 </Web3Button>
                 <button onClick={onCloseNFT} className="mx-1">
                   Close

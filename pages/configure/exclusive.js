@@ -214,7 +214,7 @@ export default function BoxViewer() {
         <div className="mb-2">
           <div className="mx-auto max-w-7xl ">
             <h1 className="text-3xl font-bold leading-tight text-gray-900">
-            CoinBox Editor
+              CoinBox Editor
             </h1>
           </div>
         </div>
@@ -384,20 +384,20 @@ export default function BoxViewer() {
                                 placeholder="NFT Contract Address"
                               />
                               <label className="text-sm font-medium text-gray-900">
-                                NFT Token ID
+                                NFT Token IDs
                               </label>
-                              <input
+                              <textarea
+                                type="number"
                                 name="nftTokenId"
                                 value={prize?.nftTokenId}
                                 onChange={(e) =>
                                   setPrize({
                                     ...prize,
-                                    nftTokenId: parseInt(e.target.value),
+                                    nftTokenId: e.target.value,
                                   })
                                 }
                                 className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                type="number"
-                                placeholder="NFT Token ID"
+                                placeholder="NFT Token ID (enter each ID on a new line)"
                               />
                             </>
                           )}
@@ -581,20 +581,20 @@ export default function BoxViewer() {
                               placeholder="NFT Contract Address"
                             />
                             <label className="text-sm font-medium text-gray-900">
-                              NFT Token ID
+                              NFT Token IDs
                             </label>
-                            <input
+                            <textarea
+                              type="number"
                               name="nftTokenId"
                               value={prize?.nftTokenId}
                               onChange={(e) =>
                                 setPrize({
                                   ...prize,
-                                  nftTokenId: parseInt(e.target.value),
+                                  nftTokenId: e.target.value,
                                 })
                               }
                               className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                              type="number"
-                              placeholder="NFT Token ID"
+                              placeholder="NFT Token ID (enter each ID on a new line)"
                             />
                           </>
                         )}
