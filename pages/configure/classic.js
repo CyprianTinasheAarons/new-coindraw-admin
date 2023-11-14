@@ -123,16 +123,7 @@ export default function BoxViewer() {
   };
 
   const editBox = async () => {
-    if (!checkFields()) {
-      toast({
-        title: "Error",
-        description: "There are empty fields",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-      return;
-    }
+
 
     if (box?.id) {
       box.prizes.push(prize);
