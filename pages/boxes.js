@@ -4,7 +4,7 @@ import BoxesTable from "../components/tables/boxes";
 import { useEffect, useState } from "react";
 import abiMatic from "../abi/abiMatic.json";
 import abiNFT from "../abi/abiNFT.json";
-import { Web3Button  ,useAddress} from "@thirdweb-dev/react";
+import { Web3Button } from "@thirdweb-dev/react";
 import { ethers } from "ethers";
 import {
   Modal,
@@ -16,18 +16,22 @@ import {
   ModalCloseButton,
   useDisclosure,
   useToast,
-  Spinner
+  Spinner,
 } from "@chakra-ui/react";
+
+// 0x976965F52dD000f3238F2775b80cb0906086614B = matic
+// 0x9809f89Fa4740602F23e99D653554Ce3583FfD83 = nft
 
 function Boxes() {
   const toast = useToast();
-const contractMaticAddress = "0xAc29f1f93F45A477C2D263a9EF4fe7476020C4ff";
-const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
-  const [ loading, setLoading ] = useState(false);
-  const [balance,setBalance] = useState(0);
+  const contractMaticAddress = "0xAc29f1f93F45A477C2D263a9EF4fe7476020C4ff";
+  const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
+    // const contractMaticAddress = "0x976965F52dD000f3238F2775b80cb0906086614B";
+    // const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
+  const [loading, setLoading] = useState(false);
+  const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState(0);
   const [contract, setContract] = useState("");
-
 
   const {
     isOpen: isOpenMatic,
@@ -40,14 +44,6 @@ const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
     onClose: onCloseNFT,
   } = useDisclosure();
 
-  const onSubmitMatic = () =>
-    toast({
-      title: "Matic submission.",
-      description: "We've submitted your Matic request.",
-      status: "info",
-      duration: 9000,
-      isClosable: true,
-    });
 
   const onSuccessMatic = () => {
     toast({
@@ -100,29 +96,39 @@ const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
       isClosable: true,
     });
 
-    const sendFundsToContract = async () => {
-      setLoading(true);
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractMaticAddress, abiMatic, signer);
-      try {
-        const transaction = await contract.deposit({value: ethers.utils.parseEther(amount)});
-        
-        await transaction.wait();
-        onSuccessMatic();
-        setLoading(false);
-      } catch (error) {
-        console.error("An error occurred", error);
-        onErrorMatic();
-        setLoading(false);
-      }
-    };
+  const sendFundsToContract = async () => {
+    setLoading(true);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      contractMaticAddress,
+      abiMatic,
+      signer
+    );
+    try {
+      const transaction = await contract.deposit({
+        value: ethers.utils.parseEther(amount),
+      });
+
+      await transaction.wait();
+      onSuccessMatic();
+      setLoading(false);
+    } catch (error) {
+      console.error("An error occurred", error);
+      onErrorMatic();
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const getBalance = async () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      const contract = new ethers.Contract(contractMaticAddress, abiMatic, signer);
+      const contract = new ethers.Contract(
+        contractMaticAddress,
+        abiMatic,
+        signer
+      );
       const balance = await contract.balanceOf();
       setBalance(ethers.utils.formatEther(balance));
     };
@@ -154,13 +160,17 @@ const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
               </a>
             </div>
             <div className="flex items-center">
-              <p style={{color: 'green', fontSize: '16px'}} className="font-semibold">{balance} MATIC</p>
-              {" "}
+              <p
+                style={{ color: "green", fontSize: "16px" }}
+                className="font-semibold"
+              >
+                {balance} MATIC
+              </p>{" "}
               <button
                 onClick={onOpenMatic}
                 className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
               >
-                Fund Coinbox Matic Price 
+                Fund Coinbox Matic Prize
               </button>
               <button
                 onClick={onOpenNFT}
@@ -174,7 +184,7 @@ const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
           <Modal isOpen={isOpenMatic} onClose={onCloseMatic}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Fund Coinbox Matic Price</ModalHeader>
+              <ModalHeader>Fund Coinbox Matic Prize</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <input
@@ -212,6 +222,9 @@ const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
               <ModalHeader>Approve Contract to Distribute NFTs</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
+                <label className="block text-xs text-red-500">
+                  To work, input a contract address
+                </label>
                 <input
                   type="text"
                   placeholder="Enter contract address"

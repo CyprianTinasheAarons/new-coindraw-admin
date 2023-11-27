@@ -81,48 +81,23 @@ export default function BoxViewer() {
     getBox();
   }, []);
 
-  //function to check fields that shouldnt be empty depending on type
-  const checkFields = () => {
-    if (prize.type === "Digital") {
-      if (
-        prize.name === "" ||
-        prize.image === "" ||
-        prize.type === "" ||
-        prize.quantity === "" ||
-        prize.probability === "" ||
-        prize.discordNotificationType === "" ||
-        prize.nftContractAddress === "" ||
-        prize.nftTokenId === ""
-      ) {
-        return false;
-      }
-    } else if (prize.type === "Physical") {
-      if (
-        prize.name === "" ||
-        prize.image === "" ||
-        prize.type === "" ||
-        prize.quantity === "" ||
-        prize.probability === "" ||
-        prize.discordNotificationType === ""
-      ) {
-        return false;
-      }
-    } else if (prize.type === "MATIC") {
-      if (
-        prize.name === "" ||
-        prize.image === "" ||
-        prize.type === "" ||
-        prize.quantity === "" ||
-        prize.probability === "" ||
-        prize.discordNotificationType === "" ||
-        prize.maticPrice === ""
-      ) {
-        return false;
-      }
-    }
-  };
 
   const editBox = async () => {
+
+    const totalProbability = box?.prizes.reduce(
+      (total, prize) => total + prize.probability,
+      0
+    );
+    if (totalProbability > 1000) {
+      toast({
+        title: "Error",
+        description: "Total probability exceeds 1000",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      return;
+    }
 
 
     if (box?.id) {
@@ -198,11 +173,22 @@ export default function BoxViewer() {
 
   const editPrize = async () => {
     console.log("Starting to edit prize");
-    const index = box.prizes.findIndex((p) => p.id === prize.id);
+    const index = box?.prizes.findIndex((p) => p.id === prize.id);
     console.log("Prize index:", index);
 
     if (index !== -1) {
       box.prizes[index] = prize;
+    }
+    const totalProbability = box.prizes.reduce((total, prize) => total + prize.probability, 0);
+    if (totalProbability > 1000) {
+      toast({
+        title: "Error",
+        description: "Total probability exceeds 1000",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      return;
     }
     try {
       console.log("Updating coinbox");
@@ -338,6 +324,9 @@ export default function BoxViewer() {
                               className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                             >
                               <option value="Digital">Digital</option>
+                              <option value="DigitalCoindraw">
+                                Digital Coindraw
+                              </option>
                               <option value="Physical">Physical</option>
                               <option value="MATIC">MATIC</option>
                             </select>
@@ -404,7 +393,9 @@ export default function BoxViewer() {
                           <select
                             name="discordNotificationType"
                             required
-                            value={prize?.discordNotificationType || "Everyone"}
+                            value={
+                              prize?.discordNotificationType || "ChannelOnly"
+                            }
                             onChange={(e) =>
                               setPrize({
                                 ...prize,
@@ -413,11 +404,18 @@ export default function BoxViewer() {
                             }
                             className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                           >
-                            <option value="Everyone">Everyone</option>
+                            {" "}
                             <option value="ChannelOnly">Channel Only</option>
+                            <option value="Everyone">Everyone</option>
                           </select>
 
                           {prize?.type === "Digital" && (
+                            <>
+                        
+                            </>
+                          )}
+
+                          {prize?.type === "DigitalCoindraw" && (
                             <>
                               <label className="text-sm font-medium text-gray-900">
                                 NFT Contract Address
@@ -435,29 +433,12 @@ export default function BoxViewer() {
                                 type="text"
                                 placeholder="NFT Contract Address"
                               />
-
-                              <label className="text-sm font-medium text-gray-900">
-                                NFT Token IDs
-                              </label>
-                              <textarea
-                                type="number"
-                                name="nftTokenId"
-                                value={prize?.nftTokenId}
-                                onChange={(e) =>
-                                  setPrize({
-                                    ...prize,
-                                    nftTokenId: e.target.value.split(","),
-                                  })
-                                }
-                                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                                placeholder="NFT Token ID (enter each ID on a new line)"
-                              />
                             </>
                           )}
                           {prize?.type === "MATIC" && (
                             <>
                               <label className="text-sm font-medium text-gray-900">
-                                Matic Price
+                                Matic Prize
                               </label>
                               <input
                                 name="maticPrice"
@@ -470,7 +451,7 @@ export default function BoxViewer() {
                                 }
                                 className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                 type="number"
-                                placeholder="Matic Price"
+                                placeholder="Matic Prize"
                               />
                             </>
                           )}
@@ -538,6 +519,9 @@ export default function BoxViewer() {
                             className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                           >
                             <option value="Digital">Digital</option>
+                            <option value="DigitalCoindraw">
+                              Digital Coindraw
+                            </option>
                             <option value="Physical">Physical</option>
                             <option value="MATIC">MATIC</option>
                           </select>
@@ -602,7 +586,9 @@ export default function BoxViewer() {
                         </label>
                         <select
                           name="discordNotificationType"
-                          value={prize?.discordNotificationType || "Everyone"}
+                          value={
+                            prize?.discordNotificationType || "ChannelOnly"
+                          }
                           onChange={(e) =>
                             setPrize({
                               ...prize,
@@ -611,11 +597,18 @@ export default function BoxViewer() {
                           }
                           className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                         >
-                          <option value="Everyone">Everyone</option>
+                          {" "}
                           <option value="ChannelOnly">Channel Only</option>
+                          <option value="Everyone">Everyone</option>
                         </select>
 
                         {prize?.type === "Digital" && (
+                          <>
+                     
+                          </>
+                        )}
+
+                        {prize?.type === "DigitalCoindraw" && (
                           <>
                             <label className="text-sm font-medium text-gray-900">
                               NFT Contract Address
@@ -633,28 +626,12 @@ export default function BoxViewer() {
                               type="text"
                               placeholder="NFT Contract Address"
                             />
-                            <label className="text-sm font-medium text-gray-900">
-                              NFT Token IDs
-                            </label>
-                            <textarea
-                              type="number"
-                              name="nftTokenId"
-                              value={prize?.nftTokenId}
-                              onChange={(e) =>
-                                setPrize({
-                                  ...prize,
-                                  nftTokenId: e.target.value.split(","),
-                                })
-                              }
-                              className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                              placeholder="NFT Token ID (enter each ID on a new line)"
-                            />
                           </>
                         )}
                         {prize?.type === "MATIC" && (
                           <>
                             <label className="text-sm font-medium text-gray-900">
-                              Matic Price
+                              Matic Prize
                             </label>
                             <input
                               name="maticPrice"
@@ -667,7 +644,7 @@ export default function BoxViewer() {
                               }
                               className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                               type="number"
-                              placeholder="Matic Price"
+                              placeholder="Matic Prize"
                             />
                           </>
                         )}
@@ -822,12 +799,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                     >
                       Contract
                     </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Token ID
-                    </th>
+                 
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -872,7 +844,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                             : prize.quantity}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {prize.probability}
+                          {prize.probability} / 1000
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.discordNotificationType}
@@ -880,9 +852,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.nftContractAddress}
                         </td>
-                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {Array.isArray(prize.nftTokenId) ? prize.nftTokenId.join(", ") : prize.nftTokenId}
-                        </td>
+                  
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.maticPrice}
                         </td>
@@ -903,6 +873,15 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         </td>
                       </tr>
                     ))}
+                    <tr>
+                      <td className={`px-3 py-4 text-sm whitespace-nowrap ${
+                        prizes.reduce((total, prize) => total + prize.probability, 0) > 1000
+                          ? "text-red-500"
+                          : "text-black"
+                      }`}>
+                        Total Probability: {prizes.reduce((total, prize) => total + prize.probability, 0)} / 1000
+                      </td>
+                    </tr>
                 </tbody>
               </table>
             </div>
