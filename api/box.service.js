@@ -16,10 +16,13 @@ class BoxService {
   updateCoinbox(id, data) {
     return http.put(`/coinboxes/${id}`, data);
   }
- 
-//  ====Get Boxes =====
+  //  ====Get Boxes =====
   getAll() {
     return http.get("/boxes");
+  }
+
+  update(id, data) {
+    return http.put(`/boxes/${id}`, data);
   }
 
   delete(id) {

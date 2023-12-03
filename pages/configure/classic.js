@@ -2,7 +2,6 @@ import Layout from "../../components/Layout";
 import { useEffect, useState } from "react";
 import boxService from "../../api/box.service";
 import Head from "next/head";
-import { useAddress } from "@thirdweb-dev/react";
 
 import {
   Modal,
@@ -190,6 +189,7 @@ export default function BoxViewer() {
       });
       return;
     }
+    
     try {
       console.log("Updating coinbox");
       await boxService.updateCoinbox(box.id, { prizes: box.prizes });

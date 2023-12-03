@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import boxService from "../../api/box.service";
 import userService from "../../api/user.service";
 import CsvDownloader from "react-csv-downloader";
-import {useToast} from "@chakra-ui/react";
-import ReactPaginate from 'react-paginate';
+import { useToast } from "@chakra-ui/react";
+import ReactPaginate from "react-paginate";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -20,14 +20,16 @@ export default function BoxesTable(data) {
 
   const fetchBoxes = async () => {
     const response = await boxService.getAll();
-    setBoxes(response?.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      );
+    setBoxes(
+      response?.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      )
+    );
   };
-  
+
   useEffect(() => {
     fetchBoxes();
   }, []);
-
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -36,7 +38,7 @@ export default function BoxesTable(data) {
           const response = await userService.get(box.owner);
           return {
             username: response?.data?.username,
-            walletAddress: response?.data?.walletAddress
+            walletAddress: response?.data?.walletAddress,
           };
         })
       );
@@ -44,7 +46,6 @@ export default function BoxesTable(data) {
     };
     fetchUserDetails();
   }, [boxes]);
-
 
   useEffect(() => {
     let filtered = boxes;
@@ -68,10 +69,7 @@ export default function BoxesTable(data) {
       );
     }
     if (statusFilter) {
-      filtered = filtered.filter(
-        (b) =>
-          b?.status?.toString() === statusFilter
-      );
+      filtered = filtered.filter((b) => b?.status?.toString() === statusFilter);
     }
 
     if (dateRange.start && dateRange.end) {
@@ -81,7 +79,7 @@ export default function BoxesTable(data) {
           new Date(b.createdAt) <= new Date(dateRange.end)
       );
     }
-   
+
     setFilteredData(filtered);
   }, [search, boxes, usersDetails, dateRange, prizeFilter, statusFilter]);
 
@@ -89,15 +87,15 @@ export default function BoxesTable(data) {
 
   const handleFulfillmentChange = async (id) => {
     try {
-      const response = await boxService.update(id, {fulfilled: true});
+      const response = await boxService.update(id, { fulfilled: true });
       if (response?.status === 200) {
-        fetchBoxes();
         toast({
           title: "Box updated successfully.",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
+        fetchBoxes();
       }
     } catch (error) {
       toast({
@@ -108,10 +106,7 @@ export default function BoxesTable(data) {
         isClosable: true,
       });
     }
-  }
-
-
-
+  };
 
   return (
     <>
@@ -228,7 +223,7 @@ export default function BoxesTable(data) {
           className="block w-full pr-12 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
       </div>
-      
+
       <div className="my-2 sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-base font-semibold leading-6 text-gray-900">
@@ -344,6 +339,7 @@ export default function BoxesTable(data) {
                               onChange={() => handleFulfillmentChange(box?.id)}
                             />
                           )}
+                 
                         </td>
                       </tr>
                     ))}
@@ -358,13 +354,27 @@ export default function BoxesTable(data) {
                   containerClassName={"pagination"}
                   activeClassName={" text-white bg-indigo-600"}
                   breakClassName={"break-me"}
-                  breakLinkClassName={"px-3 py-1 rounded-md border border-gray-300"}
-                  pageClassName={"relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"}
-                  pageLinkClassName={"relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"}
-                  previousClassName={"relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"}
-                  previousLinkClassName={"relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"}
-                  nextClassName={"relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"}
-                  nextLinkClassName={"relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"}
+                  breakLinkClassName={
+                    "px-3 py-1 rounded-md border border-gray-300"
+                  }
+                  pageClassName={
+                    "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }
+                  pageLinkClassName={
+                    "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }
+                  previousClassName={
+                    "relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  }
+                  previousLinkClassName={
+                    "relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  }
+                  nextClassName={
+                    "relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  }
+                  nextLinkClassName={
+                    "relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  }
                   disabledClassName={"opacity-50 cursor-not-allowed"}
                 />
               </div>
