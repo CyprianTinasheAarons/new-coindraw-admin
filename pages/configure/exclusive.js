@@ -44,7 +44,7 @@ export default function BoxViewer() {
     unlimitedQuantity: false, // Unlimited quantity of prize
     quantity: 0, // Quantity of the prize
     probability: 0, // Probability of winning the prize
-    discordNotificationType: "Everyone", // Type of Discord notification
+    discordNotificationType: "ChannelOnly", // Type of Discord notification
     nftContractAddress: "", // Address of the contract
     nftTokenId: 0, // Token ID of the NFT
     maticPrice: 0, // Price of the prize in Matic
@@ -790,7 +790,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                     >
                       Contract
                     </th>
-               
+
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -843,7 +843,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.nftContractAddress}
                         </td>
-                    
+
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.maticPrice}
                         </td>
@@ -864,6 +864,25 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         </td>
                       </tr>
                     ))}
+                  <tr>
+                    <td
+                      className={`px-3 py-4 text-sm whitespace-nowrap ${
+                        prizes.reduce(
+                          (total, prize) => total + prize.probability,
+                          0
+                        ) > 1000
+                          ? "text-red-500"
+                          : "text-black"
+                      }`}
+                    >
+                      Total Probability:{" "}
+                      {prizes.reduce(
+                        (total, prize) => total + prize.probability,
+                        0
+                      )}{" "}
+                      / 1000
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
