@@ -24,10 +24,10 @@ import {
 
 function Boxes() {
   const toast = useToast();
-  // const contractMaticAddress = "0xAc29f1f93F45A477C2D263a9EF4fe7476020C4ff";
-  // const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
-    const contractMaticAddress = "0x976965F52dD000f3238F2775b80cb0906086614B";
-    const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
+  const contractMaticAddress = "0xAc29f1f93F45A477C2D263a9EF4fe7476020C4ff";
+  const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
+    // const contractMaticAddress = "0x976965F52dD000f3238F2775b80cb0906086614B";
+    // const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState(0);
