@@ -83,7 +83,7 @@ export default function BoxViewer() {
       (total, prize) => total + prize.probability,
       0
     );
-    if (totalProbability > 1000) {
+    if (totalProbability  > 1000) {
       toast({
         title: "Error",
         description: "Total probability exceeds 1000",
@@ -177,7 +177,7 @@ export default function BoxViewer() {
       (total, prize) => total + prize.probability,
       0
     );
-    if (totalProbability > 1000) {
+    if (totalProbability  > 1000) {
       toast({
         title: "Error",
         description: "Total probability exceeds 1000",

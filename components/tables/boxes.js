@@ -68,17 +68,21 @@ export default function BoxesTable(data) {
           b?.prize?.type?.toLowerCase().includes(prizeFilter.toLowerCase())
       );
     }
+
     if (statusFilter) {
       filtered = filtered.filter((b) => b?.status?.toString() === statusFilter);
     }
 
     if (dateRange.start && dateRange.end) {
+      const endOfDay = new Date(dateRange.end);
+      endOfDay.setHours(23, 59, 59, 999); // Set to end of the day
       filtered = filtered.filter(
         (b) =>
           new Date(b.createdAt) >= new Date(dateRange.start) &&
-          new Date(b.createdAt) <= new Date(dateRange.end)
+          new Date(b.createdAt) <= endOfDay
       );
     }
+
 
     setFilteredData(filtered);
   }, [search, boxes, usersDetails, dateRange, prizeFilter, statusFilter]);
