@@ -85,28 +85,31 @@ export default function BoxesTable(data) {
 
   const toast = useToast();
 
-  const handleFulfillmentChange = async (id) => {
-    try {
-      const response = await boxService.update(id, { fulfilled: true });
-      if (response?.status === 200) {
-        toast({
-          title: "Box updated successfully.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        fetchBoxes();
-      }
-    } catch (error) {
-      toast({
-        title: "An error occurred.",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
+ const handleFulfillmentChange = async (id, fulfilledStatus) => {
+   try {
+     const response = await boxService.update(id, {
+       fulfilled: fulfilledStatus,
+     });
+     if (response?.status === 200) {
+       toast({
+         title: "Box updated successfully.",
+         status: "success",
+         duration: 3000,
+         isClosable: true,
+       });
+       fetchBoxes();
+     }
+   } catch (error) {
+     toast({
+       title: "An error occurred.",
+       description: error.message,
+       status: "error",
+       duration: 3000,
+       isClosable: true,
+     });
+   }
+ };
+
 
   return (
     <>
@@ -336,10 +339,14 @@ export default function BoxesTable(data) {
                             <input
                               type="checkbox"
                               checked={box?.fulfilled}
-                              onChange={() => handleFulfillmentChange(box?.id)}
+                              onChange={() =>
+                                handleFulfillmentChange(
+                                  box?.id,
+                                  !box?.fulfilled
+                                )
+                              }
                             />
                           )}
-                 
                         </td>
                       </tr>
                     ))}

@@ -46,7 +46,7 @@ export default function BoxViewer() {
     unlimitedQuantity: false, // Unlimited quantity of prize
     quantity: 0, // Quantity of the prize
     probability: 0, // Probability of winning the prize
-    discordNotificationType: "Everyone", // Type of Discord notification
+    discordNotificationType: "ChannelOnly", // Type of Discord notification
     nftContractAddress: "", // Address of the contract
     nftTokenId: [0], // Token ID of the NFT
     maticPrice: 0, // Price of the prize in Matic
@@ -101,6 +101,7 @@ export default function BoxViewer() {
 
     if (box?.id) {
       box.prizes.push(prize);
+      
       try {
         await boxService.updateCoinbox(box.id, { prizes: box.prizes });
         toast({
