@@ -83,7 +83,7 @@ export default function BoxViewer() {
       (total, prize) => total + prize.probability,
       0
     );
-    if (totalProbability  > 1000) {
+    if (totalProbability > 1000) {
       toast({
         title: "Error",
         description: "Total probability exceeds 1000",
@@ -93,7 +93,7 @@ export default function BoxViewer() {
       });
       return;
     }
-    
+
     if (box?.id) {
       box.prizes.push(prize);
       try {
@@ -107,6 +107,7 @@ export default function BoxViewer() {
         });
         location.reload();
       } catch (error) {
+        box.prizes.pop();
         toast({
           title: "Error",
           description: "There was an error updating the box",
@@ -177,7 +178,7 @@ export default function BoxViewer() {
       (total, prize) => total + prize.probability,
       0
     );
-    if (totalProbability  > 1000) {
+    if (totalProbability > 1000) {
       toast({
         title: "Error",
         description: "Total probability exceeds 1000",
@@ -400,11 +401,7 @@ export default function BoxViewer() {
                             <option value="Everyone">Everyone</option>
                           </select>
 
-                          {prize?.type === "Digital" && (
-                            <>
-                           
-                            </>
-                          )}
+                          {prize?.type === "Digital" && <></>}
 
                           {prize?.type === "DigitalCoindraw" && (
                             <>
@@ -593,11 +590,7 @@ export default function BoxViewer() {
                           <option value="Everyone">Everyone</option>
                         </select>
 
-                        {prize?.type === "Digital" && (
-                          <>
-                        
-                          </>
-                        )}
+                        {prize?.type === "Digital" && <></>}
 
                         {prize?.type === "DigitalCoindraw" && (
                           <>

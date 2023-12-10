@@ -90,7 +90,7 @@ export default function BoxViewer() {
     if (totalProbability  > 1000) {
       toast({
         title: "Error",
-        description: "Total probability exceeds 1000",
+        description: "Total probability cannot exceed 1000",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -101,7 +101,6 @@ export default function BoxViewer() {
 
     if (box?.id) {
       box.prizes.push(prize);
-      
       try {
         await boxService.updateCoinbox(box.id, { prizes: box.prizes });
         toast({
@@ -113,6 +112,7 @@ export default function BoxViewer() {
         });
         location.reload();
       } catch (error) {
+        box.prizes.pop();
         toast({
           title: "Error",
           description: "There was an error updating the box",

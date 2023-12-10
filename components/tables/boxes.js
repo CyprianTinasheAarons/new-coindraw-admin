@@ -7,7 +7,7 @@ import ReactPaginate from "react-paginate";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function BoxesTable(data) {
+export default function BoxesTable() {
   const [boxes, setBoxes] = useState([]);
   const [usersDetails, setUserDetails] = useState([]);
   const [search, setSearch] = useState("");
