@@ -356,38 +356,29 @@ export default function BoxesTable() {
                     ))}
                 </tbody>
               </table>
-              <div className="flex justify-center">
-                <ReactPaginate
-                  pageCount={Math.ceil(filteredData.length / rowsPerPage)}
-                  pageRangeDisplayed={5}
-                  marginPagesDisplayed={2}
-                  onPageChange={(data) => setPage(data.selected + 1)}
-                  containerClassName={"pagination"}
-                  activeClassName={" text-white bg-indigo-600"}
-                  breakClassName={"break-me"}
-                  breakLinkClassName={
-                    "px-3 py-1 rounded-md border border-gray-300"
-                  }
-                  pageClassName={
-                    "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  }
-                  pageLinkClassName={
-                    "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  }
-                  previousClassName={
-                    "relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  }
-                  previousLinkClassName={
-                    "relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  }
-                  nextClassName={
-                    "relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  }
-                  nextLinkClassName={
-                    "relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                  }
-                  disabledClassName={"opacity-50 cursor-not-allowed"}
-                />
+              <div className="">
+                <div className="flex justify-center">
+                  <ReactPaginate
+                    nextLabel="next >"
+                    onPageChange={(data) => setPage(data.selected + 1)}
+                    pageRangeDisplayed={3}
+                    marginPagesDisplayed={2}
+                    pageCount={Math.ceil(filteredData.length / rowsPerPage)}
+                    previousLabel="< previous"
+                    pageClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    pageLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    previousClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    previousLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    nextClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    nextLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    breakLabel="..."
+                    breakClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    breakLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    containerClassName="flex items-center justify-center space-x-2"
+                    activeClassName="bg-gray-200"
+                    renderOnZeroPageCount={null}
+                  />
+                </div>
               </div>
             </div>
           </div>
