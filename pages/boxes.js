@@ -4,7 +4,8 @@ import BoxesTable from "../components/tables/boxes";
 import { useEffect, useState } from "react";
 import abiMatic from "../abi/abiMatic.json";
 import abiNFT from "../abi/abiNFT.json";
-import { Web3Button } from "@thirdweb-dev/react";
+import { Web3Button, useContract, useContractRead } from "@thirdweb-dev/react";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { ethers } from "ethers";
 import {
   Modal,
@@ -24,14 +25,14 @@ import {
 
 function Boxes() {
   const toast = useToast();
-  const contractMaticAddress = "0xAc29f1f93F45A477C2D263a9EF4fe7476020C4ff";
-  const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
-  // const contractMaticAddress = "0x976965F52dD000f3238F2775b80cb0906086614B";
+  // const contractMaticAddress = "0xAc29f1f93F45A477C2D263a9EF4fe7476020C4ff";
+  // const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
+  const [contract, setContract] = useState("");
+  const contractMaticAddress = "0xBBAa084a3ed3690Ac895F95aF2e1d557A5E9Ba23";
   // const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState(0);
-  const [contract, setContract] = useState("");
 
   const {
     isOpen: isOpenMatic,
@@ -120,26 +121,23 @@ function Boxes() {
   };
 
   useEffect(() => {
-    const getBalance = async () => {
+    const fetchBalance = async () => {
       try {
-        console.log("Attempting to fetch balance...");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const contract = new ethers.Contract(
-          contractMaticAddress,
-          abiMatic,
-          signer
-        );
-        const balance = await contract.balanceOf();
-        console.log("Balance fetched successfully:", balance);
-        setBalance(ethers.utils.formatEther(balance));
-      } catch (error) {
-        console.error("Error fetching balance:", error);
+        const sdk = new ThirdwebSDK(provider);
+        const contract = sdk.getContract(contractMaticAddress, abiMatic);
+
+        console.log("contract",await contract);
+
+        const contractBalance = await (await contract).call("balanceOf")
+        setBalance(ethers.utils.formatEther(contractBalance));
+      } catch (err) {
+        console.error("Error fetching contract balance:", err);
       }
     };
-    console.log("Running getBalance...");
-    getBalance();
-  }, [balance]); // Be careful with the dependency array, it may cause infinite loops
+
+    fetchBalance();
+  }, [contractMaticAddress]);
 
   return (
     <div>
