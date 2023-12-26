@@ -50,6 +50,8 @@ function Winners() {
 
   const createWinner = async () => {
     winner.draw = draw;
+    console.log(draw);
+    console.log(winner);
     WinnerService.create(winner)
       .then((res) => {
         //  make a toast
@@ -61,7 +63,7 @@ function Winners() {
       })
       .catch((err) => {
         console.log(err);
-        toast(`${err.response.data.message}`, {
+        toast(`${err}`, {
           type: "error",
         });
       });
@@ -244,8 +246,8 @@ function Winners() {
                   <input
                     type="text"
                     className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
-                    id="prize"
-                    name="prize"
+                    id="price"
+                    name="price"
                     placeholder="Enter prize"
                     value={winner.price}
                     onChange={handleChange}
@@ -285,11 +287,13 @@ function Winners() {
                   </label>
                   {/* select with opitons from draws */}
                   <select
-                    id="draw"
-                    value={draw}
-                    onChange={(e) => setDraw(e)}
+                    onChange={(e) => {
+                      setDraw(e.target.value);
+                    }}
+                    defaultValue="Select a draw"
                     className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
                   >
+                    <option value="">Select a draw</option>
                     {draws.map((draw) => (
                       <option key={draw._id} value={draw.title}>
                         {draw.title}
