@@ -50,10 +50,12 @@ export default function MyProfile({user}) {
           title: "Success",
           description: "Referral updated successfully",
           status: "success",
-          duration: 5000,
+          duration: 9000,
           isClosable: true,
         });
-        location.reload();
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
@@ -61,7 +63,7 @@ export default function MyProfile({user}) {
           title: "Error",
           description: "Error updating referral",
           status: "error",
-          duration: 5000,
+          duration: 9000,
           isClosable: true,
         });
       });

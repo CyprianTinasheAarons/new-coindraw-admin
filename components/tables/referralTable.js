@@ -1,6 +1,6 @@
-import { 
-  Spinner, 
-  useToast, 
+import {
+  Spinner,
+  useToast,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -8,12 +8,12 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure
-} from '@chakra-ui/react'
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   deleteReferral,
-updateReferralData,
+  updateReferralData,
   getReferrals,
 } from "../../slices/referral";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -27,10 +27,9 @@ export default function ReferralTable() {
   const isLoading = useSelector((state) => state.referral.isLoading);
   const [newReferralCode, setNewReferralCode] = useState("");
   const [selectedReferral, setSelectedReferral] = useState({}); // [id, referralCode
-  const [usernames, setUsernames] = useState({});
   const [tab, setTab] = useState(
     localStorage.getItem("tab") ? localStorage.getItem("tab") : "referrals"
-  )
+  );
   const [data, setData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -41,18 +40,17 @@ export default function ReferralTable() {
 
   const dispatch = useDispatch();
 
+  const getData = async () => {
+    await dispatch(getReferrals())
+      .unwrap()
+      .then((res) => {
+        setData(res);
+      });
+  };
 
-   const getData = async () => {
-     await dispatch(getReferrals())
-       .unwrap()
-       .then((res) => {
-         setData(res);
-       });
-   };
-
-   useEffect(() => {
-     getData();
-   }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
   const handleDelete = async (id) => {
     await dispatch(deleteReferral(id))
@@ -71,7 +69,7 @@ export default function ReferralTable() {
   const handleUpdateReferralCode = async (id, newReferralCode) => {
     const updatedData = { referralCode: newReferralCode };
 
-    await dispatch(updateReferralData({ id, data: updatedData}))
+    await dispatch(updateReferralData({ id, data: updatedData }))
       .unwrap()
       .then(() => {
         toast({
@@ -90,26 +88,6 @@ export default function ReferralTable() {
     const diffTime = Math.abs(expirationDate - currentDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
-  };
-  useEffect(() => {
-    const fetchUsernames = async () => {
-      const newNames = {};
-      for (const r of data) {
-        const username = await fetchUser(r?.userId);
-        newNames[r?.userId] = username;
-      }
-      setUsernames(newNames);
-    };
-
-    fetchUsernames();
-  }, [data]);
-
-  const fetchUser = async (id) => {
-    let username = null;
-    await userService.get(id).then((res) => {
-      username = res.data.username;
-    });
-    return username;
   };
 
   return (
@@ -293,7 +271,7 @@ export default function ReferralTable() {
                         .map((r) => (
                           <tr key={r?.id}>
                             <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                              {usernames[r?.userId]}
+                              {r?.userName}
                             </td>
                             <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                               {r?.referralCode}

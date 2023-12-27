@@ -8,8 +8,7 @@ const Details = ({ data }) => {
   const [copiedList, setCopiedList] = useState([]);
   const [selected, setSelected] = useState({});
   const [selectedDetails, setSelectedDetails] = useState({});
-  const [usernames, setUsernames] = useState({});
-  
+
   const toast = useToast();
 
   const setCopied = (id) => {
@@ -20,7 +19,7 @@ const Details = ({ data }) => {
     const selectedUsers = Object.keys(selected).filter((key) => selected[key]);
     const selectedWallets = selectedUsers.map((user) => {
       const selectedUser = data.find((item) => item.id === user);
-      return selectedUser.referrerWalletAddress;
+      return selectedUser.payout?.walletAddress || selectedUser.referrerWalletAddress;
     });
 
     const selectedAmounts = selectedUsers.map((user) => {
@@ -34,28 +33,6 @@ const Details = ({ data }) => {
     });
   }, [selected]);
 
-
-    useEffect(() => {
-      const fetchUsernames = async () => {
-        const newNames = {};
-        for (const r of data) {
-          const username = await fetchUser(r?.userId);
-          newNames[r?.userId] = username;
-        }
-        setUsernames(newNames);
-      };
-
-      fetchUsernames();
-    }, [data]);
-
-    const fetchUser = async (id) => {
-      let username = null;
-      await userService.get(id).then((res) => {
-        username = res.data.username;
-      });
-      return username;
-    };
-    
   return (
     <>
       <div className="w-full">
@@ -157,11 +134,13 @@ const Details = ({ data }) => {
                 />
               </td>
               <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                {usernames[r?.userId]}
+                {r?.userName}
               </td>
 
               <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                {r?.referrerWalletAddress}
+                {r?.referrerWalletAddress
+                  ? r?.referrerWalletAddress
+                  : r?.payout?.walletAddress}
               </td>
               <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
                 {r?.referrerReward}
