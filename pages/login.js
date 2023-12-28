@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import AuthService from "../api/auth.service";
 import { useToast } from "@chakra-ui/react";
 import "react-toastify/dist/ReactToastify.css";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -12,23 +12,22 @@ export default function Login() {
   const [isAffiliate, setIsAffiliate] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const router = useRouter();
-   
-   useEffect(() => {
-     const url = router.asPath;
-     const affiliate = url.split("?")[1];
 
-     if (affiliate) {
-       setIsAffiliate(true);
-       localStorage.setItem("isAffiliate", "true");
-     }
+  useEffect(() => {
+    const url = router.asPath;
+    const affiliate = url.split("?")[1];
 
-     const storedAffiliate = localStorage.getItem("isAffiliate");
-     if (storedAffiliate) {
-       setIsAffiliate(true);
-     }
-   }, []);
-   
-   
+    if (affiliate) {
+      setIsAffiliate(true);
+      localStorage.setItem("isAffiliate", "true");
+    }
+
+    const storedAffiliate = localStorage.getItem("isAffiliate");
+    if (storedAffiliate) {
+      setIsAffiliate(true);
+    }
+  }, []);
+
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -40,15 +39,13 @@ export default function Login() {
   };
 
   const login = async () => {
-    // 1234567890aA!
-
     setLoading(true);
     try {
       await AuthService.login(userData)
         .then((res) => {
           setLoading(false);
           localStorage.setItem("admin-email", userData.email);
-        
+
           if (res.data.dataUrl == null) {
             location.href = "/twofactor";
           } else {
@@ -79,8 +76,6 @@ export default function Login() {
       login();
     }
   };
-
-
 
   return (
     <>
@@ -183,7 +178,9 @@ export default function Login() {
               ) : (
                 <div>
                   <p className="p-2 text-center text-black">
-                    In order to proceed, you must set up multi-factor authentication using an authentication app of your choice. Please scan the QR code below to begin setup.
+                    In order to proceed, you must set up multi-factor
+                    authentication using an authentication app of your choice.
+                    Please scan the QR code below to begin setup.
                   </p>
                   <div className="flex justify-center p-2 m-2">
                     <img src={qr} alt="PNG image"></img>
