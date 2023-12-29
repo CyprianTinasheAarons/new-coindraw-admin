@@ -19,28 +19,17 @@ export default function AddUser({ fetchUsers }) {
 
   const closeModal = () => {
     setIsOpen(false);
-  }
+  };
 
   const openModal = () => {
     setIsOpen(true);
-  }
+  };
 
   const signup = async (data) => {
-    if (!data || Object.keys(data).length === 0) {
-      toast({
-        title: "Error",
-        description: "Data is empty",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      throw new Error("Data is empty");
-    }
-
     try {
-      await authService.register(data);
+      const res = await authService.register(data);
+      console.log(res);
       console.log("User has been registered");
-      fetchUsers();
       closeModal();
       toast({
         title: "Success",
@@ -49,11 +38,14 @@ export default function AddUser({ fetchUsers }) {
         duration: 5000,
         isClosable: true,
       });
+      location.reload();
     } catch (error) {
-      console.log("Failed to register user");
+      console.log(error);
       toast({
         title: "Error",
-        description: "Failed to register user",
+        description: error.response
+          ? error.response.data.message
+          : "User has not been registered.",
         status: "error",
         duration: 5000,
         isClosable: true,
