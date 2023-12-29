@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@chakra-ui/react";
 
 export default function AddUser({ fetchUsers }) {
-  let [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const toast = useToast();
   const {
     register,
@@ -17,15 +17,15 @@ export default function AddUser({ fetchUsers }) {
     signup(data);
   };
 
-  function closeModal() {
+  const closeModal = () => {
     setIsOpen(false);
   }
 
-  function openModal() {
+  const openModal = () => {
     setIsOpen(true);
   }
 
-  const signup = (data) => {
+  const signup = async (data) => {
     if (!data || Object.keys(data).length === 0) {
       toast({
         title: "Error",
@@ -38,32 +38,26 @@ export default function AddUser({ fetchUsers }) {
     }
 
     try {
-      authService
-        .register(data)
-        .then(() => {
-          console.log("User has been registered");
-          fetchUsers();
-          closeModal();
-          toast({
-            title: "Success",
-            description: "User has been registered successfully",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          });
-        })
-        .catch(() => {
-          console.log("Failed to register user");
-          toast({
-            title: "Error",
-            description: "Failed to register user",
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          });
-        });
+      await authService.register(data);
+      console.log("User has been registered");
+      fetchUsers();
+      closeModal();
+      toast({
+        title: "Success",
+        description: "User has been registered successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
-      console.log("something went wrong");
+      console.log("Failed to register user");
+      toast({
+        title: "Error",
+        description: "Failed to register user",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
   return (
