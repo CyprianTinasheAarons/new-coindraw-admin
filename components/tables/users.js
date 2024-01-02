@@ -127,12 +127,15 @@ export default function UsersTable(data) {
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
                     >
-                      Created On
+                      Promos
                     </th>
                     <th
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    ></th>
+                    >
+                      Created On
+                    </th>
+
                     <th
                       scope="col"
                       className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
@@ -181,12 +184,13 @@ export default function UsersTable(data) {
                       {/* <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {person?.countryCode} {person?.phone}
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person?.promotionalEmails ? "Yes" : "No"}
-                      </td>
-                      */}
+                     
+                      */}{" "}
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {person?.referred ? "Yes" : "No"}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {person?.promotionalEmails ? "Yes" : "No"}
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(person.updatedAt).toLocaleDateString()}
