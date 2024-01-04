@@ -21,7 +21,8 @@ export default function AddImage(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        localStorage.setItem("draw_image", JSON.stringify(data.url));
+        console.log(data);
+        localStorage.setItem("draw_image", JSON.stringify(data.secure_url));
         toast({
           title: "Image Uploaded.",
           description: "Your draw image has been uploaded!",
