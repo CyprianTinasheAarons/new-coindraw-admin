@@ -19,6 +19,34 @@ import { airdropAddress } from "../common/addresses";
 import { useDispatch } from "react-redux";
 import { createGiveaway, getGiveawayHistory } from "../slices/giveaway";
 import Nfts from "../components/nfts";
+import abiNFT from "../abi/abiNFT.json";
+
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { create as ipfsHttpClient } from "ipfs-http-client";
+
+// Get project credentials from environment variables
+const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
+const projectSecret = process.env.NEXT_PUBLIC_API_KEY_SECRET;
+const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString(
+  "base64"
+)}`;
+
+// Initialize the IPFS client
+const client = ipfsHttpClient({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization: auth,
+  },
+});
+
+const sdk = ThirdwebSDK.fromPrivateKey(
+  process.env.NEXT_PUBLIC_PRIVATE_KEY,
+  "polygon"
+);
+
+const IPFS_SUBDOMAIN = "https://coindraw.infura-ipfs.io";
 
 const Giveaway = () => {
   const toast = useToast();
@@ -28,6 +56,14 @@ const Giveaway = () => {
     "0xa3c697137d1b56c8e39bd5d3fa6713121fbfcb8a"
   );
   const [giveawayHistory, setGiveawayHistory] = useState([]);
+  const [amount, setAmount] = useState(0);
+  const [giveawayAddress, setGiveawayAddress] = useState("");
+  const [drawType, setDrawType] = useState("Classic");
+
+  const drawTypes = [
+    { value: "Classic", label: "Classic" },
+    { value: "Exclusive", label: "Exclusive" },
+  ];
 
   const getData = async () => {
     await dispatch(getGiveawayHistory())
@@ -60,6 +96,12 @@ const Giveaway = () => {
   });
 
   const {
+    isOpen: isGiveawayOpen,
+    onOpen: onGiveawayOpen,
+    onClose: onGiveawayClose,
+  } = useDisclosure();
+
+  const {
     isOpen: isAirdropOpen,
     onOpen: onAirdropOpen,
     onClose: onAirdropClose,
@@ -82,6 +124,103 @@ const Giveaway = () => {
     onOpen: onChangeOwnerOpen,
     onClose: onChangeOwnerClose,
   } = useDisclosure();
+
+  const [minting, setMinting] = useState(false);
+
+  const mintGiveaway = async () => {
+    setMinting(true);
+
+    toast({
+      title: "Minting",
+      description: "Your NFTs are being minted.",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
+
+    const nftCollection = await sdk.getContract(giveawayAddress, abiNFT);
+    const supply = await nftCollection.call("totalSupply");
+    let URLs = [];
+
+    let tokenId = parseInt(supply) + 1;
+
+    const metadataPromises = Array.from({ length: amount }, async (_, i) => {
+      let metadata;
+      console.log(drawType);
+
+      if (drawType === "Classic") {
+        metadata = {
+          description: "The Luck of the Draw",
+          animation_url: `ipfs://QmPLjjB1dWmADzCYMDcbR4V56EzDWNEHehwyyaJsxF4ZRH/Classic_${
+            tokenId + i
+          }.png`,
+          image: `ipfs://QmPLjjB1dWmADzCYMDcbR4V56EzDWNEHehwyyaJsxF4ZRH/Classic_${
+            tokenId + i
+          }.png`,
+          name: "Will it be you?",
+          attributes: [
+            {
+              trait_type: "Giveaway",
+              value: "Classic Giveaway",
+            },
+          ],
+          compiler: "Coindraw Draw Engine",
+        };
+      } else if (drawType === "Exclusive") {
+        metadata = {
+          description: "The Luck of the Draw",
+          animation_url: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Exclusive_${
+            tokenId + i
+          }.png`,
+          image: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Exclusive_${
+            tokenId + i
+          }.png`,
+          name: "Will it be you?",
+          attributes: [
+            {
+              trait_type: "Giveaway",
+              value: "Exclusive Giveaway",
+            },
+          ],
+          compiler: "Coindraw Draw Engine",
+        };
+      }
+      console.log(metadata);
+      const metadataString = JSON.stringify(metadata, null, 2);
+      const metadataBuffer = new Buffer.from(metadataString);
+      const added = await client.add({ content: metadataBuffer });
+      return `${IPFS_SUBDOMAIN}/ipfs/${added.path}`;
+    });
+
+    URLs = await Promise.all(metadataPromises);
+
+    const handleToast = (title, description, status) => {
+      toast({
+        title,
+        description,
+        status,
+        duration: 9000,
+        isClosable: true,
+      });
+    };
+
+    try {
+      const response = await nftCollection.call(
+        "dynamicWhitelistMint",
+        [amount, tokenId, URLs],
+        { gasPrice: 500000000000 }
+      );
+
+      console.log(response);
+
+      setMinting(false);
+      onGiveawayClose();
+    } catch (error) {
+      console.error(error);
+      setMinting(false);
+      handleToast("Minting failed", "Your NFTs could not be minted", "error");
+    }
+  };
 
   const onSubmitAirdrop = () =>
     toast({
@@ -213,6 +352,13 @@ const Giveaway = () => {
         <div className="flex mt-3 sm:ml-4 sm:mt-0">
           <button
             type="button"
+            onClick={() => onGiveawayOpen()}
+            className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+          >
+            Mint Giveaway
+          </button>
+          <button
+            type="button"
             onClick={() => onAirdropMultipleOpen()}
             className="inline-flex items-center px-3 py-2 mx-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
           >
@@ -243,6 +389,71 @@ const Giveaway = () => {
         </div>
       </div>
       <GiveawayTable data={giveawayHistory} />
+      <Modal isOpen={isGiveawayOpen} onClose={onGiveawayClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Mint Giveaway</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-700">
+                Amount
+              </label>
+              <input
+                type="text"
+                name="amount"
+                id="amount"
+                required={true}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-700">
+                Draw Type
+              </label>
+              <select
+                name="drawType"
+                id="drawType"
+                value={drawType}
+                onChange={(e) => setDrawType(e.target.value)}
+                className="block w-full px-2 py-2 mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                {drawTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-700">
+                Classic/Exclusive Address
+              </label>
+              <input
+                type="text"
+                name="giveawayAddress"
+                id="giveawayAddress"
+                required={true}
+                placeholder="0x123"
+                value={giveawayAddress}
+                onChange={(e) => setGiveawayAddress(e.target.value)}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <button
+              className="flex justify-center w-full py-3 font-bold bg-gray-100 border rounded-md"
+              onClick={mintGiveaway}
+            >
+              {minting ? "Minting..." : "Mint"}
+            </button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Modal isOpen={isAirdropOpen} onClose={onAirdropClose}>
         <ModalOverlay />
         <ModalContent>
