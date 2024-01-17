@@ -26,7 +26,7 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 
 // Get project credentials from environment variables
 const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
-const projectSecret = process.env.NEXT_PUBLIC_API_KEY_SECRET;
+const projectSecret = process.env.NEXT_PUBLIC_API_AIRDROP_SECRET;
 const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString(
   "base64"
 )}`;
