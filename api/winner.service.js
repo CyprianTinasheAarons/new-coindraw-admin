@@ -28,6 +28,10 @@ class WinnerService {
   findByTitle(title) {
     return http.get(`/winners?title=${title}`);
   }
+
+  sendEmail(data) {
+    return http.post(`/winners/sendEmail`, data);
+  }
 }
 
 export default new WinnerService();

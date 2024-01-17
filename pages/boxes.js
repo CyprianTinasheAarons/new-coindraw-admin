@@ -162,6 +162,12 @@ function Boxes() {
               >
                 Configure Exclusive Box
               </a>
+               <a
+                href="/configure/custom"
+                className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              >
+                Configure Custom Box
+              </a>
             </div>
             <div className="flex items-center">
               <p

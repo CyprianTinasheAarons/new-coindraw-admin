@@ -1,12 +1,41 @@
 import { useEffect, useState } from "react";
 import DeleteUser from "../modal/deleteUser";
 import userService from "../../api/user.service";
+import winnerService from "../../api/winner.service";
 import CsvDownloader from "react-csv-downloader";
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Button,
+  useToast,
+} from "@chakra-ui/react";
+
+const drawTypes = [
+  { name: "Classic", value: "Classic" },
+  { name: "Exclusive", value: "Exclusive" },
+  { name: "Elite", value: "Elite" },
+  { name: "Quarterly", value: "Quarterly" },
+  { name: "Yearly", value: "Yearly" },
+  { name: "Custom", value: "Custom" },
+];
 
 export default function UsersTable(data) {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const [draw, setDraw] = useState(drawTypes[0].value); // [1]
+  const [price, setPrice] = useState("");
+  const [winners, setWinners] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null); // [1]
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [filteredData, setFilteredData] = useState([]);
+  const toast = useToast();
   const fetchUsers = () => {
     userService.getAll().then((res) => {
       setUsers(res?.data);
@@ -20,12 +49,49 @@ export default function UsersTable(data) {
     setFilteredData(
       users.filter(
         (u) =>
-          u?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          u?.username?.toLowerCase().includes(search.toLowerCase()) ||
           u?.address?.toLowerCase().includes(search.toLowerCase()) ||
           u?.email?.toLowerCase().includes(search.toLowerCase())
       )
     );
   }, [search, users]);
+
+  const sendMail = () => {
+    winnerService
+      .sendEmail({
+        drawType: draw,
+        prizeWon: price,
+        winnerName: selectedUser?.username,
+        winnerEmail: selectedUser?.email,
+        addToWinners: winners,
+        winnerAddress: selectedUser?.walletAddress,
+      })
+      .then(() => {
+        toast({
+          title: "Email sent.",
+          description: "We've sent an email to the winner.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+
+        setDraw(drawTypes[0].value);
+        setPrice("");
+        setWinners(false);
+        setSelectedUser(null);
+
+        onClose();
+      })
+      .catch(() => {
+        toast({
+          title: "Email not sent.",
+          description: "We've sent an email to the winner.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
+  };
 
   return (
     <>
@@ -181,11 +247,7 @@ export default function UsersTable(data) {
                           </span>
                         )}
                       </td>
-                      {/* <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person?.countryCode} {person?.phone}
-                      </td>
-                     
-                      */}{" "}
+
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {person?.referred ? "Yes" : "No"}
                       </td>
@@ -195,7 +257,29 @@ export default function UsersTable(data) {
                       <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(person.updatedAt).toLocaleDateString()}
                       </td>
-                      <td className="py-4 text-sm font-medium text-right ">
+                      <td className="flex py-4 text-sm font-medium text-right align-middle ">
+                        <button
+                          className="flex items-center px-2 mr-1 text-white bg-blue-500 rounded"
+                          onClick={() => {
+                            setSelectedUser(person);
+                            onOpen();
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                            />
+                          </svg>
+                        </button>
                         <DeleteUser user={person.id} fetchUsers={fetchUsers} />
                       </td>
                     </tr>
@@ -206,6 +290,77 @@ export default function UsersTable(data) {
           </div>
         </div>
       </div>
+      <>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Email Winner</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <div className="flex flex-col">
+                <label>Winner Name</label>
+                <input
+                  placeholder="Enter winner name"
+                  className="px-1 py-2 border rounded-md"
+                  value={selectedUser?.username}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label>Winner Email</label>
+                <input
+                  placeholder="Enter winner name"
+                  className="px-1 py-2 border rounded-md"
+                  value={selectedUser?.email}
+                />
+              </div>
+              <div>
+                <label>Select Draw</label>
+                <select
+                  className="w-full px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={draw}
+                  onChange={(e) => setDraw(e.target.value)}
+                >
+                  {drawTypes.map((drawType) => (
+                    <option
+                      key={drawType.value}
+                      value={drawType.value}
+                      className="px-1 py-2 mx-1"
+                    >
+                      {drawType.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label>Prize Won</label>
+                <input
+                  placeholder="Enter prize won"
+                  className="px-1 py-2 border rounded-md"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+              <div className="mt-2">
+                Add to Winners{" "}
+                <input
+                  type="checkbox"
+                  className="mx-1 rounded-md"
+                  value={winners}
+                  onChange={(e) => setWinners(e.target.checked)}
+                />
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button colorScheme="green" onClick={() => sendMail()}>
+                Send Email
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
     </>
   );
 }

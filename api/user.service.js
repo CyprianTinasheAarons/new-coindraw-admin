@@ -20,6 +20,8 @@ class UserService {
   deleteAll() {
     return http.delete(`/users`);
   }
+
+
 }
 
 export default new UserService();

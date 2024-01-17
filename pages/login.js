@@ -161,12 +161,12 @@ export default function Login() {
                       <button
                         onClick={() =>
                           (window.location.href =
-                            "https://new-coindraw-main.vercel.app/apply-affiliate?affiliate=admin")
+                            "https://coindraw.io/apply-affiliate?affiliate=admin")
                         }
                         onKeyUp={(event) => {
                           if (event.key === "Enter")
                             window.location.href =
-                              "https://new-coindraw-main.vercel.app/apply-affiliate?affiliate=admin";
+                              "https://coindraw.io/apply-affiliate?affiliate=admin";
                         }}
                         className="flex justify-center w-full px-4 py-3 my-5 text-sm font-medium text-[#101422] border border-[#101422]  rounded-md shadow-sm bg "
                       >

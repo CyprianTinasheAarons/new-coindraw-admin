@@ -35,7 +35,8 @@ export default function DiscountsTable({ data }) {
     { name: "Elite", value: "Elite" },
     { name: "Quarterly", value: "Quarterly" },
     { name: "Yearly", value: "Yearly" },
-  ]
+    { name: "Custom", value: "Custom" },
+  ];
 
   const {
     isOpen: isOpenEdit,
@@ -61,7 +62,6 @@ export default function DiscountsTable({ data }) {
   };
 
   const handleUpdate = async () => {
-
     const discount = {
       id: discountData.id,
       name: discountData.name,
@@ -74,7 +74,7 @@ export default function DiscountsTable({ data }) {
       expiry: discountData.expiry,
       applicableDraws: discountData.applicableDraws,
     };
-    
+
     await dispatch(updateDiscount(discount))
       .unwrap()
       .then(() => {
@@ -93,20 +93,19 @@ export default function DiscountsTable({ data }) {
     onOpenEdit();
   };
 
- const handleCheckboxChange = (e, value) => {
-   if (e.target.checked) {
-     setDiscountData((prev) => ({
-       ...prev,
-       applicableDraws: [...prev.applicableDraws, value],
-     }));
-   } else {
-     setDiscountData((prev) => ({
-       ...prev,
-       applicableDraws: prev.applicableDraws.filter((draw) => draw !== value),
-     }));
-   }
- };
-
+  const handleCheckboxChange = (e, value) => {
+    if (e.target.checked) {
+      setDiscountData((prev) => ({
+        ...prev,
+        applicableDraws: [...prev.applicableDraws, value],
+      }));
+    } else {
+      setDiscountData((prev) => ({
+        ...prev,
+        applicableDraws: prev.applicableDraws.filter((draw) => draw !== value),
+      }));
+    }
+  };
 
   const generateDiscountCode = () => {
     const length = 8; // Choose the length of the discount code.
@@ -125,7 +124,6 @@ export default function DiscountsTable({ data }) {
       code: result,
     }));
   };
-
 
   return (
     <div className="mt-4">

@@ -31,6 +31,7 @@ export default function DrawViewer() {
     { label: "Elite", value: "Elite" },
     { label: "Quarterly", value: "Quarterly" },
     { label: "Yearly", value: "Yearly" },
+    { label: "Custom", value: "Custom" },
   ];
 
   const deleteDraw = () => {

@@ -41,6 +41,7 @@ export default function DrawCreate() {
     { label: "Elite", value: "Elite" },
     { label: "Quarterly", value: "Quarterly" },
     { label: "Yearly", value: "Yearly" },
+    { label: "Custom", value: "Custom" },
   ];
 
   const toast = useToast();

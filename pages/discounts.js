@@ -31,6 +31,7 @@ const Discounts = () => {
     { name: "Elite", value: "Elite" },
     { name: "Quarterly", value: "Quarterly" },
     { name: "Yearly", value: "Yearly" },
+    { name: "Custom", value: "Custom" },
   ];
 
   const [selectedDraws, setSelectedDraws] = useState([]);
@@ -55,7 +56,6 @@ const Discounts = () => {
   }, [dispatch]);
 
   const create = async () => {
-    
     if (!discountData.applicableDraws.length) {
       toast({
         title: "No Draws Selected",
@@ -96,12 +96,18 @@ const Discounts = () => {
       // Add the value to the selectedDraws array
       setSelectedDraws([...selectedDraws, value]);
       // Add the value to the applicableDraws array in discountData
-      setDiscountData(prev => ({...prev, applicableDraws: [...prev.applicableDraws, value]}));
+      setDiscountData((prev) => ({
+        ...prev,
+        applicableDraws: [...prev.applicableDraws, value],
+      }));
     } else {
       // Remove the value from the selectedDraws array
       setSelectedDraws(selectedDraws.filter((draw) => draw !== value));
       // Remove the value from the applicableDraws array in discountData
-      setDiscountData(prev => ({...prev, applicableDraws: prev.applicableDraws.filter((draw) => draw !== value)}));
+      setDiscountData((prev) => ({
+        ...prev,
+        applicableDraws: prev.applicableDraws.filter((draw) => draw !== value),
+      }));
     }
   };
 
@@ -342,7 +348,6 @@ const Discounts = () => {
                         ))}
                       </div>
                     </div>
-
                   </div>
                   <div>
                     <label
