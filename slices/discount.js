@@ -1,10 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import discountService from "../api/discount.service";
+import crypto from "crypto";
 
 const initialState = {
   discounts: [],
   errorMessage: null,
   isLoading: false,
+};
+
+// Decrypt Discount Code
+const decrypt = (encryptedCode) => {
+  const decipher = crypto.createDecipher("aes-256-cbc", "d6F3Efeq");
+  let decrypted = decipher.update(encryptedCode, "hex", "utf8");
+  decrypted += decipher.final("utf8");
+  return decrypted;
 };
 
 export const createDiscount = createAsyncThunk(
@@ -51,9 +60,12 @@ export const getAllDiscounts = createAsyncThunk(
   async () => {
     try {
       const response = await discountService.getAll();
-      return response.data.sort(
+      const decryptedData = response.data.map((item) => {
+        return { ...item, code: decrypt(item.code) };
+      });
+      return decryptedData.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      )
+      );
     } catch (e) {
       console.log(e);
       throw e;
@@ -66,7 +78,11 @@ export const getDiscount = createAsyncThunk(
   async (data) => {
     try {
       const response = await discountService.get(data);
-      return response.data;
+      const decryptedData = {
+        ...response.data,
+        code: decrypt(response.data.code),
+      };
+      return decryptedData;
     } catch (e) {
       console.log(e);
       throw e;
@@ -145,4 +161,3 @@ const discountSlice = createSlice({
 });
 
 export default discountSlice.reducer;
-
