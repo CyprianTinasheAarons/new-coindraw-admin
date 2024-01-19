@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DeleteUser from "../modal/deleteUser";
 import userService from "../../api/user.service";
+import drawService from "../../api/draw.service";
 import winnerService from "../../api/winner.service";
 import CsvDownloader from "react-csv-downloader";
 
@@ -30,6 +31,7 @@ export default function UsersTable(data) {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [draw, setDraw] = useState(drawTypes[0].value); // [1]
+  const [draws, setDraws] = useState([]);
   const [price, setPrice] = useState("");
   const [winners, setWinners] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // [1]
@@ -43,6 +45,9 @@ export default function UsersTable(data) {
   };
   useEffect(() => {
     fetchUsers();
+    drawService.getAll().then((res) => {
+      setDraws(res.data);
+    });
   }, []);
 
   useEffect(() => {
@@ -316,17 +321,15 @@ export default function UsersTable(data) {
               <div>
                 <label>Select Draw</label>
                 <select
-                  className="w-full px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={draw}
-                  onChange={(e) => setDraw(e.target.value)}
+                  onChange={(e) => {
+                    setDraw(e.target.value);
+                  }}
+                  defaultValue="Select a draw"
+                  className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
                 >
-                  {drawTypes.map((drawType) => (
-                    <option
-                      key={drawType.value}
-                      value={drawType.value}
-                      className="px-1 py-2 mx-1"
-                    >
-                      {drawType.name}
+                  {draws.map((draw) => (
+                    <option key={draw._id} value={draw.title}>
+                      {draw.title}
                     </option>
                   ))}
                 </select>

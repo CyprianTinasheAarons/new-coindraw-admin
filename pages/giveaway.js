@@ -22,11 +22,13 @@ import Nfts from "../components/nfts";
 import abiNFT from "../abi/abiNFT.json";
 
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { useAddress } from "@thirdweb-dev/react";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 
 // Get project credentials from environment variables
-const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
-const projectSecret = process.env.NEXT_PUBLIC_API_AIRDROP_SECRET;
+const projectId = "2Nuucuc5henX77NlnX9r3uQc9qG";
+const projectSecret = "cd4ac696158aac5d6323a6559beb3ab8";
+
 const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString(
   "base64"
 )}`;
@@ -51,6 +53,7 @@ const IPFS_SUBDOMAIN = "https://coindraw.infura-ipfs.io";
 const Giveaway = () => {
   const toast = useToast();
   const dispatch = useDispatch();
+  const address = useAddress();
   const contractAddress = airdropAddress;
   const [approvalAddress, setApprovalAddress] = useState(
     "0xa3c697137d1b56c8e39bd5d3fa6713121fbfcb8a"
@@ -185,14 +188,19 @@ const Giveaway = () => {
           compiler: "Coindraw Draw Engine",
         };
       }
-      console.log(metadata);
+
       const metadataString = JSON.stringify(metadata, null, 2);
       const metadataBuffer = new Buffer.from(metadataString);
-      const added = await client.add({ content: metadataBuffer });
-      return `${IPFS_SUBDOMAIN}/ipfs/${added.path}`;
+      try {
+        const added = await client.add({ content: metadataBuffer });
+        return `${IPFS_SUBDOMAIN}/ipfs/${added.path}`;
+      } catch (error) {
+        console.error("Error uploading to IPFS:", error);
+        return null;
+      }
     });
 
-    URLs = await Promise.all(metadataPromises);
+    URLs = (await Promise.all(metadataPromises)).filter((url) => url !== null);
 
     const handleToast = (title, description, status) => {
       toast({
@@ -206,8 +214,8 @@ const Giveaway = () => {
 
     try {
       const response = await nftCollection.call(
-        "dynamicWhitelistMint",
-        [amount, tokenId, URLs],
+        "mintForAddressDynamic",
+        [amount, tokenId, address, URLs],
         { gasPrice: 500000000000 }
       );
 
