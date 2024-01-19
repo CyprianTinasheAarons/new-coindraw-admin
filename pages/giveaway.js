@@ -221,6 +221,14 @@ const Giveaway = () => {
 
       console.log(response);
 
+      toast({
+        title: "Minting successful",
+        description: "Your NFTs have been minted",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+
       setMinting(false);
       onGiveawayClose();
     } catch (error) {
