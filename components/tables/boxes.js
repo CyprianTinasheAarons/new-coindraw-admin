@@ -85,37 +85,35 @@ export default function BoxesTable() {
       );
     }
 
-
     setFilteredData(filtered);
   }, [search, boxes, usersDetails, dateRange, prizeFilter, statusFilter]);
 
   const toast = useToast();
 
- const handleFulfillmentChange = async (id, fulfilledStatus) => {
-   try {
-     const response = await boxService.update(id, {
-       fulfilled: fulfilledStatus,
-     });
-     if (response?.status === 200) {
-       toast({
-         title: "Box updated successfully.",
-         status: "success",
-         duration: 3000,
-         isClosable: true,
-       });
-       fetchBoxes();
-     }
-   } catch (error) {
-     toast({
-       title: "An error occurred.",
-       description: error.message,
-       status: "error",
-       duration: 3000,
-       isClosable: true,
-     });
-   }
- };
-
+  const handleFulfillmentChange = async (id, fulfilledStatus) => {
+    try {
+      const response = await boxService.update(id, {
+        fulfilled: fulfilledStatus,
+      });
+      if (response?.status === 200) {
+        toast({
+          title: "Box updated successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        fetchBoxes();
+      }
+    } catch (error) {
+      toast({
+        title: "An error occurred.",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -308,7 +306,9 @@ export default function BoxesTable() {
                           <div className="flex items-center space-x-2">
                             <div className="truncate">
                               {usersDetails[index]?.username} -{" "}
-                              {usersDetails[index]?.walletAddress.slice(0, 4) + "..." + usersDetails[index]?.walletAddress.slice(-4)}
+                              {usersDetails[index]?.walletAddress?.slice(0, 4) +
+                                "..." +
+                                usersDetails[index]?.walletAddress?.slice(-4)}
                             </div>
                             <button
                               onClick={() =>
