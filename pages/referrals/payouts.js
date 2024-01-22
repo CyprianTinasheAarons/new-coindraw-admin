@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import Head from "next/head";
 import Layout from "../../components/ui/Layout";
 import { getReferral } from "../../slices/referral";
@@ -7,98 +7,88 @@ import { getTransactions } from "../../slices/transactions";
 import { getMaticPrice } from "../../slices/referral";
 
 function Referrals() {
+  const dispatch = useDispatch();
+  const [refferer, setRefferer] = useState({});
+  const [transactions, setTransactions] = useState([]);
+  const [prices, setPrices] = useState({});
 
-    const dispatch = useDispatch();
-    const [refferer, setRefferer] = useState({});
-    const [transactions, setTransactions] = useState([]);
-    const [prices, setPrices] = useState({})
+  const currencySymbols = {
+    gbp: "£",
+    usd: "$",
+    eur: "€",
+  };
 
+  useEffect(() => {
+    const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
+    dispatch(getReferral(id))
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        setRefferer(res);
+      });
+  }, []);
 
-       const currencySymbols = {
-         gbp: "£",
-         usd: "$",
-         eur: "€",
-       };
-     
+  useEffect(() => {
+    dispatch(getTransactions())
+      .unwrap()
+      .then((res) => {
+        const userEmail = JSON.parse(
+          localStorage.getItem("user-coindraw")
+        )?.email;
+        const filteredTransactions = res
+          .filter((transaction) => transaction.email === userEmail)
+          .filter((t) => ["Paypal", "FIAT", "Wallet"].includes(t.type));
+        setTransactions(filteredTransactions);
+      });
+  }, []);
 
-    useEffect(() => {
-      const id = JSON.parse(localStorage.getItem("user-coindraw"))?.id;
-      dispatch(getReferral(id))
-        .unwrap()
-        .then((res) => {
-          console.log(res);
-          setRefferer(res);
-        });
-    }, []);
-
-    useEffect(() => {
-      dispatch(getTransactions())
-        .unwrap()
-        .then((res) => {
-          const userEmail = JSON.parse(
-            localStorage.getItem("user-coindraw")
-          )?.email;
-          const filteredTransactions = res
-            .filter((transaction) => transaction.email === userEmail)
-            .filter(t => ["Paypal", "FIAT", "Wallet"].includes(t.type));
-          setTransactions(filteredTransactions);
-        });
-    }, []);
-    
-   
-
-    const stats = [
-      {
-        name: "Amount Due",
-        stat:
-          refferer?.referrerReward?.toFixed(2) +
-          " MATIC/ " +
-          currencySymbols[refferer?.payout?.currency] +
-          "" +
-          (
-            refferer?.referrerReward * prices?.[refferer?.payout?.currency]
-          )?.toFixed(2),
-      },
-      {
-        name: "Total Paid",
-        stat:
-          refferer?.referrerTotalReward?.toFixed(2) +
-          " MATIC/ " +
-          currencySymbols[refferer?.payout?.currency] +
-          "" +
-          (
-            refferer?.referrerTotalReward * prices?.[refferer?.payout?.currency]
-          )?.toFixed(2)
-      },
-      { name: "Total Payouts", stat: refferer?.referrerCount },
-    ];
-
-  
-    const getPrice = (amount) => {
-      const priceInMatic = amount * prices?.[refferer?.payout?.currency];
-      return (
-        amount +
-        " " +
-        "Matic" +
-        "/ " +
+  const stats = [
+    {
+      name: "Amount Due",
+      stat:
+        refferer?.referrerReward?.toFixed(2) +
+        " MATIC/ " +
         currencySymbols[refferer?.payout?.currency] +
         "" +
-        priceInMatic?.toFixed(2)
-      ); 
-    }
+        (
+          refferer?.referrerReward * prices?.[refferer?.payout?.currency]
+        )?.toFixed(2),
+    },
+    {
+      name: "Total Paid",
+      stat:
+        refferer?.referrerTotalReward?.toFixed(2) +
+        " MATIC/ " +
+        currencySymbols[refferer?.payout?.currency] +
+        "" +
+        (
+          refferer?.referrerTotalReward * prices?.[refferer?.payout?.currency]
+        )?.toFixed(2),
+    },
+    { name: "Total Payouts", stat: transactions?.length },
+  ];
 
+  const getPrice = (amount) => {
+    const priceInMatic = amount * prices?.[refferer?.payout?.currency];
+    return (
+      amount +
+      " " +
+      "Matic" +
+      "/ " +
+      currencySymbols[refferer?.payout?.currency] +
+      "" +
+      priceInMatic?.toFixed(2)
+    );
+  };
 
-    useEffect(() => {
- 
-        dispatch(getMaticPrice())
-          .unwrap()
-          .then((res) => {
-            console.log(res)
-            setPrices(res);
-          });
-      
-    }, []);
-
+  useEffect(() => {
+    dispatch(getMaticPrice())
+      .unwrap()
+      .then((res) => {
+        console.log(res);
+        setPrices(res);
+      });
+  }, []);
 
   return (
     <div>
@@ -113,7 +103,6 @@ function Referrals() {
       <Layout title={"Payouts"}>
         {/* Buttons */}
         <div className="p-8 ">
-        
           <dl className="grid grid-cols-1 gap-5 mt-5 sm:grid-cols-3">
             {stats.map((item) => (
               <div
@@ -196,7 +185,6 @@ function Referrals() {
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {t?.type}
-                
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {getPrice(t?.amount)}
@@ -206,16 +194,14 @@ function Referrals() {
                 </td>
 
                 <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-           
-                    <a
-                      href={t?.receiptUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline uppercase text-green"
-                    >
-                      View Receipt
-                    </a>
-             
+                  <a
+                    href={t?.receiptUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline uppercase text-green"
+                  >
+                    View Receipt
+                  </a>
                 </td>
               </tr>
             ))}

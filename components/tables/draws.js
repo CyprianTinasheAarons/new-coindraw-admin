@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import CsvDownloader from "react-csv-downloader";
+import { CSVLink, CSVDownload } from "react-csv";
+import { unparse } from "papaparse";
 import drawService from "../../api/draw.service";
 import userService from "../../api/user.service";
 import transactionService from "../../api/transaction.service";
@@ -109,7 +111,7 @@ export default function DrawsTable() {
                 "Wallet Address": user.walletAddress,
                 Currency: transaction.type,
                 "Value at Checkout": transaction.amount,
-                "Metadata result": transaction.answer,
+                "Metadata result": transaction?.answer?.answer,
                 Referred: user.referred ? "Yes" : "No",
                 "Referral Code": user.referralCode,
               }
@@ -117,24 +119,21 @@ export default function DrawsTable() {
         })
         .filter((item) => item !== null);
 
-      const csvWriter = createCsvWriter({
-        path: "out.csv",
-        header: [
-          { id: "Date/Time Minted", title: "Date/Time Minted" },
-          { id: "Event Entered", title: "Event Entered" },
-          { id: "Account username", title: "Account username" },
-          { id: "Wallet Address", title: "Wallet Address" },
-          { id: "Currency", title: "Currency" },
-          { id: "Value at Checkout", title: "Value at Checkout" },
-          { id: "Metadata result", title: "Metadata result" },
-          { id: "Referred", title: "Referred" },
-          { id: "Referral Code", title: "Referral Code" },
-        ],
-      });
+      const csvString = unparse(csvData);
+      // Convert CSV data to Blob
+      const blob = new Blob([csvString], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
 
-      await csvWriter.writeRecords(csvData);
+      // Create a link and trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `draw_stats_${new Date().toISOString()}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
       setLoading(false);
-      console.log("The CSV file was written successfully");
+      console.log("The CSV file was downloaded successfully");
     } catch (error) {
       setLoading(false);
       console.error("Error in downloadStats:", error);
@@ -169,33 +168,6 @@ export default function DrawsTable() {
             </svg>
           </button>
         </CsvDownloader>
-        {csvData.length > 0 && (
-          <CsvDownloader
-            datas={draws}
-            filename="draws"
-            extension=".csv"
-            separator=";"
-            wrapColumnChar="'"
-          >
-            <button className="inline-flex items-center px-3 py-2 mx-1 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-              Download Draw Data
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6 px-1"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
-                />
-              </svg>
-            </button>
-          </CsvDownloader>
-        )}
       </div>
 
       <div>

@@ -32,19 +32,21 @@ export default function BoxesTable() {
   }, []);
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      const userDetails = await Promise.all(
-        boxes.map(async (box) => {
-          const response = await userService.get(box.owner);
-          return {
-            username: response?.data?.username,
-            walletAddress: response?.data?.walletAddress,
-          };
-        })
-      );
+    const fetchAllUsers = async () => {
+      const allUsersResponse = await userService.getAll();
+      const allUsers = allUsersResponse?.data;
+
+      const userDetails = boxes.map((box) => {
+        const user = allUsers.find((user) => user.id === box.owner);
+        return {
+          username: user?.username,
+          walletAddress: user?.walletAddress,
+        };
+      });
+
       setUserDetails(userDetails);
     };
-    fetchUserDetails();
+    fetchAllUsers();
   }, [boxes]);
 
   useEffect(() => {
@@ -306,12 +308,12 @@ export default function BoxesTable() {
                           <div className="flex items-center space-x-2">
                             <div className="truncate">
                               {usersDetails[index]?.username} -{" "}
-                              {usersDetails[index]?.walletAddress}
+                              {usersDetails[index]?.walletAddress.slice(0, 4) + "..." + usersDetails[index]?.walletAddress.slice(-4)}
                             </div>
                             <button
                               onClick={() =>
                                 navigator.clipboard.writeText(
-                                  `${usersDetails[index]?.username} - ${usersDetails[index]?.walletAddress}`
+                                  `${usersDetails[index]?.walletAddress}`
                                 )
                               }
                               className="text-blue-600 hover:text-blue-800 active:text-blue-900 focus:outline-none"
