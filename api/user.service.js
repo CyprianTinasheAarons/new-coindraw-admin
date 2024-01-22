@@ -9,6 +9,10 @@ class UserService {
     return http.get(`/users/${id}`);
   }
 
+  getByEmail(email) {
+    return http.get(`/users/${email}`);
+  }
+
   update(id, data) {
     return http.put(`/users/${id}`, data);
   }
@@ -20,8 +24,6 @@ class UserService {
   deleteAll() {
     return http.delete(`/users`);
   }
-
-
 }
 
 export default new UserService();
