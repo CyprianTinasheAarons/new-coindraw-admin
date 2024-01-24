@@ -512,6 +512,7 @@ export default function BoxViewer() {
                             </option>
                             <option value="Physical">Physical</option>
                             <option value="MATIC">MATIC</option>
+                            <option value="NoWin">No Win</option>
                           </select>
                         </div>
                         <label className="text-sm font-medium text-gray-900">
@@ -817,6 +818,8 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                               ? "bg-green"
                               : prize.type === "Physical"
                               ? "bg-purple-500"
+                              : prize.type === "NoWin"
+                              ? "bg-red-500"
                               : "bg-yellow-500"
                           }`}
                         >
