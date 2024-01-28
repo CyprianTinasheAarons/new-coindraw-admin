@@ -18,17 +18,21 @@ export default function BoxesTable() {
   const [prizeFilter, setPrizeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const fetchBoxes = async () => {
-    const response = await boxService.getAll();
-    setBoxes(
-      response?.data.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      )
-    );
+  const fetchBoxes = async (currentPage, rowsPerPage) => {
+    try {
+      const response = await boxService.getAll(currentPage, rowsPerPage);
+      setBoxes(
+        response?.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
+      );
+    } catch (error) {
+      console.error("Failed to fetch boxes:", error);
+    }
   };
 
   useEffect(() => {
-    fetchBoxes();
+    fetchBoxes(page, rowsPerPage);
   }, []);
 
   useEffect(() => {

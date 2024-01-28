@@ -17,8 +17,11 @@ class BoxService {
     return http.put(`/coinboxes/${id}`, data);
   }
   //  ====Get Boxes =====
-  getAll() {
-    return http.get("/boxes");
+  getAll(page, limit) {
+    const skipIndex = (page - 1) * limit;
+    return http.get(
+      `/boxes?page=${page}&limit=${limit}&skipIndex=${skipIndex}`
+    );
   }
 
   update(id, data) {
