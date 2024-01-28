@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import boxService from "../../api/box.service";
 import userService from "../../api/user.service";
 import CsvDownloader from "react-csv-downloader";
-import { useToast } from "@chakra-ui/react";
+import { useToast, Spinner } from "@chakra-ui/react";
 import ReactPaginate from "react-paginate";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -14,26 +14,29 @@ export default function BoxesTable() {
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(0); // Math.ceil(filteredData.length / rowsPerPage)
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [prizeFilter, setPrizeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchBoxes = async (currentPage, rowsPerPage) => {
     try {
       const response = await boxService.getAll(currentPage, rowsPerPage);
-      setBoxes(
-        response?.data.sort(
+      setBoxes(prevBoxes => [
+        ...prevBoxes,
+        ...response?.data?.data?.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         )
-      );
+      ]);
+      setTotalPages(Math.ceil(response?.data?.total / rowsPerPage));
     } catch (error) {
       console.error("Failed to fetch boxes:", error);
     }
   };
-
   useEffect(() => {
     fetchBoxes(page, rowsPerPage);
-  }, []);
+  }, [page, rowsPerPage]);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -90,7 +93,16 @@ export default function BoxesTable() {
     }
 
     setFilteredData(filtered);
-  }, [search, boxes, usersDetails, dateRange, prizeFilter, statusFilter]);
+  }, [
+    search,
+    boxes,
+    usersDetails,
+    dateRange,
+    prizeFilter,
+    statusFilter,
+    page,
+    rowsPerPage,
+  ]);
 
   const toast = useToast();
 
@@ -106,7 +118,7 @@ export default function BoxesTable() {
           duration: 3000,
           isClosable: true,
         });
-        fetchBoxes();
+        fetchBoxes(page, rowsPerPage);
       }
     } catch (error) {
       toast({
@@ -117,6 +129,25 @@ export default function BoxesTable() {
         isClosable: true,
       });
     }
+  };
+
+  const handlePageChange = async (data) => {
+    setIsLoading(true);
+    const selectedPage = data.selected + 1;
+    setPage(selectedPage);
+
+    try {
+      await fetchBoxes(selectedPage, rowsPerPage);
+    } catch (error) {
+      toast({
+        title: "An error occurred.",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -250,126 +281,135 @@ export default function BoxesTable() {
         <div className="flow-root mt-8">
           <div className="-mx-6 -my-2 overflow-x-auto lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle ">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
-                    >
-                      Box Type
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Owner
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Prize
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Won
-                    </th>
+              {isLoading ? (
+                <div className="flex justify-center w-full p-16 h-96">
+                  <Spinner />
+                </div> // You can replace this with a spinner or any loading component
+              ) : (
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                      >
+                        Box Type
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Owner
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Status
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Prize
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Won
+                      </th>
 
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Fulfilled
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {filteredData
-                    .slice((page - 1) * rowsPerPage, page * rowsPerPage)
-                    .map((box, index) => (
-                      <tr key={box?.id}>
-                        <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                          {box?.boxType}
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          <div className="flex items-center space-x-2">
-                            <div className="truncate">
-                              {usersDetails[index]?.username} -{" "}
-                              {usersDetails[index]?.walletAddress?.slice(0, 4) +
-                                "..." +
-                                usersDetails[index]?.walletAddress?.slice(-4)}
+                      <th
+                        scope="col"
+                        className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Date
+                      </th>
+                      <th
+                        scope="col"
+                        className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Fulfilled
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {filteredData
+                      .slice((page - 1) * rowsPerPage, page * rowsPerPage)
+                      .map((box, index) => (
+                        <tr key={box?.id}>
+                          <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
+                            {box?.boxType}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            <div className="flex items-center space-x-2">
+                              <div className="truncate">
+                                {usersDetails[index]?.username} -{" "}
+                                {usersDetails[index]?.walletAddress?.slice(
+                                  0,
+                                  4
+                                ) +
+                                  "..." +
+                                  usersDetails[index]?.walletAddress?.slice(-4)}
+                              </div>
+                              <button
+                                onClick={() =>
+                                  navigator.clipboard.writeText(
+                                    `${usersDetails[index]?.walletAddress}`
+                                  )
+                                }
+                                className="text-blue-600 hover:text-blue-800 active:text-blue-900 focus:outline-none"
+                              >
+                                Copy
+                              </button>
                             </div>
-                            <button
-                              onClick={() =>
-                                navigator.clipboard.writeText(
-                                  `${usersDetails[index]?.walletAddress}`
-                                )
-                              }
-                              className="text-blue-600 hover:text-blue-800 active:text-blue-900 focus:outline-none"
-                            >
-                              Copy
-                            </button>
-                          </div>
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {box?.status ? "Opened" : "Unopened"}
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          <div className="prize-details">
-                            <div className="prize-name">
-                              {box?.prize?.type}-{box?.prize?.name}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            {box?.status ? "Opened" : "Unopened"}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            <div className="prize-details">
+                              <div className="prize-name">
+                                {box?.prize?.type}-{box?.prize?.name}
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {box?.won ? "Yes" : "No"}
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {new Intl.DateTimeFormat("en-GB").format(
-                            new Date(box?.createdAt)
-                          )}
-                        </td>
-                        <td className="px-3 py-4 text-sm font-medium text-right whitespace-nowrap">
-                          {box?.prize?.type === "Physical" && (
-                            <input
-                              type="checkbox"
-                              checked={box?.fulfilled}
-                              onChange={() =>
-                                handleFulfillmentChange(
-                                  box?.id,
-                                  !box?.fulfilled
-                                )
-                              }
-                            />
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            {box?.won ? "Yes" : "No"}
+                          </td>
+                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            {new Intl.DateTimeFormat("en-GB").format(
+                              new Date(box?.createdAt)
+                            )}
+                          </td>
+                          <td className="px-3 py-4 text-sm font-medium text-right whitespace-nowrap">
+                            {box?.prize?.type === "Physical" && (
+                              <input
+                                type="checkbox"
+                                checked={box?.fulfilled}
+                                onChange={() =>
+                                  handleFulfillmentChange(
+                                    box?.id,
+                                    !box?.fulfilled
+                                  )
+                                }
+                              />
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              )}
               <div className="">
                 <div className="flex justify-center">
                   <ReactPaginate
                     nextLabel="next >"
-                    onPageChange={(data) => setPage(data.selected + 1)}
+                    onPageChange={(data) => handlePageChange(data)}
                     pageRangeDisplayed={3}
                     marginPagesDisplayed={2}
-                    pageCount={Math.ceil(filteredData.length / rowsPerPage)}
+                    pageCount={totalPages}
                     previousLabel="< previous"
                     pageClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
                     pageLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
