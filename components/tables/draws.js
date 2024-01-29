@@ -100,7 +100,9 @@ export default function DrawsTable() {
 
       const csvData = allTransactions
         .map((transaction) => {
+          console.log("transaction", transaction);
           const user = userMap.get(transaction?.email);
+
           return user
             ? {
                 "Date/Time Minted": new Date(
@@ -109,7 +111,9 @@ export default function DrawsTable() {
                 "Event Entered": draw.title,
                 "Account username": user.username,
                 "Wallet Address": user.walletAddress,
-                Currency: transaction.type,
+                Currency: transaction.PaypalPaymentCurrency
+                  ? transaction.PaypalPaymentCurrency
+                  : "MATIC",
                 "Value at Checkout": transaction.amount,
                 "Metadata result": transaction?.answer?.answer,
                 Referred: user.referred ? "Yes" : "No",
