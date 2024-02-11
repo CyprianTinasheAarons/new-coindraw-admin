@@ -83,10 +83,10 @@ export default function BoxViewer() {
       (total, prize) => total + prize.probability,
       0
     );
-    if (totalProbability > 1000) {
+    if (totalProbability > 100000) {
       toast({
         title: "Error",
-        description: "Total probability exceeds 1000",
+        description: "Total probability exceeds 100,000",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -178,10 +178,10 @@ export default function BoxViewer() {
       (total, prize) => total + prize.probability,
       0
     );
-    if (totalProbability > 1000) {
+    if (totalProbability > 100000) {
       toast({
         title: "Error",
-        description: "Total probability exceeds 1000",
+        description: "Total probability exceeds 100,000",
         status: "error",
         duration: 9000,
         isClosable: true,
@@ -362,7 +362,7 @@ export default function BoxViewer() {
                         </div>
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-gray-900">
-                            Probability (out of 1000)
+                            Probability (out of 100,000)
                           </label>
                           <input
                             name="probability"
@@ -376,7 +376,7 @@ export default function BoxViewer() {
                             className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                             type="number"
                             placeholder="Probability"
-                            max="1000"
+                            max="100000"
                             min="0"
                           />
 
@@ -552,7 +552,7 @@ export default function BoxViewer() {
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-gray-900">
-                          Probability (out of 1000)
+                          Probability (out of 100,000)
                         </label>
                         <input
                           name="probability"
@@ -566,7 +566,7 @@ export default function BoxViewer() {
                           className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                           type="number"
                           placeholder="Probability"
-                          max="1000"
+                          max="100000"
                           min="0"
                         />
 
@@ -831,7 +831,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                             : prize.quantity}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {prize.probability} / 1000
+                          {prize.probability} / 100,000
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.discordNotificationType}
@@ -866,7 +866,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         prizes.reduce(
                           (total, prize) => total + prize.probability,
                           0
-                        ) > 1000
+                        ) > 100000
                           ? "text-red-500"
                           : "text-black"
                       }`}
@@ -876,7 +876,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         (total, prize) => total + prize.probability,
                         0
                       )}{" "}
-                      / 1000
+                      / 100,000
                     </td>
                   </tr>
                 </tbody>
