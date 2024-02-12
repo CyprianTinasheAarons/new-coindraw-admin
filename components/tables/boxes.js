@@ -13,7 +13,7 @@ export default function BoxesTable() {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [totalPages, setTotalPages] = useState(0); // Math.ceil(filteredData.length / rowsPerPage)
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [prizeFilter, setPrizeFilter] = useState("");
@@ -23,11 +23,11 @@ export default function BoxesTable() {
   const fetchBoxes = async (currentPage, rowsPerPage) => {
     try {
       const response = await boxService.getAll(currentPage, rowsPerPage);
-      setBoxes(prevBoxes => [
+      setBoxes((prevBoxes) => [
         ...prevBoxes,
         ...response?.data?.data?.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        )
+        ),
       ]);
       setTotalPages(Math.ceil(response?.data?.total / rowsPerPage));
     } catch (error) {
