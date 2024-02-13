@@ -24,6 +24,10 @@ class BoxService {
     );
   }
 
+  redistributeBoxes(data) {
+    return http.post("/boxes/redistribute", data);
+  }
+
   update(id, data) {
     return http.put(`/boxes/${id}`, data);
   }
