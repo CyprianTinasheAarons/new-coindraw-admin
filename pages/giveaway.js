@@ -20,7 +20,7 @@ import { useDispatch } from "react-redux";
 import { createGiveaway, getGiveawayHistory } from "../slices/giveaway";
 import Nfts from "../components/nfts";
 import abiNFT from "../abi/abiNFT.json";
-
+import transactionService from "../api/transaction.service";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { useAddress } from "@thirdweb-dev/react";
 import { create as ipfsHttpClient } from "ipfs-http-client";
@@ -227,6 +227,19 @@ const Giveaway = () => {
         status: "success",
         duration: 9000,
         isClosable: true,
+      });
+
+      await transactionService.create({
+        transactionHash: response?.receipt?.transactionHash,
+        walletAddress: address,
+        contractAddress: giveawayAddress,
+        success: true,
+        email: "",
+        quantity: amount,
+        supply: parseInt(supply),
+        URLs: URLs,
+        abi: "",
+        answer: "",
       });
 
       setMinting(false);
