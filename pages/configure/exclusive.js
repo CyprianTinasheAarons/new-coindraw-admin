@@ -872,10 +872,10 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                       }`}
                     >
                       Total Probability:{" "}
-                      {prizes.reduce(
-                        (total, prize) => total + prize.probability,
-                        0
-                      )}{" "}
+                      {prizes
+                        .reduce((total, prize) => total + prize.probability, 0)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       / 100,000
                     </td>
                   </tr>

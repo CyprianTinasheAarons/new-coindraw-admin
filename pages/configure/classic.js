@@ -12,12 +12,10 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 
 export default function BoxViewer() {
- 
-
   const [box, setBox] = useState({
     boxType: "Classic", // Classic or Exclusive
     prizes: [
@@ -80,14 +78,12 @@ export default function BoxViewer() {
     getBox();
   }, []);
 
-
   const editBox = async () => {
-
     const totalProbability = box?.prizes.reduce(
       (total, prize) => total + prize.probability,
       0
     );
-    if (totalProbability  > 100000) {
+    if (totalProbability > 100000) {
       toast({
         title: "Error",
         description: "Total probability cannot exceed 100,000",
@@ -97,7 +93,6 @@ export default function BoxViewer() {
       });
       return;
     }
-
 
     if (box?.id) {
       box.prizes.push(prize);
@@ -179,8 +174,11 @@ export default function BoxViewer() {
     if (index !== -1) {
       box.prizes[index] = prize;
     }
-    const totalProbability = box.prizes.reduce((total, prize) => total + prize.probability, 0);
-    if (totalProbability  > 100000) {
+    const totalProbability = box.prizes.reduce(
+      (total, prize) => total + prize.probability,
+      0
+    );
+    if (totalProbability > 100000) {
       toast({
         title: "Error",
         description: "Total probability exceeds 100,000",
@@ -190,7 +188,7 @@ export default function BoxViewer() {
       });
       return;
     }
-    
+
     try {
       console.log("Updating coinbox");
       await boxService.updateCoinbox(box.id, { prizes: box.prizes });
@@ -235,7 +233,6 @@ export default function BoxViewer() {
     setPrize(prize);
     onDeleteOpen();
   };
-
 
   return (
     <>
@@ -411,11 +408,7 @@ export default function BoxViewer() {
                             <option value="Everyone">Everyone</option>
                           </select>
 
-                          {prize?.type === "Digital" && (
-                            <>
-                        
-                            </>
-                          )}
+                          {prize?.type === "Digital" && <></>}
 
                           {prize?.type === "DigitalCoindraw" && (
                             <>
@@ -605,11 +598,7 @@ export default function BoxViewer() {
                           <option value="Everyone">Everyone</option>
                         </select>
 
-                        {prize?.type === "Digital" && (
-                          <>
-                     
-                          </>
-                        )}
+                        {prize?.type === "Digital" && <></>}
 
                         {prize?.type === "DigitalCoindraw" && (
                           <>
@@ -802,7 +791,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                     >
                       Contract
                     </th>
-                 
+
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -857,7 +846,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.nftContractAddress}
                         </td>
-                  
+
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.maticPrice}
                         </td>
@@ -878,15 +867,25 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         </td>
                       </tr>
                     ))}
-                    <tr>
-                      <td className={`px-3 py-4 text-sm whitespace-nowrap ${
-                        prizes.reduce((total, prize) => total + prize.probability, 0) > 100000
+                  <tr>
+                    <td
+                      className={`px-3 py-4 text-sm whitespace-nowrap ${
+                        prizes.reduce(
+                          (total, prize) => total + prize.probability,
+                          0
+                        ) > 100000
                           ? "text-red-500"
                           : "text-black"
-                      }`}>
-                        Total Probability: {prizes.reduce((total, prize) => total + prize.probability, 0)} / 100,000
-                      </td>
-                    </tr>
+                      }`}
+                    >
+                      Total Probability:{" "}
+                      {prizes
+                        .reduce((total, prize) => total + prize.probability, 0)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      / 100,000
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
