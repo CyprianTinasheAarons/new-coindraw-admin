@@ -5,7 +5,10 @@ import { Spinner, Tooltip, useToast } from "@chakra-ui/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import transactionService from "../../api/transaction.service";
 import { create as ipfsHttpClient } from "ipfs-http-client";
-
+import ReactPaginate from "react-paginate";
+import { debounce } from "lodash"; // Assuming lodash is available
+import { useDispatch } from "react-redux";
+import { getTransactions } from "../../slices/transactions";
 // Get project credentials from environment variables
 const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
 const projectSecret = process.env.NEXT_PUBLIC_API_KEY_SECRET;
@@ -28,36 +31,69 @@ const sdk = ThirdwebSDK.fromPrivateKey(
   "polygon"
 );
 
-export default function HistoryTable({ data }) {
+export default function HistoryTable() {
+  const dispatch = useDispatch();
   const toast = useToast();
   const [search, setSearch] = useState("");
   const [reminting, setReminting] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const isLoading = useSelector((state) => state.transactions.isLoading);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+  const IPFS_SUBDOMAIN = "https://coindraw.infura-ipfs.io";
+  const [totalPages, setTotalPages] = useState(0); // Math.ceil(filteredData.length / rowsPerPage)
 
   const truncate = (str, n) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
-  useEffect(() => {
-    setFilteredTransactions(
-      data
-        .filter((t) => {
-          return (
-            t?.walletAddress?.toLowerCase().includes(search.toLowerCase()) ||
-            t?.contractAddress?.toLowerCase().includes(search.toLowerCase()) ||
-            t?.transactionHash?.toLowerCase().includes(search.toLowerCase())
-          );
-        })
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-    );
-  }, [search, data]);
+  const [transactions, setTransactions] = useState([]);
 
-  const IPFS_SUBDOMAIN = "https://coindraw.infura-ipfs.io";
+  const getData = async (currentPage, rowsPerPage) => {
+    try {
+      const response = await dispatch(
+        getTransactions(currentPage, 50)
+      ).unwrap();
+
+      // Replace transactions instead of appending
+      setTransactions(response.data);
+      setTotalPages(Math.ceil(response.total / rowsPerPage));
+    } catch (error) {
+      console.error("Failed to fetch transactions:", error);
+      // Handle error (e.g., show a notification or set an error state)
+    }
+  };
+
+  const handlePageChange = (data) => {
+    setPage(data.selected + 1);
+    getData(data.selected + 1, rowsPerPage);
+  };
+
+  // Effect for fetching data
+  useEffect(() => {
+    getData(page, rowsPerPage); // Fetch transactions immediately on component mount
+    const interval = setInterval(getData, 300000); // Fetches transactions every 5 minutes
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, []);
+
+  // Debounced effect for filtering
+  const debouncedSearch = debounce(() => {
+    setFilteredTransactions(
+      transactions.filter(
+        (t) =>
+          t?.walletAddress?.toLowerCase().includes(search.toLowerCase()) ||
+          t?.contractAddress?.toLowerCase().includes(search.toLowerCase()) ||
+          t?.transactionHash?.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, 500); // 500 ms debounce time
+
+  useEffect(() => {
+    debouncedSearch();
+    // Cancel the debounce on cleanup to prevent it from running after the component unmounts
+    return () => debouncedSearch.cancel();
+  }, [search, transactions]);
 
   const remint = async (txn) => {
     setReminting(true);
@@ -384,6 +420,30 @@ export default function HistoryTable({ data }) {
                   </tbody>
                 </table>
               )}
+              <div className="">
+                <div className="flex justify-center">
+                  <ReactPaginate
+                    nextLabel="next >"
+                    onPageChange={(data) => handlePageChange(data)}
+                    pageRangeDisplayed={3}
+                    marginPagesDisplayed={2}
+                    pageCount={totalPages}
+                    previousLabel="< previous"
+                    pageClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    pageLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    previousClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    previousLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    nextClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    nextLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    breakLabel="..."
+                    breakClassName="flex items-center justify-center border border-gray-300 rounded mx-1"
+                    breakLinkClassName="px-3 py-2 text-sm text-gray-500 hover:bg-gray-200"
+                    containerClassName="flex items-center justify-center space-x-2"
+                    activeClassName="bg-gray-200"
+                    renderOnZeroPageCount={null}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

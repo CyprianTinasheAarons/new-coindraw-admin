@@ -13,6 +13,10 @@ class UserService {
     return http.get(`/users/${email}`);
   }
 
+  getByIds(ids) {
+    return http.get(`/users/by/all`, ids);
+  }
+
   update(id, data) {
     return http.put(`/users/${id}`, data);
   }

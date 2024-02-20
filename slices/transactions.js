@@ -9,16 +9,11 @@ const initialState = {
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
-  async () => {
+  async (page, rows) => {
     try {
-      const response = await transactionService.getAll();
+      const response = await transactionService.getAll(page, rows);
 
-      // Sort by createdAt date
-      const sortedTransactions = response.data.sort((a, b) => {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      });
-
-      return sortedTransactions;
+      return response.data;
     } catch (e) {
       console.log(e);
       throw e;
@@ -40,7 +35,6 @@ export const createTransaction = createAsyncThunk(
   }
 );
 
-
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
   async (transaction) => {
@@ -54,8 +48,6 @@ export const updateTransaction = createAsyncThunk(
     }
   }
 );
-
-
 
 export const transactionSlice = createSlice({
   name: "transactions",

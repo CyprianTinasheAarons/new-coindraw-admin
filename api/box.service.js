@@ -16,12 +16,10 @@ class BoxService {
   updateCoinbox(id, data) {
     return http.put(`/coinboxes/${id}`, data);
   }
-  //  ====Get Boxes =====
+
+  // Updated getAll function
   getAll(page, limit) {
-    const skipIndex = (page - 1) * limit;
-    return http.get(
-      `/boxes?page=${page}&limit=${limit}&skipIndex=${skipIndex}`
-    );
+    return http.get(`/boxes?page=${page}&limit=${limit}`);
   }
 
   redistributeBoxes(data) {

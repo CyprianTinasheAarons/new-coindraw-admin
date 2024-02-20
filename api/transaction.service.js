@@ -1,34 +1,34 @@
-import http from './http-common';
+import http from "./http-common";
 
+class TransactionService {
+  // Updated getAll function
+  getAll(page, limit) {
+    return http.get(`/transactions?page=${page}&limit=${50}`);
+  }
 
-class TransactionService  {
-        getAll(){
-                return http.get('/transactions');
-        }
+  get(id) {
+    return http.get(`/transactions/${id}`);
+  }
 
-        get(id){
-            return http.get(`/transactions/${id}`);
-        }
+  create(data) {
+    return http.post("/transactions", data);
+  }
 
-        create(data){
-            return http.post('/transactions', data);
-        }
+  update(data) {
+    return http.put(`/transactions/${data?.id}`, data);
+  }
 
-        update(data){
-            return http.put(`/transactions/${data?.id}`, data);
-        }
+  delete(id) {
+    return http.delete(`/transactions/${id}`);
+  }
 
-        delete(id){
-            return http.delete(`/transactions/${id}`);
-        }
+  deleteAll() {
+    return http.delete(`/transactions`);
+  }
 
-        deleteAll(){
-            return http.delete(`/transactions`);
-        }
-
-        findByTitle(title){
-            return http.get(`/transactions?title=${title}`);
-        }
+  findByTitle(title) {
+    return http.get(`/transactions?title=${title}`);
+  }
 }
 
 export default new TransactionService();

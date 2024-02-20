@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function BoxesTable() {
+  const toast = useToast();
   const [boxes, setBoxes] = useState([]);
   const [usersDetails, setUserDetails] = useState([]);
   const [search, setSearch] = useState("");
@@ -19,42 +20,30 @@ export default function BoxesTable() {
   const [prizeFilter, setPrizeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchBoxes = async (currentPage, rowsPerPage) => {
     try {
+      setIsLoading(true); // Assume there's a setLoading function to manage loading state
       const response = await boxService.getAll(currentPage, rowsPerPage);
-      setBoxes((prevBoxes) => [
-        ...prevBoxes,
-        ...response?.data?.data?.sort(
+      if (response?.data?.data) {
+        const sortedBoxes = response.data.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        ),
-      ]);
-      setTotalPages(Math.ceil(response?.data?.total / rowsPerPage));
+        );
+        setBoxes((prevBoxes) => [...prevBoxes, ...sortedBoxes]);
+        setTotalPages(Math.ceil(response.data.total / rowsPerPage));
+      }
     } catch (error) {
       console.error("Failed to fetch boxes:", error);
+      // Optionally update state to reflect the error condition
+      setError("Failed to fetch boxes"); // Assume there's a setError function to manage error state
+    } finally {
+      setIsLoading(false); // Clear loading state regardless of the outcome
     }
   };
   useEffect(() => {
     fetchBoxes(page, rowsPerPage);
   }, [page, rowsPerPage]);
-
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      const allUsersResponse = await userService.getAll();
-      const allUsers = allUsersResponse?.data;
-
-      const userDetails = boxes.map((box) => {
-        const user = allUsers.find((user) => user.id === box.owner);
-        return {
-          username: user?.username,
-          walletAddress: user?.walletAddress,
-        };
-      });
-
-      setUserDetails(userDetails);
-    };
-    fetchAllUsers();
-  }, [boxes]);
 
   useEffect(() => {
     let filtered = boxes;
@@ -104,7 +93,24 @@ export default function BoxesTable() {
     rowsPerPage,
   ]);
 
-  const toast = useToast();
+  const handlePageChange = async (data) => {
+    setIsLoading(true);
+    const selectedPage = data.selected + 1;
+    setPage(selectedPage);
+
+    try {
+      await fetchBoxes(selectedPage, rowsPerPage);
+    } catch (error) {
+      toast({
+        title: "An error occurred.",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    setIsLoading(false);
+  };
 
   const handleFulfillmentChange = async (id, fulfilledStatus) => {
     try {
@@ -129,25 +135,6 @@ export default function BoxesTable() {
         isClosable: true,
       });
     }
-  };
-
-  const handlePageChange = async (data) => {
-    setIsLoading(true);
-    const selectedPage = data.selected + 1;
-    setPage(selectedPage);
-
-    try {
-      await fetchBoxes(selectedPage, rowsPerPage);
-    } catch (error) {
-      toast({
-        title: "An error occurred.",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-    setIsLoading(false);
   };
 
   return (
@@ -345,18 +332,15 @@ export default function BoxesTable() {
                           <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                             <div className="flex items-center space-x-2">
                               <div className="truncate">
-                                {usersDetails[index]?.username} -{" "}
-                                {usersDetails[index]?.walletAddress?.slice(
-                                  0,
-                                  4
-                                ) +
+                                {box?.owner?.username} -{" "}
+                                {box?.owner?.walletAddress?.slice(0, 4) +
                                   "..." +
-                                  usersDetails[index]?.walletAddress?.slice(-4)}
+                                  box?.owner?.walletAddress?.slice(-4)}
                               </div>
                               <button
                                 onClick={() =>
                                   navigator.clipboard.writeText(
-                                    `${usersDetails[index]?.walletAddress}`
+                                    `${box?.owner?.walletAddress}`
                                   )
                                 }
                                 className="text-blue-600 hover:text-blue-800 active:text-blue-900 focus:outline-none"
