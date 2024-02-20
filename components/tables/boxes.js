@@ -23,22 +23,23 @@ export default function BoxesTable() {
   const [error, setError] = useState(null);
 
   const fetchBoxes = async (currentPage, rowsPerPage) => {
+    console.log(`Fetching boxes for page ${currentPage}`); // Debugging line
     try {
-      setIsLoading(true); // Assume there's a setLoading function to manage loading state
+      setIsLoading(true);
+
       const response = await boxService.getAll(currentPage, rowsPerPage);
-      if (response?.data?.data) {
-        const sortedBoxes = response.data.data;
-        setBoxes(sortedBoxes);
-        setTotalPages(Math.ceil(response.data.total / rowsPerPage));
-      }
+      console.log(response); // Debugging line to inspect the response structure
+      setBoxes(response.data.data);
+      setFilteredData(response.data.data);
+      setTotalPages(Math.ceil(response.data.total / rowsPerPage));
     } catch (error) {
       console.error("Failed to fetch boxes:", error);
-      // Optionally update state to reflect the error condition
-      setError("Failed to fetch boxes"); // Assume there's a setError function to manage error state
+      setError("Failed to fetch boxes");
     } finally {
-      setIsLoading(false); // Clear loading state regardless of the outcome
+      setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchBoxes(page, rowsPerPage);
   }, [page, rowsPerPage]);
@@ -320,67 +321,65 @@ export default function BoxesTable() {
                     </tr>
                   </thead>
                   <tbody className="bg-white">
-                    {filteredData
-                      .slice((page - 1) * rowsPerPage, page * rowsPerPage)
-                      .map((box, index) => (
-                        <tr key={box?.id}>
-                          <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
-                            {box?.boxType}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            <div className="flex items-center space-x-2">
-                              <div className="truncate">
-                                {box?.owner?.username} -{" "}
-                                {box?.owner?.walletAddress?.slice(0, 4) +
-                                  "..." +
-                                  box?.owner?.walletAddress?.slice(-4)}
-                              </div>
-                              <button
-                                onClick={() =>
-                                  navigator.clipboard.writeText(
-                                    `${box?.owner?.walletAddress}`
-                                  )
-                                }
-                                className="text-blue-600 hover:text-blue-800 active:text-blue-900 focus:outline-none"
-                              >
-                                Copy
-                              </button>
+                    {filteredData.map((box) => (
+                      <tr key={box?.id}>
+                        <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-3">
+                          {box?.boxType}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          <div className="flex items-center space-x-2">
+                            <div className="truncate">
+                              {box?.owner?.username} -{" "}
+                              {box?.owner?.walletAddress?.slice(0, 4) +
+                                "..." +
+                                box?.owner?.walletAddress?.slice(-4)}
                             </div>
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {box?.status ? "Opened" : "Unopened"}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            <div className="prize-details">
-                              <div className="prize-name">
-                                {box?.prize?.type}-{box?.prize?.name}
-                              </div>
+                            <button
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  `${box?.owner?.walletAddress}`
+                                )
+                              }
+                              className="text-blue-600 hover:text-blue-800 active:text-blue-900 focus:outline-none"
+                            >
+                              Copy
+                            </button>
+                          </div>
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          {box?.status ? "Opened" : "Unopened"}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          <div className="prize-details">
+                            <div className="prize-name">
+                              {box?.prize?.type}-{box?.prize?.name}
                             </div>
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {box?.won ? "Yes" : "No"}
-                          </td>
-                          <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                            {new Intl.DateTimeFormat("en-GB").format(
-                              new Date(box?.createdAt)
-                            )}
-                          </td>
-                          <td className="px-3 py-4 text-sm font-medium text-right whitespace-nowrap">
-                            {box?.prize?.type === "Physical" && (
-                              <input
-                                type="checkbox"
-                                checked={box?.fulfilled}
-                                onChange={() =>
-                                  handleFulfillmentChange(
-                                    box?.id,
-                                    !box?.fulfilled
-                                  )
-                                }
-                              />
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                          </div>
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          {box?.won ? "Yes" : "No"}
+                        </td>
+                        <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                          {new Intl.DateTimeFormat("en-GB").format(
+                            new Date(box?.createdAt)
+                          )}
+                        </td>
+                        <td className="px-3 py-4 text-sm font-medium text-right whitespace-nowrap">
+                          {box?.prize?.type === "Physical" && (
+                            <input
+                              type="checkbox"
+                              checked={box?.fulfilled}
+                              onChange={() =>
+                                handleFulfillmentChange(
+                                  box?.id,
+                                  !box?.fulfilled
+                                )
+                              }
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               )}
