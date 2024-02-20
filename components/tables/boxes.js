@@ -27,10 +27,8 @@ export default function BoxesTable() {
       setIsLoading(true); // Assume there's a setLoading function to manage loading state
       const response = await boxService.getAll(currentPage, rowsPerPage);
       if (response?.data?.data) {
-        const sortedBoxes = response.data.data.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setBoxes((prevBoxes) => [...prevBoxes, ...sortedBoxes]);
+        const sortedBoxes = response.data.data;
+        setBoxes(sortedBoxes);
         setTotalPages(Math.ceil(response.data.total / rowsPerPage));
       }
     } catch (error) {

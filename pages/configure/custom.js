@@ -836,7 +836,10 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                             : prize.quantity}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {prize.probability} / 100,000
+                          {prize.probability
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                          / 100,000
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.discordNotificationType}
