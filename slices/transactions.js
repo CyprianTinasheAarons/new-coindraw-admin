@@ -12,8 +12,12 @@ export const getTransactions = createAsyncThunk(
   async (page, rows) => {
     try {
       const response = await transactionService.getAll(page, rows);
+      const filteredResponse = response.data.data.filter(
+        (transaction) => transaction.type !== "Giveaway"
+      );
+      console.log(filteredResponse);
+      return filteredResponse;
 
-      return response.data;
     } catch (e) {
       console.log(e);
       throw e;

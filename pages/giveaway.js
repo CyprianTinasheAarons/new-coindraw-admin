@@ -66,6 +66,10 @@ const Giveaway = () => {
   const drawTypes = [
     { value: "Classic", label: "Classic" },
     { value: "Exclusive", label: "Exclusive" },
+    {
+      value: "Custom",
+      label: "Custom",
+    },
   ];
 
   const getData = async () => {
@@ -240,6 +244,7 @@ const Giveaway = () => {
         URLs: URLs,
         abi: "",
         answer: "",
+        type: "Giveaway",
       });
 
       setMinting(false);

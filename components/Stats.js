@@ -11,7 +11,7 @@ import UserService from "../api/user.service";
 import WinnerService from "../api/winner.service";
 import { useEffect, useState } from "react";
 
-export default function Stats({ user, transactions}) {
+export default function Stats({ user, transactions }) {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalDraws, setTotalDraws] = useState(0);
   const [totalWinners, setTotalWinners] = useState(0);
@@ -28,7 +28,7 @@ export default function Stats({ user, transactions}) {
       setTotalWinners(response.data.length);
     });
     transactionService.getAll().then((response) => {
-      setTotalTransactions(response.data.length);
+      setTotalTransactions(response.data.total);
     });
   }, [totalUsers, totalTransactions, totalWinners]);
 

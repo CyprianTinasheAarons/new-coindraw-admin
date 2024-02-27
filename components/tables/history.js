@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import CsvDownloader from "react-csv-downloader";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Spinner, Tooltip, useToast } from "@chakra-ui/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import transactionService from "../../api/transaction.service";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import ReactPaginate from "react-paginate";
 import { debounce } from "lodash"; // Assuming lodash is available
-import { useDispatch } from "react-redux";
 import { getTransactions } from "../../slices/transactions";
 // Get project credentials from environment variables
 const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
@@ -57,7 +56,7 @@ export default function HistoryTable() {
       ).unwrap();
 
       // Replace transactions instead of appending
-      setTransactions(response.data);
+      setTransactions(response);
       setTotalPages(Math.ceil(response.total / rowsPerPage));
     } catch (error) {
       console.error("Failed to fetch transactions:", error);
@@ -378,7 +377,9 @@ export default function HistoryTable() {
                           {tnx?.email}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          {new Date(tnx?.createdAt).toLocaleDateString()}
+                          <Tooltip label={new Date(tnx?.createdAt).toLocaleTimeString('en-GB')}>
+                            {new Date(tnx?.createdAt).toLocaleDateString()}
+                          </Tooltip>
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {tnx?.PaypalPayment ? (

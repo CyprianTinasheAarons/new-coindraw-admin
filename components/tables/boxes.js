@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import boxService from "../../api/box.service";
-import userService from "../../api/user.service";
 import CsvDownloader from "react-csv-downloader";
 import { useToast, Spinner } from "@chakra-ui/react";
 import ReactPaginate from "react-paginate";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:8080"); // Your server URL
 
 export default function BoxesTable() {
   const toast = useToast();
@@ -135,6 +137,14 @@ export default function BoxesTable() {
       });
     }
   };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchBoxes(page, rowsPerPage);
+    }, 300000); // Fetch boxes every 5 minutes
+
+    return () => clearInterval(intervalId); // Cleanup on component unmount
+  }, [page, rowsPerPage]);
 
   return (
     <>

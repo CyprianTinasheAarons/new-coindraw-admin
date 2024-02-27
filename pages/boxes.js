@@ -200,6 +200,8 @@ function Boxes() {
       setBox({ ...box, owner: user.id });
     }
   };
+
+  
   return (
     <div>
       <Head>
