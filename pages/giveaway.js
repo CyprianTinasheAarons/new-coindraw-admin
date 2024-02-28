@@ -155,7 +155,7 @@ const Giveaway = () => {
       let metadata;
       console.log(drawType);
 
-      if (drawType === "Classic") {
+      if (drawType === "Classic" || drawType === "Custom") {
         metadata = {
           description: "The Luck of the Draw",
           animation_url: `ipfs://QmPLjjB1dWmADzCYMDcbR4V56EzDWNEHehwyyaJsxF4ZRH/Classic_${
