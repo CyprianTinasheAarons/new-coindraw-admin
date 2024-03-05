@@ -12,7 +12,7 @@ export const getTransactions = createAsyncThunk(
   async (page, rows) => {
     try {
       const response = await transactionService.getAll(page, rows);
-      return response.data.data;
+      return response.data;
     } catch (e) {
       console.log(e);
       throw e;
