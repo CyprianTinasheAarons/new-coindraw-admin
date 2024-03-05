@@ -832,6 +832,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
                           {prize.probability
+                            .toFixed(0)
                             .toString()
                             .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
                           / 100,000
@@ -877,6 +878,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                       Total Probability:{" "}
                       {prizes
                         .reduce((total, prize) => total + prize.probability, 0)
+                        .toFixed(0)
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       / 100,000
