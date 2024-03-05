@@ -377,7 +377,11 @@ export default function HistoryTable() {
                           {tnx?.email}
                         </td>
                         <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                          <Tooltip label={new Date(tnx?.createdAt).toLocaleTimeString('en-GB')}>
+                          <Tooltip
+                            label={new Date(tnx?.createdAt).toLocaleTimeString(
+                              "en-GB"
+                            )}
+                          >
                             {new Date(tnx?.createdAt).toLocaleDateString()}
                           </Tooltip>
                         </td>
