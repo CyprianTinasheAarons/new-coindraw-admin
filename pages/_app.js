@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import store from "../store";
 import authService from "../api/auth.service";
 
+const clientKey = process.env.THIRDWEB_CLIENT_KEY;
+
 function MyApp({ Component, pageProps }) {
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
@@ -30,7 +32,10 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <ThirdwebProvider activeChain="polygon">
+    <ThirdwebProvider
+      activeChain="polygon"
+      clientId="e017ab18ebd4c93486630472c508bd3a"
+    >
       <ChakraProvider>
         <Provider store={store}>
           <Component {...pageProps} />{" "}
