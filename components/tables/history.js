@@ -57,7 +57,7 @@ export default function HistoryTable() {
 
       // Replace transactions instead of appending
       setTransactions(response.data);
-      setTotalPages(Math.ceil(response.data.pages));
+      setTotalPages(Math.ceil(response.pages));
     } catch (error) {
       console.error("Failed to fetch transactions:", error);
       // Handle error (e.g., show a notification or set an error state)
