@@ -52,12 +52,8 @@ export default function BoxesTable() {
       filtered = filtered.filter(
         (b) =>
           b?.boxType?.toLowerCase().includes(search.toLowerCase()) ||
-          b?.owner?.toLowerCase().includes(search.toLowerCase()) ||
-          usersDetails.some(
-            (u) =>
-              u?.username?.toLowerCase().includes(search.toLowerCase()) ||
-              u?.walletAddress?.toLowerCase().includes(search.toLowerCase())
-          )
+          b?.owner?.username?.toLowerCase().includes(search.toLowerCase()) ||
+          b?.owner?.walletAddress?.toLowerCase().includes(search.toLowerCase())
       );
     }
     if (prizeFilter) {
