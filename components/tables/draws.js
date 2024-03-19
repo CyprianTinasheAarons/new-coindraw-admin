@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import CsvDownloader from "react-csv-downloader";
-import { CSVLink, CSVDownload } from "react-csv";
 import { unparse } from "papaparse";
 import drawService from "../../api/draw.service";
 import userService from "../../api/user.service";
@@ -12,8 +11,7 @@ export default function DrawsTable() {
   const [draws, setDraws] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(false);
-  const [csvData, setCsvData] = useState([]);
-
+  
   const handleUpdateDraws = async (newRowOrder) => {
     //map the new order and to draw id
     const newDrawOrder = newRowOrder.map((draw, index) => {
