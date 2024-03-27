@@ -77,7 +77,7 @@ export default function Layout(props) {
   };
 
   const isRole = () => {
-    const role = JSON.parse(localStorage.getItem("user-coindraw")).role;
+    const role = JSON.parse(localStorage.getItem("user-coindraw"))?.role;
     console.log("Role:", role);
     return role ? role == "admin" : false;
   }

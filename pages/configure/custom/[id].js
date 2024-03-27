@@ -1,8 +1,8 @@
-import Layout from "../../components/Layout";
+import Layout from "../../../components/Layout";
 import { useEffect, useState } from "react";
-import boxService from "../../api/box.service";
+import boxService from "../../../api/box.service";
 import Head from "next/head";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { useRouter } from "next/router";
 
 import {
   Modal,
@@ -53,30 +53,25 @@ export default function BoxViewer() {
 
   const toast = useToast();
 
+  const router = useRouter();
+
+  //get id from the url nextjs
+  const { id } = router.query;
+
   const getBox = async () => {
     await boxService
-      .getAllCoinboxes()
-      .then((boxes) => {
-        console.log(boxes.data);
-        const classicBox = boxes.data.filter((box) => box.boxType === "Custom");
-        classicBox[0].prizes.sort((a, b) => a.order - b.order);
-        setBox(classicBox[0]);
-        console.log(classicBox[0]);
+      .getCoinbox(id)
+      .then((response) => {
+        setBox(response.data);
       })
-      .catch(() => {
-        toast({
-          title: "Error",
-          description: "There was an error fetching the box",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
+      .catch((error) => {
+        console.log(error);
       });
   };
 
   useEffect(() => {
     getBox();
-  }, []);
+  }, [id]);
 
   const editBox = async () => {
     const totalProbability = box?.prizes.reduce(
@@ -286,20 +281,37 @@ export default function BoxViewer() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <div className="mb-2">
-          <div className="mx-auto max-w-7xl ">
-            <h1 className="text-3xl font-bold leading-tight text-gray-900">
-              CoinBox Editor
-            </h1>
-          </div>
-        </div>
+        {" "}
+        <button
+          onClick={() => history.back()}
+          className="flex items-center px-4 py-2 my-4 mr-4 text-sm font-medium text-black border rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 mr-2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+            />
+          </svg>
+          Back
+        </button>
         {box?.id ? (
           <div className="space-y-8 divide-y divide-gray-200 ">
             <div className="space-y-8 divide-y divide-gray-200">
               <div>
                 <div>
-                  <h3 className="text-2xl font-semibold leading-6 text-green">
-                    {box?.boxType} Box
+                  <h1 className="text-2xl font-semibold leading-6 text-green">
+                    {box?.boxType} Box : {box?.id}
+                  </h1>{" "}
+                  <h3 className="pt-2 text-xl font-semibold leading-6 text-black">
+                    Box Name: {box?.name}
                   </h3>
                   <p className="mt-1 text-sm text-gray-500">
                     Prizes in the box
