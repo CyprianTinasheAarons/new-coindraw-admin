@@ -37,6 +37,10 @@ class BoxService {
   deleteAll() {
     return http.delete("/boxes");
   }
+
+  deleteCoinbox(id) {
+    return http.delete(`/coinboxes/${id}`);
+  }
 }
 
 export default new BoxService();
