@@ -21,7 +21,7 @@ export default function BoxViewer() {
   const toast = useToast();
   const [boxType, setBoxType] = useState("Custom");
   const [name, setName] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState("Custom");
   const [paused, setPaused] = useState(false);
 
   const createBox = async () => {
@@ -104,21 +104,27 @@ export default function BoxViewer() {
                     className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                   />
                 </div>
+
                 <div>
                   <label
-                    htmlFor="image"
+                    htmlFor="type"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Image
+                    Box Design
                   </label>
-                  <input
-                    type="text"
+                  <select
+                    id="type"
                     name="image"
-                    id="image"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
+                    defaultValue="Custom"
                     className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                  />
+                    onChange={(e) => setImage(e.target.value)}
+                    value={image}
+                  >
+                    {" "}
+                    <option value="Custom">Custom</option>
+                    <option value="Classic">Classic</option>
+                    <option value="Exclusive">Exclusive</option>
+                  </select>
                 </div>
               </div>
             </ModalBody>
@@ -229,7 +235,7 @@ const BoxesTable = () => {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Image
+                      Box Design
                     </th>
                     <th
                       scope="col"
@@ -265,11 +271,7 @@ const BoxesTable = () => {
                         {box.name}
                       </td>
                       <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
-                        <img
-                          src={box.image || "/img_placeholder.png"}
-                          alt="Box Image"
-                          className="w-10 h-10 rounded-full"
-                        />
+                        {box.image}
                       </td>
                       <td className="relative py-4 pl-3 pr-4 text-sm font-medium text-right whitespace-nowrap sm:pr-6">
                         <button

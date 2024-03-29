@@ -97,6 +97,8 @@ export default function BoxViewer() {
       return;
     }
 
+    //if box order already exists 
+
     if (box?.id) {
       box.prizes.push(prize);
       try {
