@@ -32,6 +32,7 @@ export default function BoxViewer() {
         nftContractAddress: "", // Address of the contract
         nftTokenId: [0], // Token ID of the NFT
         maticPrice: 0, // Price of the prize in Matic
+        boxWon: "", // Box won
       },
     ],
   });
@@ -49,6 +50,7 @@ export default function BoxViewer() {
     nftContractAddress: "", // Address of the contract
     nftTokenId: [0], // Token ID of the NFT
     maticPrice: 0, // Price of the prize in Matic
+    boxWon: "", // Box won
   });
 
   const toast = useToast();
@@ -493,7 +495,26 @@ export default function BoxViewer() {
                             <option value="Everyone">Everyone</option>
                           </select>
 
-                          {prize?.type === "Digital" && <></>}
+                          {prize?.type === "Box" && (
+                            <>
+                              <label className="text-sm font-medium text-gray-900">
+                                Box ID
+                              </label>
+                              <input
+                                name="boxWon"
+                                value={prize?.boxWon}
+                                onChange={(e) =>
+                                  setPrize({
+                                    ...prize,
+                                    boxWon: e.target.value,
+                                  })
+                                }
+                                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                type="text"
+                                placeholder="Box ID"
+                              />
+                            </>
+                          )}
 
                           {prize?.type === "DigitalCoindraw" && (
                             <>
@@ -697,7 +718,26 @@ export default function BoxViewer() {
                           <option value="Everyone">Everyone</option>
                         </select>
 
-                        {prize?.type === "Digital" && <></>}
+                        {prize?.type === "Box" && (
+                          <>
+                            <label className="text-sm font-medium text-gray-900">
+                              Box ID
+                            </label>
+                            <input
+                              name="boxWon"
+                              value={prize?.boxWon}
+                              onChange={(e) =>
+                                setPrize({
+                                  ...prize,
+                                  boxWon: e.target.value,
+                                })
+                              }
+                              className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                              type="text"
+                              placeholder="Box ID"
+                            />
+                          </>
+                        )}
 
                         {prize?.type === "DigitalCoindraw" && (
                           <>
