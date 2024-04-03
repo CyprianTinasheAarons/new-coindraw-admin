@@ -340,7 +340,7 @@ export default function BoxViewer() {
                     onClick={onOpen}
                     className="px-4 py-2 mx-2 mt-2 text-sm font-medium text-black border rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 hover:text-white"
                   >
-                    Add New Prize
+                  New Prize
                   </button>
 
                   {box?.paused ? (

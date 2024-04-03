@@ -45,6 +45,7 @@ function Boxes() {
     won: false,
     fulfilled: false,
     amount: 1,
+    customType: "",
   };
   const [box, setBox] = useState(initialBoxState);
 
@@ -201,7 +202,6 @@ function Boxes() {
     }
   };
 
-  
   return (
     <div>
       <Head>
@@ -362,6 +362,21 @@ function Boxes() {
                       </option>
                     ))}
                   </select>
+                  {box.boxType === "Custom" && (
+                    <>
+                      <label className="block text-black">Custom Box Id</label>
+                      <input
+                        type="text"
+                        placeholder="Enter custom box id"
+                        className="w-full px-3 py-2 leading-tight text-gray-700 border-gray-200 rounded appearance-none focus:outline-none focus:shadow-outline"
+                        value={box.customType}
+                        onChange={(e) =>
+                          setBox({ ...box, customType: e.target.value })
+                        }
+                        name="customType"
+                      />
+                    </>
+                  )}
                 </div>
               </ModalBody>
               <ModalFooter>

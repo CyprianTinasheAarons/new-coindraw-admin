@@ -187,7 +187,8 @@ const BoxesTable = () => {
   };
 
   //delete box
-  const deleteBox = async (id) => {
+  const deleteBox = async () => {
+    const id = selectedBox;
     try {
       await boxService.deleteCoinbox(id);
       setCoinBoxes((prev) => prev.filter((box) => box.id !== id));
@@ -198,6 +199,7 @@ const BoxesTable = () => {
         duration: 5000,
         isClosable: true,
       });
+      onClose();
     } catch (error) {
       console.error(error);
       toast({
@@ -208,6 +210,14 @@ const BoxesTable = () => {
         isClosable: true,
       });
     }
+  };
+
+  const { onClose, onOpen, isOpen } = useDisclosure();
+  const [selectedBox, setSelectedBox] = useState("");
+
+  const deleteBoxModal = (id) => {
+    onOpen();
+    setSelectedBox(id);
   };
 
   return (
@@ -280,12 +290,7 @@ const BoxesTable = () => {
                         >
                           {box.paused ? "Resume" : "Pause"}
                         </button>
-                        <button
-                          className="p-2 ml-2 text-red-600 border rounded-md hover:text-red-900"
-                          onClick={() => deleteBox(box.id)}
-                        >
-                          Delete
-                        </button>
+
                         <button
                           className="p-2 ml-2 text-green-600 border rounded-md hover:text-green-900"
                           onClick={() => {
@@ -299,6 +304,12 @@ const BoxesTable = () => {
                           }
                           )
                         </button>
+                        <button
+                          className="p-2 ml-2 text-white bg-red-600 border rounded-md hover:bg-red-900 bold"
+                          onClick={() => deleteBoxModal(box.id)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -308,6 +319,23 @@ const BoxesTable = () => {
           </div>
         </div>
       </div>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Delete Prize</ModalHeader>
+          <ModalBody>
+            <p>Are you sure you want to delete this prize?</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button colorScheme="red" onClick={deleteBox}>
+              Delete Prize
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
