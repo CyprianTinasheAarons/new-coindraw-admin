@@ -362,7 +362,7 @@ export default function BoxViewer() {
                   handleEdit={handleEdit}
                   handleDelete={handleDelete}
                 />
-                <Modal isOpen={isOpen} onClose={onClose}>
+                <Modal isOpen={isOpen} onClose={onClose} size="lg">
                   <ModalOverlay />
                   <ModalContent>
                     <ModalHeader>Add a new prize</ModalHeader>
@@ -592,7 +592,7 @@ export default function BoxViewer() {
                     </ModalFooter>
                   </ModalContent>
                 </Modal>
-                <Modal isOpen={isEditOpen} onClose={onEditClose}>
+                <Modal isOpen={isEditOpen} onClose={onEditClose} size="lg">
                   <ModalOverlay />
                   <ModalContent>
                     <ModalHeader>Edit Prize</ModalHeader>

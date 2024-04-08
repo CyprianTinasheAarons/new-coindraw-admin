@@ -345,13 +345,13 @@ export default function BoxViewer() {
                   handleEdit={handleEdit}
                   handleDelete={handleDelete}
                 />
-                <Modal isOpen={isOpen} onClose={onClose}>
+                <Modal isOpen={isOpen} onClose={onClose} size="lg">
                   <ModalOverlay />
                   <ModalContent>
                     <ModalHeader>Add a new prize</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                      <div className="grid grid-cols-2 gap-4 p-4">
+                      <div className="grid grid-cols-2 gap-2 p-4">
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-gray-900">
                             Position
@@ -575,7 +575,7 @@ export default function BoxViewer() {
                     </ModalFooter>
                   </ModalContent>
                 </Modal>
-                <Modal isOpen={isEditOpen} onClose={onEditClose}>
+                <Modal isOpen={isEditOpen} onClose={onEditClose} size="lg">
                   <ModalOverlay />
                   <ModalContent>
                     <ModalHeader>Edit Prize</ModalHeader>

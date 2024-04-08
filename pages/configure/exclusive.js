@@ -340,7 +340,7 @@ export default function BoxViewer() {
                     onClick={onOpen}
                     className="px-4 py-2 mx-2 mt-2 text-sm font-medium text-black border rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 hover:text-white"
                   >
-                  New Prize
+                    New Prize
                   </button>
 
                   {box?.paused ? (
@@ -364,7 +364,7 @@ export default function BoxViewer() {
                   handleEdit={handleEdit}
                   handleDelete={handleDelete}
                 />
-                <Modal isOpen={isOpen} onClose={onClose}>
+                <Modal isOpen={isOpen} onClose={onClose} size="lg">
                   <ModalOverlay />
                   <ModalContent>
                     <ModalHeader>Add a new prize</ModalHeader>
@@ -589,7 +589,7 @@ export default function BoxViewer() {
                     </ModalFooter>
                   </ModalContent>
                 </Modal>
-                <Modal isOpen={isEditOpen} onClose={onEditClose}>
+                <Modal isOpen={isEditOpen} onClose={onEditClose} size="lg">
                   <ModalOverlay />
                   <ModalContent>
                     <ModalHeader>Edit Prize</ModalHeader>
