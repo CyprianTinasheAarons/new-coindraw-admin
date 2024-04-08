@@ -322,16 +322,16 @@ const BoxesTable = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Delete Prize</ModalHeader>
+          <ModalHeader>Delete Box</ModalHeader>
           <ModalBody>
-            <p>Are you sure you want to delete this prize?</p>
+            <p>Are you sure you want to delete this box?</p>
           </ModalBody>
           <ModalFooter>
             <Button variant="outline" mr={3} onClick={onClose}>
               Close
             </Button>
             <Button colorScheme="red" onClick={deleteBox}>
-              Delete Prize
+              Delete Box
             </Button>
           </ModalFooter>
         </ModalContent>
