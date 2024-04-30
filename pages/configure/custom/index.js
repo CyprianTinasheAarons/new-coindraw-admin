@@ -123,7 +123,7 @@ export default function BoxViewer() {
                     {" "}
                     <option value="Custom">Custom</option>
                     <option value="Classic">Classic</option>
-                    <option value="Exclusive">Exclusive</option>
+                    <option value="Monthly">Monthly</option>
                   </select>
                 </div>
               </div>
@@ -297,12 +297,7 @@ const BoxesTable = () => {
                             window.location.href = `/configure/custom/${box.id}`;
                           }}
                         >
-                          View Prizes (
-                          {
-                            box.prizes.filter((prize) => prize.type !== "NoWin")
-                              .length
-                          }
-                          )
+                          View Prizes 
                         </button>
                         <button
                           className="p-2 ml-2 text-white bg-red-600 border rounded-md hover:bg-red-900 bold"

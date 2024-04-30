@@ -17,7 +17,7 @@ import {
 
 export default function BoxViewer() {
   const [box, setBox] = useState({
-    boxType: "Classic", // Classic or Exclusive
+    boxType: "Classic", // Classic or Monthly
     prizes: [
       {
         id: "", // ID of the prize, if it exists

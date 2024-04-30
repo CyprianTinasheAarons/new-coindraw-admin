@@ -17,7 +17,7 @@ import {
 
 export default function BoxViewer() {
   const [box, setBox] = useState({
-    boxType: "Exclusive", // Classic or Exclusive
+    boxType: "Monthly", // Classic or Monthly
     prizes: [
       {
         id: "", // ID of the prize, if it exists
@@ -60,7 +60,7 @@ export default function BoxViewer() {
       .then((boxes) => {
         console.log(boxes.data);
         const classicBox = boxes.data.filter(
-          (box) => box.boxType === "Exclusive"
+          (box) => box.boxType === "Monthly"
         );
         classicBox[0].prizes.sort((a, b) => a.order - b.order);
         setBox(classicBox[0]);
@@ -97,7 +97,7 @@ export default function BoxViewer() {
       return;
     }
 
-    //if box order already exists 
+    //if box order already exists
 
     if (box?.id) {
       box.prizes.push(prize);
@@ -124,7 +124,7 @@ export default function BoxViewer() {
     } else {
       try {
         await boxService.createCoinbox({
-          boxType: "Exclusive",
+          boxType: "Monthly",
         });
         toast({
           title: "Box Created",
@@ -867,7 +867,7 @@ export default function BoxViewer() {
                         }
                         className="block w-full py-2 pl-3 pr-10 text-base border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       >
-                        <option>Exclusive</option>
+                        <option>Monthly</option>
                       </select>
                     </div>
                   </div>

@@ -32,6 +32,10 @@ class WinnerService {
   sendEmail(data) {
     return http.post(`/winners/sendEmail`, data);
   }
+
+  sendEmailMatic(data) {
+    return http.post(`/winners/sendEmail/matic`, data);
+  }
 }
 
 export default new WinnerService();

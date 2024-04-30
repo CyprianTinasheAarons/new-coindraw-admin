@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import contractAbi from "../../abi/distribution.json";
+import { distributeAddress } from "../../common/addresses";
 import DeleteUser from "../modal/deleteUser";
 import userService from "../../api/user.service";
 import drawService from "../../api/draw.service";
@@ -17,10 +19,11 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
+import { ConnectWallet, useAddress, Web3Button } from "@thirdweb-dev/react";
 
 const drawTypes = [
   { name: "Classic", value: "Classic" },
-  { name: "Exclusive", value: "Exclusive" },
+  { name: "Monthly", value: "Monthly" },
   { name: "Elite", value: "Elite" },
   { name: "Quarterly", value: "Quarterly" },
   { name: "Yearly", value: "Yearly" },
@@ -29,14 +32,24 @@ const drawTypes = [
 
 export default function UsersTable(data) {
   const [users, setUsers] = useState([]);
+  const [amount, setAmount] = useState("");
   const [search, setSearch] = useState("");
   const [draw, setDraw] = useState(drawTypes[0].value); // [1]
   const [draws, setDraws] = useState([]);
   const [price, setPrice] = useState("");
   const [winners, setWinners] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // [1]
+  const contractAddress = distributeAddress;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [drawType, setDrawType] = useState(drawTypes[0].value);
+  const {
+    isOpen: isPaymentOpen,
+    onOpen: onPaymentOpen,
+    onClose: onPaymentClose,
+  } = useDisclosure();
+  const address = useAddress();
   const [filteredData, setFilteredData] = useState([]);
+
   const toast = useToast();
   const fetchUsers = () => {
     userService.getAll().then((res) => {
@@ -97,6 +110,34 @@ export default function UsersTable(data) {
         });
       });
   };
+
+  const onSubmitDistribute = () =>
+    toast({
+      title: "Distribute submitted.",
+      description: "We've submitted your distribute request.",
+      status: "info",
+      duration: 9000,
+      isClosable: true,
+    });
+
+  const onSuccessDistribute = async () => {
+    toast({
+      title: "Distribute successful.",
+      description: "We've successfully distributed the tokens.",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+  };
+
+  const onErrorDistribute = () =>
+    toast({
+      title: "Distribute failed.",
+      description: "We've failed to distribute the tokens.",
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
 
   return (
     <>
@@ -285,6 +326,28 @@ export default function UsersTable(data) {
                             />
                           </svg>
                         </button>
+                        <button
+                          className="flex items-center px-2 mr-1 text-white rounded bg-green"
+                          onClick={() => {
+                            setSelectedUser(person);
+                            onPaymentOpen();
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M14.121 7.629A3 3 0 0 0 9.017 9.43c-.023.212-.002.425.028.636l.506 3.541a4.5 4.5 0 0 1-.43 2.65L9 16.5l1.539-.513a2.25 2.25 0 0 1 1.422 0l.655.218a2.25 2.25 0 0 0 1.718-.122L15 15.75M8.25 12H12m9 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                            />
+                          </svg>
+                        </button>
                         <DeleteUser user={person.id} fetchUsers={fetchUsers} />
                       </td>
                     </tr>
@@ -295,75 +358,196 @@ export default function UsersTable(data) {
           </div>
         </div>
       </div>
-      <>
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Email Winner</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <div className="flex flex-col">
-                <label>Winner Name</label>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Email Winner</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="flex flex-col">
+              <label>Winner Name</label>
+              <input
+                placeholder="Enter winner name"
+                className="px-1 py-2 border rounded-md"
+                value={selectedUser?.username}
+              />
+            </div>
+            <div className="flex flex-col">
+              <label>Winner Email</label>
+              <input
+                placeholder="Enter winner name"
+                className="px-1 py-2 border rounded-md"
+                value={selectedUser?.email}
+              />
+            </div>
+            <div>
+              <label>Select Draw</label>
+              <select
+                onChange={(e) => {
+                  setDraw(e.target.value);
+                }}
+                defaultValue="Select a draw"
+                className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
+              >
+                {draws.map((draw) => (
+                  <option key={draw._id} value={draw.title}>
+                    {draw.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label>Prize Won</label>
+              <input
+                placeholder="Enter prize won"
+                className="px-1 py-2 border rounded-md"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
+            <div className="mt-2">
+              Add to Winners{" "}
+              <input
+                type="checkbox"
+                className="mx-1 rounded-md"
+                value={winners}
+                onChange={(e) => setWinners(e.target.checked)}
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose} py={4}>
+              Close
+            </Button>
+            <Button colorScheme="green" onClick={() => sendMail()}>
+              Send Email
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isPaymentOpen} onClose={onPaymentClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Pay Winner</ModalHeader>
+          <ModalBody>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Winner Name
+                </label>
                 <input
-                  placeholder="Enter winner name"
-                  className="px-1 py-2 border rounded-md"
-                  value={selectedUser?.username}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label>Winner Email</label>
-                <input
-                  placeholder="Enter winner name"
-                  className="px-1 py-2 border rounded-md"
-                  value={selectedUser?.email}
+                  type="text"
+                  value={selectedUser?.username || ""}
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  readOnly
                 />
               </div>
               <div>
-                <label>Select Draw</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Winner Email
+                </label>
+                <input
+                  type="text"
+                  value={selectedUser?.email || ""}
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  readOnly
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Winner Wallet
+                </label>
+                <input
+                  type="text"
+                  value={selectedUser?.walletAddress || ""}
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  readOnly
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Winning Amount ($)
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter amount"
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Draw Type
+                </label>
                 <select
                   onChange={(e) => {
-                    setDraw(e.target.value);
+                    setDrawType(e.target.value);
                   }}
                   defaultValue="Select a draw"
                   className="block w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:-xs sm:text-sm"
                 >
-                  {draws.map((draw) => (
-                    <option key={draw._id} value={draw.title}>
-                      {draw.title}
+                  {drawTypes.map((draw) => (
+                    <option key={draw.value} value={draw.value}>
+                      {draw.name}
                     </option>
                   ))}
                 </select>
               </div>
-              <div className="flex flex-col">
-                <label>Prize Won</label>
-                <input
-                  placeholder="Enter prize won"
-                  className="px-1 py-2 border rounded-md"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </div>
-              <div className="mt-2">
-                Add to Winners{" "}
-                <input
-                  type="checkbox"
-                  className="mx-1 rounded-md"
-                  value={winners}
-                  onChange={(e) => setWinners(e.target.checked)}
-                />
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button colorScheme="green" onClick={() => sendMail()}>
-                Send Email
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </>
+            </div>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onPaymentClose}>
+              Close
+            </Button>
+            {address ? (
+              <Web3Button
+                contractAddress={contractAddress}
+                contractAbi={contractAbi}
+                action={async (contract) => {
+                  await contract
+                    .call("distributeSingle", [
+                      selectedUser?.walletAddress,
+                      amount,
+                    ])
+                    .then((result) => {
+                      winnerService.sendEmailMatic({
+                        amount,
+                        winnerName: selectedUser?.username,
+                        winnerEmail: selectedUser?.email,
+                        winnerAddress: selectedUser?.walletAddress,
+                        txHash: result?.receipt.transactionHash,
+                        drawType: drawType,
+                      });
+
+                      onPaymentClose();
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      toast({
+                        title: "Payment failed.",
+                        description: "We've failed to distribute the tokens.",
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                      });
+                    });
+                }}
+                onSuccess={onSuccessDistribute}
+                onError={onErrorDistribute}
+                onSubmit={onSubmitDistribute}
+              >
+                Send Payment
+              </Web3Button>
+            ) : (
+              <ConnectWallet />
+            )}
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

@@ -37,7 +37,7 @@ function Boxes() {
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState(0);
 
-  const types = ["Classic", "Exclusive", "Custom"];
+  const types = ["Classic", "Monthly", "Custom"];
   const initialBoxState = {
     boxType: "",
     owner: "",
@@ -223,7 +223,7 @@ function Boxes() {
                 href="/configure/exclusive"
                 className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
               >
-                Configure Exclusive Box
+                Configure Monthly Box
               </a>
               <a
                 href="/configure/custom"

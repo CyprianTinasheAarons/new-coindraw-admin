@@ -65,7 +65,7 @@ const Giveaway = () => {
 
   const drawTypes = [
     { value: "Classic", label: "Classic" },
-    { value: "Exclusive", label: "Exclusive" },
+    { value: "Monthly", label: "Monthly" },
     {
       value: "Custom",
       label: "Custom",
@@ -173,20 +173,20 @@ const Giveaway = () => {
           ],
           compiler: "Coindraw Draw Engine",
         };
-      } else if (drawType === "Exclusive") {
+      } else if (drawType === "Monthly") {
         metadata = {
           description: "The Luck of the Draw",
-          animation_url: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Exclusive_${
+          animation_url: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Monthly_${
             tokenId + i
           }.png`,
-          image: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Exclusive_${
+          image: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Monthly_${
             tokenId + i
           }.png`,
           name: "Will it be you?",
           attributes: [
             {
               trait_type: "Giveaway",
-              value: "Exclusive Giveaway",
+              value: "Monthly Giveaway",
             },
           ],
           compiler: "Coindraw Draw Engine",
@@ -464,7 +464,7 @@ const Giveaway = () => {
             </div>
             <div className="flex flex-col">
               <label className="block text-sm font-medium text-gray-700">
-                Classic/Exclusive Address
+                Classic/Monthly Address
               </label>
               <input
                 type="text"
@@ -742,7 +742,7 @@ const Giveaway = () => {
           <ModalBody>
             <div className="flex flex-col">
               <label className="block text-sm font-medium text-gray-700">
-                Classic/Exclusive Address
+                Classic/Monthly Address
               </label>
               <input
                 type="text"

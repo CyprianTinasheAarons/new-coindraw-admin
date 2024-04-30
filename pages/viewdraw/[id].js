@@ -27,7 +27,7 @@ export default function DrawViewer() {
 
   const types = [
     { label: "Classic", value: "Classic" },
-    { label: "Exclusive", value: "Exclusive" },
+    { label: "Monthly", value: "Monthly" },
     { label: "Elite", value: "Elite" },
     { label: "Quarterly", value: "Quarterly" },
     { label: "Yearly", value: "Yearly" },

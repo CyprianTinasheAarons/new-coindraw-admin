@@ -27,7 +27,7 @@ const Discounts = () => {
   } = useDisclosure();
   const drawTypes = [
     { name: "Classic", value: "Classic" },
-    { name: "Exclusive", value: "Exclusive" },
+    { name: "Monthly", value: "Monthly" },
     { name: "Elite", value: "Elite" },
     { name: "Quarterly", value: "Quarterly" },
     { name: "Yearly", value: "Yearly" },
