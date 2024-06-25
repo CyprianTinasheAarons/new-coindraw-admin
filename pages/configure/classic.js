@@ -31,6 +31,9 @@ export default function BoxViewer() {
         nftContractAddress: "", // Address of the contract
         nftTokenId: [0], // Token ID of the NFT
         maticPrice: 0, // Price of the prize in Matic
+        coinAddress: "", // Address of the coin
+        coinAmount: 0, // Amount of the coin
+        coinName: "", //Name of the coin
         boxWon: "", // ID of the box won
       },
     ],
@@ -430,6 +433,7 @@ export default function BoxViewer() {
                               </option>
                               <option value="Physical">Physical</option>
                               <option value="MATIC">MATIC</option>
+                              <option value="CustomCoin">Custom Coin</option>
                               <option value="Box">Box</option>
                               <option value="NoWin">No Win</option>
                             </select>
@@ -573,6 +577,58 @@ export default function BoxViewer() {
                               />
                             </>
                           )}
+                          {prize?.type === "CustomCoin" && (
+                            <>
+                              <label className="text-sm font-medium text-gray-900">
+                                Coin Name
+                              </label>
+                              <input
+                                name="coinName"
+                                value={prize?.coinName}
+                                onChange={(e) =>
+                                  setPrize({
+                                    ...prize,
+                                    coinName: e.target.value,
+                                  })
+                                }
+                                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                type="text"
+                                placeholder="Coin Name"
+                              />
+                              <label className="text-sm font-medium text-gray-900">
+                                Coin Address
+                              </label>
+                              <input
+                                name="coinAddress"
+                                value={prize?.coinAddress}
+                                onChange={(e) =>
+                                  setPrize({
+                                    ...prize,
+                                    coinAddress: e.target.value,
+                                  })
+                                }
+                                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                type="text"
+                                placeholder="Coin Address"
+                              />
+                              <label className="text-sm font-medium text-gray-900">
+                                Coin Amount
+                              </label>
+                              <input
+                                name="coinAmount"
+                                value={prize?.coinAmount}
+                                onChange={(e) =>
+                                  setPrize({
+                                    ...prize,
+                                    coinAmount: parseFloat(e.target.value),
+                                  })
+                                }
+                                className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                type="number"
+                                placeholder="Coin Amount"
+                              />
+                            </>
+                          )}
                         </div>
                       </div>
                     </ModalBody>
@@ -655,6 +711,7 @@ export default function BoxViewer() {
                             </option>
                             <option value="Physical">Physical</option>
                             <option value="MATIC">MATIC</option>
+                            <option value="CustomCoin">Custom Coin</option>
                             <option value="Box">Box</option>
                             <option value="NoWin">No Win</option>
                           </select>
@@ -793,6 +850,78 @@ export default function BoxViewer() {
                               className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                               type="number"
                               placeholder="Matic Prize"
+                            />
+                          </>
+                        )}
+                        {prize?.type === "MATIC" && (
+                          <>
+                            <label className="text-sm font-medium text-gray-900">
+                              Matic Prize
+                            </label>
+                            <input
+                              name="maticPrice"
+                              value={prize?.maticPrice}
+                              onChange={(e) =>
+                                setPrize({
+                                  ...prize,
+                                  maticPrice: parseFloat(e.target.value),
+                                })
+                              }
+                              className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                              type="number"
+                              placeholder="Matic Prize"
+                            />
+                          </>
+                        )}
+                        {prize?.type === "CustomCoin" && (
+                          <>
+                            <label className="text-sm font-medium text-gray-900">
+                              Coin Name
+                            </label>
+                            <input
+                              name="coinName"
+                              value={prize?.coinName}
+                              onChange={(e) =>
+                                setPrize({
+                                  ...prize,
+                                  coinName: e.target.value,
+                                })
+                              }
+                              className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                              type="text"
+                              placeholder="Coin Name"
+                            />
+                            <label className="text-sm font-medium text-gray-900">
+                              Coin Address
+                            </label>
+                            <input
+                              name="coinAddress"
+                              value={prize?.coinAddress}
+                              onChange={(e) =>
+                                setPrize({
+                                  ...prize,
+                                  coinAddress: e.target.value,
+                                })
+                              }
+                              className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                              type="text"
+                              placeholder="Coin Address"
+                            />
+                            <label className="text-sm font-medium text-gray-900">
+                              Coin Amount
+                            </label>
+                            <input
+                              name="coinAmount"
+                              value={prize?.coinAmount}
+                              onChange={(e) =>
+                                setPrize({
+                                  ...prize,
+                                  coinAmount: parseFloat(e.target.value),
+                                })
+                              }
+                              className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                              type="number"
+                              placeholder="Coin Amount"
                             />
                           </>
                         )}
@@ -983,7 +1112,9 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                               ? "bg-purple-500"
                               : prize.type === "NoWin"
                               ? "bg-red-500"
-                              : "bg-yellow-500"
+                              : prize.type === "CustomCoin"
+                              ? "bg-blue-500"
+                              : "bg-yellow-5000"
                           }`}
                         >
                           {prize.type}

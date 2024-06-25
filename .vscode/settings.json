@@ -1,3 +1,5 @@
 {
-  "editor.fontFamily": " Fira Code,Source Code Pro,Hack ,Victor Mono ,Dank Mono ,monospace,flottflott, Monaco,Monoid,  'Courier New'"
+  "editor.fontFamily": " Fira Code,Source Code Pro,Hack ,Victor Mono ,Dank Mono ,monospace,flottflott, Monaco,Monoid,  'Courier New'",
+  "editor.fontWeight": "bold",
+  "terminal.integrated.fontWeight": "normal"
 }

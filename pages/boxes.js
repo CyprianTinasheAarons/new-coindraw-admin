@@ -6,6 +6,8 @@ import boxService from "../api/box.service";
 import { useEffect, useState } from "react";
 import abiMatic from "../abi/abiMatic.json";
 import abiNFT from "../abi/abiNFT.json";
+import abiCoin from "../abi/abiCoin.json";
+import abiPayout from "../abi/abiPayout.json";
 import { Web3Button } from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { ethers } from "ethers";
@@ -31,11 +33,16 @@ function Boxes() {
   // const contractNFTAddress = "0x9AeB372c216661A3794e3977aC714b4cCf8E843b";
   const [contract, setContract] = useState("");
   const contractMaticAddress = "0xBBAa084a3ed3690Ac895F95aF2e1d557A5E9Ba23";
+  const contractPayoutAddress = "0xdE54c50c627fF7BF3D11Dd14db23bf73a3703FEB";
   // const contractNFTAddress = "0x9809f89Fa4740602F23e99D653554Ce3583FfD83";
   const [selectedUser, setSelectedUser] = useState([]);
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState(0);
+  const [coin, setCoin] = useState({
+    address: "",
+    amount: 0,
+  });
 
   const types = ["Classic", "Monthly", "Custom"];
   const initialBoxState = {
@@ -74,6 +81,12 @@ function Boxes() {
     isOpen: isOpenNFT,
     onOpen: onOpenNFT,
     onClose: onCloseNFT,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenCustom,
+    onOpen: onOpenCustom,
+    onClose: onCloseCustom,
   } = useDisclosure();
 
   const { isOpen: isOpen, onOpen: onOpen, onClose: onClose } = useDisclosure();
@@ -175,6 +188,61 @@ function Boxes() {
     }
   };
 
+  const addFundsToCoinorAddCoin = async () => {
+    setLoading(true);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      contractPayoutAddress,
+      abiPayout,
+      signer
+    );
+    const tokenContract = new ethers.Contract(coin.address, abiCoin, signer);
+
+    try {
+      // Approve the payout contract to spend the token
+      const approveTx = await tokenContract.approve(
+        contractPayoutAddress,
+        ethers.utils.parseUnits(coin.amount.toString(), 18)
+      );
+      await approveTx.wait();
+
+      const isAllowed = await contract.allowedTokens(coin.address);
+
+      if (!isAllowed) {
+        const addTokenTx = await contract.addAllowedToken(coin.address);
+        await addTokenTx.wait();
+      }
+
+      const addFundsTx = await contract.addFunds(
+        coin.address,
+        ethers.utils.parseUnits(coin.amount.toString(), 18)
+      );
+      await addFundsTx.wait();
+
+      toast({
+        title: "Funds added successfully.",
+        description: "The funds have been added to the contract.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+      setCoin({ address: "", amount: 0 });
+      onCloseCustom();
+    } catch (error) {
+      console.error("An error occurred", error);
+      toast({
+        title: "Error adding funds.",
+        description: "An error occurred while adding funds to the contract.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchBalance = async () => {
       try {
@@ -250,6 +318,12 @@ function Boxes() {
                 className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
               >
                 Fund Coinbox Matic Prize
+              </button>
+              <button
+                onClick={onOpenCustom}
+                className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+              >
+                Fund/Add Custom Coin
               </button>
             </div>
           </div>
@@ -389,6 +463,60 @@ function Boxes() {
 
                 <button onClick={onClose} className="mx-1">
                   Close
+                </button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+          <Modal isOpen={isOpenCustom} onClose={onCloseCustom}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Add Coin Details</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <form>
+                  <div className="mb-4">
+                    <label className="block text-black">Coin Address</label>
+                    <input
+                      type="text"
+                      placeholder="Enter coin address"
+                      className="w-full px-3 py-2 leading-tight text-gray-700 border-gray-200 rounded appearance-none focus:outline-none focus:shadow-outline"
+                      value={coin.address}
+                      onChange={(e) =>
+                        setCoin({ ...coin, address: e.target.value })
+                      }
+                      name="coinAddress"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-black">Coin Amount</label>
+                    <input
+                      type="number"
+                      placeholder="Enter coin amount"
+                      className="w-full px-3 py-2 leading-tight text-gray-700 border-gray-200 rounded appearance-none focus:outline-none focus:shadow-outline"
+                      value={coin.amount}
+                      onChange={(e) =>
+                        setCoin({ ...coin, amount: parseFloat(e.target.value) })
+                      }
+                      name="coinAmount"
+                    />
+                  </div>
+                </form>
+              </ModalBody>
+              <ModalFooter>
+                <button
+                  onClick={() => addFundsToCoinorAddCoin()}
+                  className="px-3 py-3 mx-1 text-black bg-gray-100 rounded-md"
+                >
+                  {loading ? (
+                    <div>
+                      <Spinner />
+                    </div>
+                  ) : (
+                    "Fund Contract"
+                  )}
+                </button>
+                <button onClick={onCloseCustom} className="mx-1">
+                  Cancel
                 </button>
               </ModalFooter>
             </ModalContent>

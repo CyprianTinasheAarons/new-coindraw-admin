@@ -11,7 +11,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { Web3Button } from "@thirdweb-dev/react";
+import { Web3Button, useAddress } from "@thirdweb-dev/react";
 import { useState, useEffect } from "react";
 import contractAbi from "../abi/giveaway.json";
 import classicAbi from "../abi/classic.json";
@@ -22,7 +22,6 @@ import Nfts from "../components/nfts";
 import abiNFT from "../abi/abiNFT.json";
 import transactionService from "../api/transaction.service";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { useAddress } from "@thirdweb-dev/react";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 
 // Get project credentials from environment variables
