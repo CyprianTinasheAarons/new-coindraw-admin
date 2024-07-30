@@ -95,9 +95,9 @@ export default function BoxViewer() {
     }
 
     if (box?.id) {
-      box.prizes.push(prize);
+      const updatedPrizes = [...box.prizes, prize];
       try {
-        await boxService.updateCoinbox(box.id, { prizes: box.prizes });
+        await boxService.updateCoinbox(box.id, { prizes: updatedPrizes });
         toast({
           title: "Box Updated",
           description: "The box has been updated",
@@ -105,9 +105,8 @@ export default function BoxViewer() {
           duration: 9000,
           isClosable: true,
         });
-        location.reload();
+        await getBox(); // Refresh the box data instead of reloading the page
       } catch (error) {
-        box.prizes.pop();
         toast({
           title: "Error",
           description: "There was an error updating the box",
@@ -128,9 +127,9 @@ export default function BoxViewer() {
           duration: 9000,
           isClosable: true,
         });
-        location.reload();
+        await getBox(); // Refresh the box data instead of reloading the page
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast({
           title: "Error",
           description: "There was an error creating the box",
@@ -143,18 +142,19 @@ export default function BoxViewer() {
   };
 
   const deleteBox = async () => {
-    const newPrizes = box.prizes.filter((p) => p.name !== prize.name);
+    const newPrizes = box.prizes.filter((p) => p.id !== prize.id); // Use id instead of name
     try {
       await boxService.updateCoinbox(box.id, { prizes: newPrizes });
       toast({
         title: "Box Updated",
-        description: "The box has been updated",
+        description: "The prize has been removed from the box",
         status: "success",
         duration: 9000,
         isClosable: true,
       });
 
-      location.reload();
+      await getBox(); // Refresh the box data instead of reloading the page
+      onClose(); // Close the modal after successful deletion
     } catch (error) {
       toast({
         title: "Error",

@@ -95,6 +95,7 @@ export default function HistoryTable() {
   }, [search, transactions]);
 
   const remint = async (txn) => {
+    console.log("Starting remint process for transaction:", txn);
     setReminting(true);
     setSelectedId(txn.id);
 
@@ -106,15 +107,20 @@ export default function HistoryTable() {
       isClosable: true,
     });
 
+    console.log("Initializing SDK contract");
     const nftCollection = await sdk.getContract(txn.contractAddress, txn.abi);
+    console.log("Getting total supply");
     const supply = await nftCollection.call("totalSupply");
     let URLs = [];
 
     let tokenId = parseInt(supply) + 1;
+    console.log("Starting token ID:", tokenId);
 
+    console.log("Generating metadata for", txn.quantity, "NFTs");
     const metadataPromises = Array.from(
       { length: txn.quantity },
       async (_, i) => {
+        console.log("Generating metadata for NFT", i + 1);
         const metadata = {
           description: "The Luck of the Draw",
           animation_url: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
@@ -134,12 +140,14 @@ export default function HistoryTable() {
         };
         const metadataString = JSON.stringify(metadata, null, 2);
         const metadataBuffer = new Buffer.from(metadataString);
+        console.log("Adding metadata to IPFS");
         const added = await client.add({ content: metadataBuffer });
         return `${IPFS_SUBDOMAIN}/ipfs/${added.path}`;
       }
     );
 
     URLs = await Promise.all(metadataPromises);
+    console.log("Generated URLs:", URLs);
 
     const {
       id,
@@ -156,6 +164,7 @@ export default function HistoryTable() {
     } = txn;
 
     const handleToast = (title, description, status) => {
+      console.log("Showing toast:", title, description, status);
       toast({
         title,
         description,
@@ -166,11 +175,13 @@ export default function HistoryTable() {
     };
 
     try {
+      console.log("Calling mintForAddressDynamic");
       const response = await nftCollection.call(
         "mintForAddressDynamic",
         [quantity, tokenId, walletAddress, URLs],
         { gasPrice: 500000000000 }
       );
+      console.log("Minting response:", response);
 
       setReminting(false);
       handleToast(
@@ -179,6 +190,7 @@ export default function HistoryTable() {
         "success"
       );
 
+      console.log("Updating transaction",id);
       await transactionService.update(id, {
         transactionHash: response?.receipt?.transactionHash,
         contractAddress: contractAddress,
@@ -193,9 +205,10 @@ export default function HistoryTable() {
         abi: draw?.abi,
         answer: answer,
       });
+      console.log("Transaction updated successfully");
       location.reload();
     } catch (error) {
-      console.error(error);
+      console.error("Error during minting:", error);
       setReminting(false);
       handleToast("Minting failed", "Your NFTs could not be minted", "error");
     }
