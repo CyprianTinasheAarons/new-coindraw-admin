@@ -6,6 +6,7 @@ import userService from "../../api/user.service";
 import drawService from "../../api/draw.service";
 import winnerService from "../../api/winner.service";
 import CsvDownloader from "react-csv-downloader";
+import { ethers } from "ethers";
 
 import {
   Modal,
@@ -18,8 +19,9 @@ import {
   useDisclosure,
   Button,
   useToast,
+  Spinner,
 } from "@chakra-ui/react";
-import { ConnectWallet, useAddress, Web3Button } from "@thirdweb-dev/react";
+import { ConnectWallet, useAddress } from "@thirdweb-dev/react";
 
 const drawTypes = [
   { name: "Classic", value: "Classic" },
@@ -49,6 +51,7 @@ export default function UsersTable(data) {
   } = useDisclosure();
   const address = useAddress();
   const [filteredData, setFilteredData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toast = useToast();
   const fetchUsers = () => {
@@ -138,6 +141,60 @@ export default function UsersTable(data) {
       duration: 9000,
       isClosable: true,
     });
+
+  const sendPayment = async () => {
+    if (!window.ethereum) {
+      toast({
+        title: "No wallet found.",
+        description: "Please connect a wallet to send payment.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+
+    setIsLoading(true);
+    onSubmitDistribute();
+    try {
+      const tx = await signer.sendTransaction({
+        to: selectedUser?.walletAddress,
+        value: ethers.utils.parseUnits(amount, "ether"),
+      });
+      await tx.wait();
+
+      winnerService.sendEmailMatic({
+        amount,
+        winnerName: selectedUser?.username,
+        winnerEmail: selectedUser?.email,
+        winnerAddress: selectedUser?.walletAddress,
+        txHash: tx.hash,
+        drawType: drawType,
+      });
+
+      onPaymentClose();
+      onSuccessDistribute();
+    } catch (error) {
+      console.log(error);
+      if (error.code === ethers.errors.UNPREDICTABLE_GAS_LIMIT) {
+        toast({
+          title: "Transaction Error",
+          description:
+            "Cannot estimate gas; transaction may fail or may require manual gas limit.",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        onErrorDistribute();
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -504,44 +561,13 @@ export default function UsersTable(data) {
               Close
             </Button>
             {address ? (
-              <Web3Button
-                contractAddress={contractAddress}
-                contractAbi={contractAbi}
-                action={async (contract) => {
-                  await contract
-                    .call("distributeSingle", [
-                      selectedUser?.walletAddress,
-                      amount,
-                    ])
-                    .then((result) => {
-                      winnerService.sendEmailMatic({
-                        amount,
-                        winnerName: selectedUser?.username,
-                        winnerEmail: selectedUser?.email,
-                        winnerAddress: selectedUser?.walletAddress,
-                        txHash: result?.receipt.transactionHash,
-                        drawType: drawType,
-                      });
-
-                      onPaymentClose();
-                    })
-                    .catch((error) => {
-                      console.log(error);
-                      toast({
-                        title: "Payment failed.",
-                        description: "We've failed to distribute the tokens.",
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                      });
-                    });
-                }}
-                onSuccess={onSuccessDistribute}
-                onError={onErrorDistribute}
-                onSubmit={onSubmitDistribute}
+              <Button
+                colorScheme="green"
+                onClick={sendPayment}
+                isLoading={isLoading}
               >
-                Send Payment
-              </Web3Button>
+                {isLoading ? <Spinner size="sm" /> : "Send Payment"}
+              </Button>
             ) : (
               <ConnectWallet />
             )}
