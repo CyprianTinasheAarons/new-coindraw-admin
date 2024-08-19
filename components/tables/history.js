@@ -121,25 +121,48 @@ export default function HistoryTable() {
       { length: txn.quantity },
       async (_, i) => {
         console.log("Generating metadata for NFT", i + 1);
-        const metadata = {
-          description: "The Luck of the Draw",
-          animation_url: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
-            tokenId + i
-          }.gif`,
-          image: `ipfs://QmRJjfhyDH6cvjJFxbaKBokpY6cJFE77DSiK4umxfK1cQH/${
-            tokenId + i
-          }.gif`,
-          name: "Will it be you?",
-          attributes: [
-            {
-              trait_type: "Answer",
-              value: txn.answer,
-            },
-          ],
-          compiler: "Coindraw Draw Engine",
-        };
+        let metadata;
+        if (txn.drawType === "Classic" || txn.drawType === "Custom") {
+          metadata = {
+            description: "The Luck of the Draw",
+            animation_url: `ipfs://QmPLjjB1dWmADzCYMDcbR4V56EzDWNEHehwyyaJsxF4ZRH/Classic_${
+              tokenId + i
+            }.png`,
+            image: `ipfs://QmPLjjB1dWmADzCYMDcbR4V56EzDWNEHehwyyaJsxF4ZRH/Classic_${
+              tokenId + i
+            }.png`,
+            name: "Will it be you?",
+            attributes: [
+              {
+                trait_type: "Answer",
+                value: txn.answer,
+              },
+            ],
+            compiler: "Coindraw Draw Engine",
+          };
+        } else if (txn.drawType === "Monthly") {
+          metadata = {
+            description: "The Luck of the Draw",
+            animation_url: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Monthly_${
+              tokenId + i
+            }.png`,
+            image: `ipfs://QmP6rxHqyQR8yjUFEbHchkXQZH6nV6rGjwUHBt2invzudY/Monthly_${
+              tokenId + i
+            }.png`,
+            name: "Will it be you?",
+            attributes: [
+              {
+                trait_type: "Answer",
+                value: txn.answer,
+              },
+            ],
+            compiler: "Coindraw Draw Engine",
+          };
+        } else {
+          throw new Error(`Unsupported draw type: ${txn.draw?.type}`);
+        }
         const metadataString = JSON.stringify(metadata, null, 2);
-        const metadataBuffer = new Buffer.from(metadataString);
+        const metadataBuffer = Buffer.from(metadataString);
         console.log("Adding metadata to IPFS");
         const added = await client.add({ content: metadataBuffer });
         return `${IPFS_SUBDOMAIN}/ipfs/${added.path}`;
@@ -419,7 +442,7 @@ export default function HistoryTable() {
                             <p>{tnx?.success ? "Success" : "Failed"}</p>
                           )}
                         </td>
-                        <td>
+                        <td> 
                           {!tnx.success && tnx?.PaypalPayment ? (
                             <>
                               <button

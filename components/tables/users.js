@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import contractAbi from "../../abi/distribution.json";
 import { distributeAddress } from "../../common/addresses";
 import DeleteUser from "../modal/deleteUser";
 import userService from "../../api/user.service";
@@ -67,14 +66,13 @@ export default function UsersTable(data) {
   }, []);
 
   useEffect(() => {
-    setFilteredData(
-      users.filter(
-        (u) =>
-          u?.username?.toLowerCase().includes(search.toLowerCase()) ||
-          u?.address?.toLowerCase().includes(search.toLowerCase()) ||
-          u?.email?.toLowerCase().includes(search.toLowerCase())
-      )
+    const lowercasedSearch = search.toLowerCase().trim();
+    const filtered = users.filter((u) =>
+      u?.username?.toLowerCase().includes(lowercasedSearch) ||
+      u?.address?.toLowerCase().includes(lowercasedSearch) ||
+      u?.email?.toLowerCase().includes(lowercasedSearch)
     );
+    setFilteredData([...new Set(filtered)]); // Remove duplicates
   }, [search, users]);
 
   const sendMail = () => {

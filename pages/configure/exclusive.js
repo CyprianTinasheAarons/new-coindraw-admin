@@ -20,7 +20,7 @@ export default function BoxViewer() {
     boxType: "Monthly", // Classic or Monthly
     prizes: [
       {
-        id: "", // ID of the prize, if it exists
+        id: "",
         name: "", // Name of the prize
         image: "", // Image of the prize
         type: "", // Type of prize
@@ -38,9 +38,7 @@ export default function BoxViewer() {
     ],
   });
   const [prize, setPrize] = useState({
-    id:
-      Math.random().toString(36).substring(2, 36) +
-      Math.random().toString(36).substring(2, 36), // ID of the prize, if it exists
+    id: `${Date.now()}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`, // ID of the prize, if it exists
     name: "", // Name of the prize
     image: "", // Image of the prize
     type: "Digital", // Type of prize
@@ -111,6 +109,24 @@ export default function BoxViewer() {
           isClosable: true,
         });
         await getBox(); // Refresh the box data instead of reloading the page
+        onClose();
+        setPrize({
+          id: `${Date.now()}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`,
+          name: "",
+          image: "",
+          type: "",
+          unlimitedQuantity: false,
+          quantity: 0,
+          probability: 0,
+          discordNotificationType: "",
+          nftContractAddress: "",
+          nftTokenId: [0],
+          maticPrice: 0,
+          coinAddress: "",
+          coinAmount: 0,
+          coinName: "",
+          boxWon: "",
+        });
       } catch (error) {
         toast({
           title: "Error",
