@@ -431,7 +431,7 @@ export default function BoxViewer() {
                                 Digital Coindraw
                               </option>
                               <option value="Physical">Physical</option>
-                              <option value="MATIC">MATIC</option>
+                              <option value="MATIC">POL</option>
                               <option value="CustomCoin">Custom Coin</option>
                               <option value="Box">Box</option>
                               <option value="NoWin">No Win</option>
@@ -559,7 +559,7 @@ export default function BoxViewer() {
                           {prize?.type === "MATIC" && (
                             <>
                               <label className="text-sm font-medium text-gray-900">
-                                Matic Prize
+                                POL Prize
                               </label>
                               <input
                                 name="maticPrice"
@@ -709,7 +709,7 @@ export default function BoxViewer() {
                               Digital Coindraw
                             </option>
                             <option value="Physical">Physical</option>
-                            <option value="MATIC">MATIC</option>
+                            <option value="MATIC">POL</option>
                             <option value="CustomCoin">Custom Coin</option>
                             <option value="Box">Box</option>
                             <option value="NoWin">No Win</option>
@@ -835,7 +835,7 @@ export default function BoxViewer() {
                         {prize?.type === "MATIC" && (
                           <>
                             <label className="text-sm font-medium text-gray-900">
-                              Matic Prize
+                              POL Prize
                             </label>
                             <input
                               name="maticPrice"
@@ -848,7 +848,7 @@ export default function BoxViewer() {
                               }
                               className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                               type="number"
-                              placeholder="Matic Prize"
+                              placeholder="POL Prize"
                             />
                           </>
                         )}
@@ -1060,7 +1060,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Matic Amount
+                      POL Amount
                     </th>
                     <th
                       scope="col"

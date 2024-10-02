@@ -407,7 +407,7 @@ const PrizeTable = ({ prizes, handleDelete, handleEdit }) => {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Matic Amount
+                      POL Amount
                     </th>
                     <th
                       scope="col"

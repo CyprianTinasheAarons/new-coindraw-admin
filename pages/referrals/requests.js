@@ -64,7 +64,7 @@ function Referrals() {
      },
      {
        name: "Pending Payout",
-       stat: refferer?.referrerReward?.toFixed(2) + " MATIC/ " + currencySymbols[refferer?.payout?.currency] + "" + (refferer?.referrerReward * prices?.[refferer?.payout?.currency])?.toFixed(2),
+       stat: refferer?.referrerReward?.toFixed(2) + " POL/ " + currencySymbols[refferer?.payout?.currency] + "" + (refferer?.referrerReward * prices?.[refferer?.payout?.currency])?.toFixed(2),
        button: "Request Payout",
      },
    ];

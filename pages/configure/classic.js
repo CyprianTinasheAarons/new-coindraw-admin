@@ -38,9 +38,11 @@ export default function BoxViewer() {
       },
     ],
   });
-  
+
   const [prize, setPrize] = useState({
-    id: `${Date.now()}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`, // Unique ID of the prize
+    id: `${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`, // Unique ID of the prize
     name: "", // Name of the prize
     image: "", // Image of the prize
     type: "Digital", // Type of prize
@@ -113,7 +115,9 @@ export default function BoxViewer() {
         await getBox(); // Refresh the box data instead of reloading the page
         onClose();
         setPrize({
-          id: `${Date.now()}-${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`,
+          id: `${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`,
           name: "",
           image: "",
           type: "",
@@ -449,7 +453,7 @@ export default function BoxViewer() {
                                 Digital Coindraw
                               </option>
                               <option value="Physical">Physical</option>
-                              <option value="MATIC">MATIC</option>
+                              <option value="Matic">POL</option>
                               <option value="CustomCoin">Custom Coin</option>
                               <option value="Box">Box</option>
                               <option value="NoWin">No Win</option>
@@ -577,7 +581,7 @@ export default function BoxViewer() {
                           {prize?.type === "MATIC" && (
                             <>
                               <label className="text-sm font-medium text-gray-900">
-                                Matic Prize
+                                POL Prize
                               </label>
                               <input
                                 name="maticPrice"
@@ -727,7 +731,7 @@ export default function BoxViewer() {
                               Digital Coindraw
                             </option>
                             <option value="Physical">Physical</option>
-                            <option value="MATIC">MATIC</option>
+                            <option value="MATIC">POL</option>
                             <option value="CustomCoin">Custom Coin</option>
                             <option value="Box">Box</option>
                             <option value="NoWin">No Win</option>
@@ -853,7 +857,7 @@ export default function BoxViewer() {
                         {prize?.type === "MATIC" && (
                           <>
                             <label className="text-sm font-medium text-gray-900">
-                              Matic Prize
+                              POL Prize
                             </label>
                             <input
                               name="maticPrice"
@@ -873,7 +877,7 @@ export default function BoxViewer() {
                         {prize?.type === "MATIC" && (
                           <>
                             <label className="text-sm font-medium text-gray-900">
-                              Matic Prize
+                              POL Prize
                             </label>
                             <input
                               name="maticPrice"
@@ -1098,7 +1102,7 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Matic Amount
+                      POL Amount
                     </th>
                     <th
                       scope="col"
@@ -1116,7 +1120,8 @@ const Table = ({ prizes, handleDelete, handleEdit }) => {
                     .map((prize, index) => (
                       <tr key={prize.name}>
                         <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
-                          {prize?.order}{prize?.id}
+                          {prize?.order}
+                          {prize?.id}
                         </td>
                         <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
                           {prize.name}
