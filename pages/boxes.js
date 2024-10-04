@@ -115,8 +115,8 @@ function Boxes() {
 
   const onSuccessMatic = () => {
     toast({
-      title: "Matic successful.",
-      description: "We've successfully processed the Matic.",
+      title: "POL successful.",
+      description: "We've successfully processed the POL.",
       status: "success",
       duration: 9000,
       isClosable: true,
@@ -125,10 +125,10 @@ function Boxes() {
     window.location.reload();
   };
 
-  const onErrorMatic = () =>
+  const onErrorMatic = () =>    
     toast({
-      title: "Matic failed.",
-      description: "We've failed to process the Matic.",
+      title: "POL failed.",
+      description: "We've failed to process the POL.",
       status: "error",
       duration: 9000,
       isClosable: true,
@@ -311,13 +311,13 @@ function Boxes() {
                 style={{ color: "green", fontSize: "16px" }}
                 className="font-semibold"
               >
-                {balance} MATIC
+                {balance} POL
               </p>{" "}
               <button
                 onClick={onOpenMatic}
                 className="inline-flex items-center px-3 py-2 ml-2 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
               >
-                Fund Coinbox Matic Prize
+                Fund Coinbox POL Prize
               </button>
               <button
                 onClick={onOpenCustom}
@@ -331,7 +331,7 @@ function Boxes() {
           <Modal isOpen={isOpenMatic} onClose={onCloseMatic}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Fund Coinbox Matic Prize</ModalHeader>
+              <ModalHeader>Fund Coinbox POL Prize</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <input
@@ -339,7 +339,7 @@ function Boxes() {
                   name="amount"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Enter Matic amount"
+                  placeholder="Enter POL amount"
                   className="w-full px-3 py-2 leading-tight text-gray-700 border-gray-200 rounded appearance-none focus:outline-none focus:shadow-outline"
                 />
               </ModalBody>

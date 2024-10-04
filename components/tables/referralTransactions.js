@@ -136,7 +136,7 @@ export default function ReferralTransactions({data}) {
     return (
       user?.referrerReward +
       " " +
-      "Matic" +
+      "POL" +
       " /" +
       currencySymbols[user?.payout?.currency] +
       " " +
@@ -360,7 +360,7 @@ export default function ReferralTransactions({data}) {
                                     selected && "font-semibold"
                                   )}
                                 >
-                                  {person?.referrerReward} MATIC
+                                  {person?.referrerReward} POL
                                 </span>
                               </div>
                               {selected && (

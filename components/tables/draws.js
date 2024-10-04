@@ -111,7 +111,7 @@ export default function DrawsTable() {
                 "Wallet Address": user.walletAddress,
                 Currency: transaction.PaypalPaymentCurrency
                   ? transaction.PaypalPaymentCurrency
-                  : "MATIC",
+                  : "POL",
                 "Value at Checkout": transaction.amount,
                 "Metadata result": transaction?.answer?.answer,
                 Referred: user.referred ? "Yes" : "No",

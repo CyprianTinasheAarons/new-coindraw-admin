@@ -40,7 +40,7 @@ export default function Stats({user, transactions}) {
       name: "Total Amount Due",
       value:
         user?.referrerReward?.toFixed(2) +
-        " MATIC/ " +
+        " POL / " +
         currencySymbols[user?.payout?.currency] +
         "" +
         (user?.referrerReward * prices?.[user?.payout?.currency])?.toFixed(
@@ -51,7 +51,7 @@ export default function Stats({user, transactions}) {
       name: "Total Paid",
       value:
         user?.referrerTotalReward?.toFixed(2) +
-        " MATIC/ " +
+        " POL/ " +
         currencySymbols[user?.payout?.currency] +
         "" +
         (user?.referrerTotalReward * prices?.[user?.payout?.currency])?.toFixed(

@@ -523,7 +523,7 @@ export default function UsersTable(data) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Winning Amount (MATIC)
+                  Winning Amount (POL)
                 </label>
                 <input
                   type="text"
