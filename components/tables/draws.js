@@ -289,6 +289,12 @@ export default function DrawsTable() {
                     >
                       Live
                     </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900 "
+                    >
+                      Blockchain
+                    </th>
 
                     <th
                       scope="col"
@@ -359,6 +365,9 @@ export default function DrawsTable() {
                                 </td>
                                 <td className="px-3 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                                   {draw.live ? "Yes" : "No"}
+                                </td>
+                                <td className="px-3 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                                  {draw.isSolana ? "Solana" : "Polygon"}
                                 </td>
                                 <td className="px-3 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                                   {new Date(

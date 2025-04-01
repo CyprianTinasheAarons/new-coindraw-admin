@@ -21,6 +21,7 @@ export default function DrawCreate() {
       maxprice: "",
       maxodds: "",
       live: false,
+      isSolana: false,
       contractAddress: "",
       abi: "",
       mintPrice: "",
@@ -312,6 +313,35 @@ export default function DrawCreate() {
                       </label>
                       <p className="text-gray-500">
                         If you want to make this draw live, check this box.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="sm:col-span-3">
+                  <div className="relative flex items-start ">
+                    <div className="flex items-center h-6">
+                      <input
+                        id="isSolana"
+                        name="isSolana"
+                        value={draw?.isSolana}
+                        onChange={(e) =>
+                          setDraw({ ...draw, isSolana: !draw?.isSolana })
+                        }
+                        checked={draw?.isSolana}
+                        type="checkbox"
+                        className="w-8 h-8 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600"
+                      />
+                    </div>
+                    <div className="ml-3 text-sm leading-6">
+                      <label
+                        htmlFor="isSolana"
+                        className="font-medium text-gray-900"
+                      >
+                        Solana
+                      </label>
+                      <p className="text-gray-500">
+                        Check this box if this draw uses Solana blockchain instead of Polygon.
                       </p>
                     </div>
                   </div>
